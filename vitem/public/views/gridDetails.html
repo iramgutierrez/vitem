@@ -1,0 +1,45 @@
+<div class="directory-info-row" >
+              <div class="row">
+              <div class="col-md-6 col-sm-6 clearfix"  ng-repeat="user in usersP | orderBy:sort:reverse">
+                  <div class="panel">
+                      <div class="panel-body">
+                          <div class="media">
+                              <a class="pull-left" href="@{{ user.url_show }}">
+                                  <img class="thumb media-object" src="@{{ user.image_profile_url }}" alt="">
+                              </a>
+                              <div class="media-body">
+                                  <h4> @{{ user.name }} <span class="text-muted small"> - @{{ user.role.name }}</span></h4>
+                                  <ul class="social-links">
+                                      <li><a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Facebook"><i class="fa fa-facebook"></i></a></li>
+                                      <li><a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Twitter"><i class="fa fa-twitter"></i></a></li>
+                                      <li><a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="LinkedIn"><i class="fa fa-linkedin"></i></a></li>
+                                      <li><a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="Skype"><i class="fa fa-skype"></i></a></li>
+                                  </ul>
+                                  <strong>@{{ user.username }}</strong><br>
+                                  <address>
+                                      
+                                      <strong>@{{ user.email }}</strong><br>
+                                        &nbsp;@{{ user.address }}<br>                                      
+                                      <span>&nbsp;<abbr title="Phone" ng-if="user.phone">P:</span> @{{ user.phone }}
+                                  </address>
+                                  @{{ user.employee.salary | currency }}<br>
+                                  <div class="col-sm-4 pull-right">
+
+                                  <a href="@{{ user.url_show }}" >
+                            <button type="button" class="col-sm-3 btn btn-success"><i class="fa fa-eye"></i></button>
+                        </a>
+                        <a href="@{{ user.url_edit }}" >
+                            <button  type="button" class="col-sm-3 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
+                        </a>
+                        <a data-toggle="modal" href="#myModal@{{user.id}}" >
+                            <button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+                        </a>
+                              </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>            
+
+              </div>
+              </div>  

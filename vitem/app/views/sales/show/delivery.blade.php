@@ -1,0 +1,78 @@
+<section class="panel" >
+		                      	<div class="panel-heading">
+		                      		<h3>Entregas. </h3>
+		                      		@if($sale->delivery)
+
+		                      			<a href="{{ route('deliveries.edit' , [ $sale->delivery->id ] ) }}" ><button type="button" class="pull-right btn btn-success "> Editar entrega</button></a><br>
+		                      				                      		
+	                      			@else	
+
+		                      			<a href="{{ route('deliveries.create.sale_id' , [ $sale->id ] ) }}" ><button type="button" class="pull-right btn btn-success "> Agregar entrega</button></a><br>
+		                      				                      		
+	                      			@endif		     
+		                      	</div>
+		                      	<div class="panel-body">	
+		                      		<table class="table table-bordered table-striped table-condensed">
+
+		                      		@if($sale->delivery)
+		                      			<tr>
+		                      				<th class="col-sm-2 col-md-2" >id</th>
+		                      				<th class="col-sm-1 col-md-1"  class="col-sm-2 col-md-2" >Dirección</th>
+		                      				<th class="col-sm-1 col-md-1" >Destino</th>
+		                      				<th class="col-sm-2 col-md-2" >Costo</th>
+		                      				<th class="col-sm-2 col-md-2" >Chofer</th>
+		                      				<th class="col-sm-2 col-md-2" >Fecha de entrega</th>
+		                      				<th class="col-sm-2 col-md-2" ></th>
+		                      			</tr>
+		                      			<tr>
+		                      				<td>{{ $sale->delivery->id }}</td>
+		                      				<td>{{ $sale->delivery->address }}</td>
+		                      				<td>{{ $sale->delivery->destination->zip_code.' '.$sale->delivery->destination->colony.' '.$sale->delivery->destination->town.' '.$sale->delivery->destination->state }}</td>
+		                      				<td>{{ '<?php echo $sale->delivery->destination->cost ?>' | currency }}</td>
+		                      				<td>{{ $sale->delivery->employee->user->name }}</td>
+		                      				<td>{{ $sale->delivery->delivery_date }}</td>
+		                      				<td>		                      					
+												<a href="{{ $sale->delivery->url_edit }}" >
+													<button  type="button" class="col-sm-5 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
+												</a>
+												<a data-toggle="modal" href="#myModal{{ $sale->delivery->id }}" >
+													<button type="button" class="col-sm-5 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+												</a>
+		                      				</td>
+		                      			</tr>                      			
+		                      				                      		
+	                      			@endif		                      			
+
+		                      		</table>	
+
+		                      		@if($sale->delivery)
+
+		                      			<div class="modal fade" id="myModal{{ $sale->delivery->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+											<div class="modal-dialog">
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+														<h4 class="modal-title">Confirma</h4>
+													</div>
+													<div class="modal-body">
+
+														¿Deseas eliminar esta entrega?
+
+													</div>
+													<div class="modal-footer">                                        
+														<form class="btn " method="POST"  action="{{ $sale->delivery->url_delete }}">
+															<input name="_method" type="hidden" value="DELETE" />
+															{{  Form::token() }}															
+															<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>      
+															<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>    
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+
+									@endif
+
+		                      	</div>
+
+		                      </section>

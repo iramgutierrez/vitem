@@ -1,0 +1,1 @@
+/var/www/html/vitem/app/views/employee_types/index.blade.php

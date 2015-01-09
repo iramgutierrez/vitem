@@ -1,0 +1,1 @@
+/var/www/html/vitem/app/views/sale_payments/index.blade.php

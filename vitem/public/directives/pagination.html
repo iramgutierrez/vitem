@@ -1,0 +1,26 @@
+
+<div class="col-sm-2">
+	<label>Registros por pagina: </label>
+	<select class="form-control" ng-model="perPage" ng-change="paginate(1)">
+		<option ng-repeat="option in optionsPerPage">
+			{{option}}
+		</option>
+	</select>
+</div>
+<ul class="pagination col-sm-10" >
+	<li  ng-if="$first" ng-repeat="p in [] | range:pages" ng-show="pages > 1 ">	
+		<a href="" ng-click=" paginate(p+1)" >
+			«		
+		</a>
+	</li>
+	<li  ng-class="{active: page == p+1}" ng-repeat="p in [] | range:pages">	
+		<a href="" ng-click=" paginate(p+1)"  >
+			{{p + 1 }}		
+		</a>
+	</li>
+	<li  ng-if="$last" ng-repeat="p in [] | range:pages" ng-show="pages > 1 ">	
+		<a href="" ng-click=" paginate(p+1)" >
+			»		
+		</a>
+	</li>
+</ul>

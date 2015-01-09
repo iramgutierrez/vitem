@@ -1,0 +1,1 @@
+/var/www/html/vitem/app/views/permissions/show.blade.php
