@@ -1,0 +1,1 @@
+/var/www/html/vitem/app/views/pay_types/edit.blade.php
