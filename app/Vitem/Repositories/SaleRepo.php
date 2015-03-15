@@ -42,6 +42,11 @@ class SaleRepo extends BaseRepo {
         if(count($whereUserId))
             $sale = $sale->whereIn( 'employee_id' , $whereUserId);
 
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sale = $sale->whereIn( 'store_id' , $whereStoreId);
+
         $sale = $sale->first();
 
         if(isset($sale->products))        	
@@ -69,6 +74,11 @@ class SaleRepo extends BaseRepo {
         if(count($whereUserId))
             $sale = $sale->whereIn( 'employee_id' , $whereUserId);
 
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sale = $sale->whereIn( 'store_id' , $whereStoreId);
+
         $sale = $sale->first();
 
         if(isset($sale->packs))        	
@@ -88,6 +98,7 @@ class SaleRepo extends BaseRepo {
 										'employee' , 
 										'employee.user',
 										'client',
+										'store',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -115,6 +126,11 @@ class SaleRepo extends BaseRepo {
 		if(count($whereUserId))
 			self::$sales->whereIn( 'employee_id' , $whereUserId);
 
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            self::$sales->whereIn( 'store_id' , $whereStoreId);
+
 		return self::$sales->get();
 
 	}
@@ -130,6 +146,7 @@ class SaleRepo extends BaseRepo {
 										'employee' , 
 										'employee.user',
 										'client',
+										'store',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -154,6 +171,11 @@ class SaleRepo extends BaseRepo {
 
 		if(count($whereUserId))
 			self::$sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            self::$sales->whereIn( 'store_id' , $whereStoreId);
 
 		return self::$sales->count();		
 
@@ -171,6 +193,7 @@ class SaleRepo extends BaseRepo {
 										'employee' , 
 										'employee.user',
 										'client',
+										'store',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -194,6 +217,10 @@ class SaleRepo extends BaseRepo {
 		if(count($whereUserId))
 			self::$sales->whereIn( 'employee_id' , $whereUserId);
 
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            self::$sales->whereIn( 'store_id' , $whereStoreId);
 
 		return self::$sales->get();		
 
@@ -211,6 +238,7 @@ class SaleRepo extends BaseRepo {
 										'employee' , 
 										'employee.user',
 										'client',
+										'store',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -231,6 +259,11 @@ class SaleRepo extends BaseRepo {
 
 		if(count($whereUserId))
 			self::$sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            self::$sales->whereIn( 'store_id' , $whereStoreId);
 
 
 		return self::$sales->count();		
@@ -249,6 +282,7 @@ class SaleRepo extends BaseRepo {
 										'employee' , 
 										'employee.user',
 										'client',
+										'store',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -290,6 +324,10 @@ class SaleRepo extends BaseRepo {
 		if(count($whereUserId))
 			self::$sales->whereIn( 'employee_id' , $whereUserId);
 
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            self::$sales->whereIn( 'store_id' , $whereStoreId);
 		
 
 		return self::$sales->get();		
@@ -515,15 +553,16 @@ class SaleRepo extends BaseRepo {
 		if(count($whereUserId))
 			self::$sales->whereIn( 'employee_id' , $whereUserId);
 
+        $whereStoreId = \ACLFilter::generateStoreCondition();
 
-		//self::generateSaleTypeCondition( 'contado');
+        if(count($whereStoreId))
+            self::$sales->whereIn( 'store_id' , $whereStoreId);
 
 		self::generateDateRangeCondition( $initDate , $endDate);
 
 		$sales = self::$sales->get();
 
 		$salesByRange = [];
-
 		
 
 		foreach($sales as $k => $sale)
@@ -539,10 +578,6 @@ class SaleRepo extends BaseRepo {
 			$salesByRange[$sale[$field]] += $sale->total;
 
 		}
-
-		//$salesByRange = $salesByRange + $daysRange;
-
-		//ksort($salesByRange);
 
 		return $salesByRange;
 
@@ -564,13 +599,5 @@ class SaleRepo extends BaseRepo {
 
 
 	}
-
-	/*public function find($id)
-	{
-
-		return parent->find($id);
-
-
-	}*/
 
 }

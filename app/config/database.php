@@ -57,7 +57,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'vitem',
 			'username'  => 'root',
-			'password'  => 'cliick3r',
+			'password'  => 'sofiiavgg',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

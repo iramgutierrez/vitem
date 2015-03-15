@@ -51,6 +51,8 @@ class ACLFilter
 
 					$entity_user_id = false;
 
+					$entity_store_id = false;
+
 					if ($entity == 'User') {
 
 						$entity_user_id = $segment_2;
@@ -64,9 +66,26 @@ class ACLFilter
 
 					}
 
+					if(in_array($entity , ['User' , 'Sale']))
+					{
+						$record = $entity::where('id', $segment_2)->first();
+
+						if(!empty($record->store_id))
+							$entity_store_id = $record->store_id;
+					}else{
+
+						$record = $entity::where('id', $segment_2)->first();
+
+						if(!empty($record->sale->store_id))
+							$entity_store_id = $record->sale->store_id;
+
+					}
+
 					$usersPermitted = self::generateAuthCondition();
 
-					if (!in_array($entity_user_id, $usersPermitted) && $entity_user_id) {
+					$storesPermitted = self::generateStoreCondition();
+
+					if ( ( !in_array($entity_user_id, $usersPermitted) && $entity_user_id ) || (!in_array($entity_store_id, $storesPermitted) && $entity_store_id) ) {
 
 						if(!$json)
 						{
@@ -107,7 +126,7 @@ class ACLFilter
 			case 2:
 				$whereUserId[] = $user->id;
 
-				$usersWhitLevel1 = \User::whereIn('role_id', function($query)
+				$usersWithLevel1 = \User::whereIn('role_id', function($query)
 				{
 					$query->select(\DB::raw('id'))
 						->from('roles')
@@ -115,15 +134,16 @@ class ACLFilter
 				})
 					->lists('id');
 
-				$whereUserId = array_merge($whereUserId, $usersWhitLevel1);
+				$whereUserId = array_merge($whereUserId, $usersWithLevel1);
+
+
 
 				break;
+
 			case 3:
-				$whereUserId = \User::lists('id');
+				$whereUserId[] = $user->id;
 
-				/*$whereUserId[] = $user->id;
-
-				$usersWhitLevel1 = \User::whereIn('role_id', function($query)
+				$usersWithLevel1 = \User::whereIn('role_id', function($query)
 				{
 					$query->select(\DB::raw('id'))
 						->from('roles')
@@ -131,9 +151,9 @@ class ACLFilter
 				})
 					->lists('id');
 
-				$whereUserId = array_merge($whereUserId, $usersWhitLevel1);
+				$whereUserId = array_merge($whereUserId, $usersWithLevel1);
 
-				$usersWhitLevel2 = \User::whereIn('role_id', function($query)
+				$usersWithLevel2 = \User::whereIn('role_id', function($query)
 				{
 					$query->select(\DB::raw('id'))
 						->from('roles')
@@ -141,17 +161,12 @@ class ACLFilter
 				})
 					->lists('id');
 
-				$whereUserId = array_merge($whereUserId, $usersWhitLevel2);
+				$whereUserId = array_merge($whereUserId, $usersWithLevel2);
 
-				$usersWhitLevel3 = \User::whereIn('role_id', function($query)
-				{
-					$query->select(\DB::raw('id'))
-						->from('roles')
-						->whereRaw('roles.level_id = 3');
-				})
-					->lists('id');
+				break;
 
-				$whereUserId = array_merge($whereUserId, $usersWhitLevel3);*/
+			case 4:
+				$whereUserId = \User::lists('id');
 
 				break;
 
@@ -161,7 +176,40 @@ class ACLFilter
 
 	}
 
-	static function generateAuthConditionEloquent(\Eloquent $model){
+	static function generateStoreCondition()
+	{
+
+		$user = \Auth::user();
+
+		$level_id = $user->role->level_id; 
+
+		$whereStoreId = [];
+
+		switch($level_id)
+		{
+
+			case 1:
+				$whereStoreId[] = $user->store_id;
+
+				break;
+			case 2:
+				$whereStoreId[] = $user->store_id;
+
+				break;
+
+			case 3:
+				$whereStoreId = \Store::lists('id');
+
+				break;
+
+			case 4:
+				$whereStoreId = \Store::lists('id');
+
+				break;
+
+		}
+
+		return $whereStoreId;
 
 	}
 

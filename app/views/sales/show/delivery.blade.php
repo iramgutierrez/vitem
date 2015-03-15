@@ -18,8 +18,10 @@
 		                      			<tr>
 		                      				<th class="col-sm-2 col-md-2" >id</th>
 		                      				<th class="col-sm-1 col-md-1"  class="col-sm-2 col-md-2" >Dirección</th>
+		                      				@if(!empty($sale->delivery->destination))
 		                      				<th class="col-sm-1 col-md-1" >Destino</th>
 		                      				<th class="col-sm-2 col-md-2" >Costo</th>
+		                      				@endif
 		                      				<th class="col-sm-2 col-md-2" >Chofer</th>
 		                      				<th class="col-sm-2 col-md-2" >Fecha de entrega</th>
 		                      				<th class="col-sm-2 col-md-2" ></th>
@@ -27,8 +29,10 @@
 		                      			<tr>
 		                      				<td>{{ $sale->delivery->id }}</td>
 		                      				<td>{{ $sale->delivery->address }}</td>
+		                      				@if(!empty($sale->delivery->destination))
 		                      				<td>{{ $sale->delivery->destination->zip_code.' '.$sale->delivery->destination->colony.' '.$sale->delivery->destination->town.' '.$sale->delivery->destination->state }}</td>
 		                      				<td>{{ '<?php echo $sale->delivery->destination->cost ?>' | currency }}</td>
+		                      				@endif
 		                      				<td>{{ $sale->delivery->employee->user->name }}</td>
 		                      				<td>{{ $sale->delivery->delivery_date }}</td>
 		                      				<td>		                      					

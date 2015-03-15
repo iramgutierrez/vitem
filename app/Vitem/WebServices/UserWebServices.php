@@ -74,6 +74,13 @@ class UserWebServices extends BaseWebServices {
 			$user = $user->whereIn('id' , $usersPermitted);
 		}
 
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$user = $user->whereIn('store_id' , $storesPermitted);
+		}
+
 		$user = $user->where( 'id' , $id)->first();
 
 		return \Response::json($user);
@@ -92,6 +99,13 @@ class UserWebServices extends BaseWebServices {
 		if(count($usersPermitted))
 		{
 			$users = $users->whereIn('id' , $usersPermitted);
+		}
+
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$users = $users->whereIn('store_id' , $storesPermitted);
 		}
 
 		$users = $users->whereIn('role_id' ,function($query) use ($level_id)
@@ -120,6 +134,13 @@ class UserWebServices extends BaseWebServices {
 			$user = $user->whereIn('id' , $usersPermitted);
 		}
 
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$user = $user->whereIn('store_id' , $storesPermitted);
+		}
+
 		$user = $user->where( 'id' , $id)->first();
 
 		return \Response::json($user);
@@ -138,6 +159,12 @@ class UserWebServices extends BaseWebServices {
 			$sellers = $sellers->whereIn('id' , $usersPermitted);
 		}
 
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$sellers = $sellers->whereIn('store_id' , $storesPermitted);
+		}
 
 		$sellers = $sellers->where('role_id' ,function($query)
 		{

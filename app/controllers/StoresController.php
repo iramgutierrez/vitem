@@ -1,20 +1,28 @@
 <?php
 
-use Vitem\Repositories\StoreRepo as StoreRepo;
+use Vitem\Repositories\StoreRepo;
+use Vitem\Managers\StoreManager;
+use Vitem\WebServices\StoreWebServices as StoreAPI;
 
 
-class StoresController extends \BaseController {
+class StoresController extends \BaseController {	
 
-	//protected $Store;
+	protected $api;
 
-
-	public function __construct(/*Store $Store*/)
+	public function __construct(StoreAPI $StoreAPI)
 	{
+		$this->api = $StoreAPI;
 
-		$this->beforeFilter('ACL:Store,Read', array('only' => 'index'));
+		/*$this->beforeFilter('ACL:Order,Read', ['only' => [ 'index' , 'show' ] ]);
 
-		//$this->Store = $Store;
+		$this->beforeFilter('ACL:Order,Read,true', ['only' => [ 'API'] ]);
 
+		$this->beforeFilter('ACL:Order,Create', ['only' => [ 'create' , 'store' ] ]);
+
+		$this->beforeFilter('ACL:Order,Update', [ 'only' => [ 'edit' , 'update' ] ]);
+
+		$this->beforeFilter('ACL:Order,Delete', [ 'only' => 'destroy' ] );*/
+		
 	}
 
 	/**
@@ -26,14 +34,6 @@ class StoresController extends \BaseController {
 	public function index()
 	{
 
-		/*$stores = Store::find('1');
-
-		dd($stores);*/
-
-		$storesRepo = StoreRepo::find2('1');
-
-		dd($storesRepo);
-
 		return View::make('stores/index');
 	}
 
@@ -44,8 +44,9 @@ class StoresController extends \BaseController {
 	 * @return Response
 	 */
 	public function create()
-	{
-		//
+	{		
+
+		return View::make('stores/create');
 	}
 
 	/**
@@ -56,7 +57,26 @@ class StoresController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		$data = Input::all(); 
+
+		$createStore = new StoreManager( $data );		
+
+        $response = $createStore->save();
+
+        if($response['success'])
+        {
+        	Session::flash('success' , 'La sucursal se ha guardado correctamente.');
+
+            return Redirect::route('stores.index');
+        }
+        else
+        {
+
+            Session::flash('error' , 'Existen errores en el formulario.');
+
+            return Redirect::back()->withErrors($response['errors'])->withInput();
+
+        }
 	}
 
 	/**
@@ -80,7 +100,16 @@ class StoresController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		$store =  Store::find($id);
+
+		if(!$store)
+		{
+			Session::flash('error' , 'La sucursal especificada no existe.');
+
+        	return Redirect::route('stores.index');
+		}
+		
+		return View::make('stores/edit')->withStore($store);
 	}
 
 	/**
@@ -92,7 +121,37 @@ class StoresController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$store =  Store::find($id);
+
+		if(!$store)
+		{
+			Session::flash('error' , 'La sucursal no existe.');
+
+        	return Redirect::route('stores.index');
+		}
+
+		$data = Input::all(); 
+
+        $data['id'] = $id;
+
+		$updateStore = new StoreManager( $data );
+
+        $response = $updateStore->update();
+
+        if($response['success'])
+        {
+        	Session::flash('success' , 'La sucursal se ha actualizado correctamente.');
+
+            return Redirect::route('stores.index');
+        }
+        else
+        {
+
+            Session::flash('error' , 'Existen errores en el formulario.');
+
+            return Redirect::back()->withErrors($response['errors'])->withInput();
+
+        }
 	}
 
 	/**
@@ -104,7 +163,44 @@ class StoresController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$data = Input::all();
+
+		$data['id'] = (int) $id;
+
+		$store = Store::find($id);
+
+		if(!$store)
+		{
+			Session::flash('error' , 'La sucursal especificada no existe.');
+
+        	return Redirect::route('stores.index');
+		}
+
+		$deleteStore = new StoreManager( $data );		
+
+        $response = $deleteStore->delete();
+
+        if($response)
+        {
+        	Session::flash('success' , 'La sucursal se ha eliminado correctamente.');
+
+            return Redirect::route('stores.index');
+        }
+        else
+        {
+
+            Session::flash('error' , 'No ha sido posible eliminar la sucursal.');
+
+            return Redirect::back()->withErrors($response['errors'])->withInput();
+
+        }
+	}
+
+	public function API( $method = 'all')
+	{
+
+		return $this->api->$method();
+
 	}
 
 }

@@ -132,6 +132,8 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::get('API/orders/{method?}' , ['as' => 'ordersAPI', 'uses' => 'OrdersController@API']);
 
+	Route::get('API/stores/{method?}' , ['as' => 'storesAPI', 'uses' => 'StoresController@API']);
+
 	Route::get('reports/sales' , ['as' => 'reports.sales', 'uses' => 'ReportsController@sales']);
 
 	Route::post('reports/generate_xls' , ['as' => 'reports.generate_xls', 'uses' => 'ReportsController@generateXls']);

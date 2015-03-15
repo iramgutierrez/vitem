@@ -99,6 +99,7 @@
               return normalize(product.id.toString()).indexOf(find) != -1
                 || normalize(product.sheet.toString()).indexOf(find) != -1 
                 || ( ( product.hasOwnProperty('employee') &&  product.employee ) ? ( product.employee.hasOwnProperty('user') &&  product.employee.user ) ? (normalize(product.employee.user.name).indexOf(find) != -1) : '' : '' )
+                || ( ( product.hasOwnProperty('store') &&  product.store ) ? normalize(product.store.name).indexOf(find) != -1 : '' ) 
                 || ( ( product.hasOwnProperty('client') &&  product.client ) ? normalize(product.client.name).indexOf(find) != -1 : '' ) ;
             });
           }   

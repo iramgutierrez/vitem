@@ -38,7 +38,7 @@
 				[ 
 				'class' => 'col-md-10' , 
 				'addon-first' => '<i class="fa fa-search"></i>' , 
-				'placeholder' => 'Busca por id, folio, empleado o cliente.',
+				'placeholder' => 'Busca por id, folio, empleado,cliente o sucursal.',
 				'ng-model' => 'find',
 				'ng-change' => 'search()'
 				
@@ -79,7 +79,7 @@
 								</span>
 							</a>
 						</th>
-						<th class="col-sm-1" ng-if="$root.auth_permissions.read.user">
+						<th class="col-sm-1" ng-show="$root.auth_permissions.read.user">
 							<a href="" ng-click="sort = 'employee.user.name'; reverse=!reverse">Empleado
 								<span class="pull-right" >
 									<i class="fa fa-sort" ng-if="sort != 'employee.user.name' "></i>
@@ -88,12 +88,21 @@
 								</span>
 							</a>
 						</th>
-						<th class="col-sm-1" ng-if="$root.auth_permissions.read.client" >
+						<th class="col-sm-1" ng-show="$root.auth_permissions.read.client" >
 							<a href="" ng-click="sort = 'client.name'; reverse=!reverse">Cliente
 								<span class="pull-right" >
 									<i class="fa fa-sort" ng-if="sort != 'client.name' "></i>
 									<i class="fa fa-sort-alpha-asc" ng-if=" sort == 'client.name' && reverse == false "></i>
 									<i class="fa  fa-sort-alpha-desc" ng-if=" sort == 'client.name' && reverse == true "></i>
+								</span>
+							</a>
+						</th>
+						<th class="col-sm-1" ng-show="$root.auth_permissions.read.store" >
+							<a href="" ng-click="sort = 'store.name'; reverse=!reverse">Sucursal
+								<span class="pull-right" >
+									<i class="fa fa-sort" ng-if="sort != 'store.name' "></i>
+									<i class="fa fa-sort-alpha-asc" ng-if=" sort == 'store.name' && reverse == false "></i>
+									<i class="fa  fa-sort-alpha-desc" ng-if=" sort == 'store.name' && reverse == true "></i>
 								</span>
 							</a>
 						</th>
@@ -130,6 +139,7 @@
                 	<th></th>
                 	<th ng-if="$root.auth_permissions.read.user"></th>
                 	<th ng-if="$root.auth_permissions.read.client" ></th>
+                	<th ng-if="$root.auth_permissions.read.store" ></th>
                 	<th>
                 		
 
@@ -198,6 +208,7 @@
 		<td>@{{ sale.id }}</td>
 		<td ng-if="$root.auth_permissions.read.user" >@{{ sale.employee.user.name }}</td>
 		<td ng-if="$root.auth_permissions.read.client" >@{{ sale.client.name }}</td>
+		<td ng-if="$root.auth_permissions.read.store" >@{{ sale.store.name }}</td>
 		<td>@{{ sale.sale_date }}</td>
 		<td>@{{ sale.sale_type }}</td>
 		<td>@{{ sale.pay_type.name }}</td>
@@ -272,6 +283,7 @@
 									<li class="col-sm-6">Folio : @{{sale.sheet }}</li>
 									<li class="col-sm-6" ng-if="$root.auth_permissions.read.user" >Vendedor : @{{sale.employee.user.name }}</li>
 									<li class="col-sm-6" ng-if="$root.auth_permissions.read.client" >Cliente : @{{sale.client.name }}</li>
+									<li class="col-sm-6" ng-if="$root.auth_permissions.read.store" >Cliente : @{{sale.store.name }}</li>
 									<li class="col-sm-6">Fecha de venta : @{{sale.sale_date }}</li>
 									<li class="col-sm-6">Tipo de venta : @{{sale.sale_type }}</li>
 									<li class="col-sm-6">Forma de pago : @{{sale.pay_type }}</li>

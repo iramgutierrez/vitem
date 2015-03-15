@@ -141,6 +141,7 @@ class SalesController extends \BaseController {
 						'commissions.sale_payments',
 						'commissions.employee.user',
 						'delivery.employee.user',
+						'delivery.destination',
 						'client',
 						'employee.user',
 						'pay_type'

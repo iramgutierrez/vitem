@@ -20,13 +20,20 @@ class UserRepo extends BaseRepo {
 
 	static function all(){
 
-		$usersPermitted = ACLFilter::generateAuthCondition();
-
 		$return = \User::with(parent::with(['Employee.commissions', 'Employee', 'Role']));
+
+		$usersPermitted = ACLFilter::generateAuthCondition();
 
 		if(count($usersPermitted))
 		{
 			$return->whereIn('id' , $usersPermitted);
+		}
+
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$return->whereIn('store_id' , $storesPermitted);
 		}
 
 		$users = $return->get();
@@ -47,6 +54,13 @@ class UserRepo extends BaseRepo {
 			$return->whereIn('id' , $usersPermitted);
 		}
 
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$return->whereIn('store_id' , $storesPermitted);
+		}
+
 		$users = $return->where($field , $search)->get();
 
 		return $users;
@@ -65,6 +79,13 @@ class UserRepo extends BaseRepo {
 		if(count($usersPermitted))
 		{
 			$return->whereIn('employee_id' , $usersPermitted);
+		}
+
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$return->whereIn('store_id' , $storesPermitted);
 		}
 		
 		$sales = $return

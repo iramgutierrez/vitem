@@ -29,6 +29,7 @@ class SaleWebServices extends BaseWebServices {
 				'packs',
 				'employee.user',
 				'client',
+				'store',
 				'sale_payments',
 				'commissions.employee.user',
 				'delivery.employee.user',
@@ -40,6 +41,11 @@ class SaleWebServices extends BaseWebServices {
 
         if(count($whereUserId))
             $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 
         $sales = $sales->get();
 
@@ -59,6 +65,7 @@ class SaleWebServices extends BaseWebServices {
 				'packs',
 				'employee.user',
 				'client',
+				'store',
 				'sale_payments',
 				'commissions.employee.user',
 				'delivery.employee.user',
@@ -70,6 +77,11 @@ class SaleWebServices extends BaseWebServices {
 
         if(count($whereUserId))
             $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 
         $sales = $sales->where('employee_id' , $employee_id)->get();
 
@@ -113,21 +125,35 @@ class SaleWebServices extends BaseWebServices {
 		if(!$client_id)
 			return [];
 
+		$sales = SaleRepo::with([
+				'products',
+				'packs',
+				'employee.user',
+				'client',
+				'store',
+				'sale_payments',
+				'commissions.employee.user',
+				'delivery.employee.user',
+				'delivery.destination',
+				'pay_type'
+			]);
 
-		return \Response::json(\Sale::with([
-										'products',
-										'packs',
-										'user',
-										'employee' , 
-										'employee.user',
-										'client',
-										'sale_payments',
-										'commissions.employee.user',
-										'delivery.employee.user',
-										'delivery.destination'
-									])
-						 			->where('client_id' , $client_id)
-									->get());
+		$whereUserId = \ACLFilter::generateAuthCondition();
+
+        if(count($whereUserId))
+            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sales = $sales->whereIn( 'store_id' , $whereStoreId);
+
+        $sales = $sales->where('client_id' , $client_id)
+									->get();
+
+		return \Response::json($sales);
+
+
 		
 	}
 
@@ -174,6 +200,7 @@ class SaleWebServices extends BaseWebServices {
 										'employee' , 
 										'employee.user',
 										'client',
+										'store',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -231,6 +258,7 @@ class SaleWebServices extends BaseWebServices {
 				'packs',
 				'employee.user',
 				'client',
+				'store',
 				'sale_payments',
 				'commissions.employee.user',
 				'delivery.employee.user',
@@ -242,6 +270,11 @@ class SaleWebServices extends BaseWebServices {
 
         if(count($whereUserId))
             $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 
         $sales = $sales->where('id' , $id)->get();
 
@@ -261,6 +294,7 @@ class SaleWebServices extends BaseWebServices {
 				'packs',
 				'employee.user',
 				'client',
+				'store',
 				'sale_payments',
 				'commissions.employee.user',
 				'delivery.employee.user',
@@ -272,6 +306,11 @@ class SaleWebServices extends BaseWebServices {
 
         if(count($whereUserId))
             $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 
         $sales = $sales->where('sheet' , $sheet)->get();
 
@@ -446,7 +485,32 @@ class SaleWebServices extends BaseWebServices {
 	static function getSalesToday()
 	{
 
-		return \Response::make(\Sale::where('sale_date' , date('Y-m-d'))->count() , 200);
+		$sales = SaleRepo::with([
+				'products',
+				'packs',
+				'employee.user',
+				'client',
+				'store',
+				'sale_payments',
+				'commissions.employee.user',
+				'delivery.employee.user',
+				'delivery.destination',
+				'pay_type'
+			]);
+
+		$whereUserId = \ACLFilter::generateAuthCondition();
+
+        if(count($whereUserId))
+            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sales = $sales->whereIn( 'store_id' , $whereStoreId);
+
+        $sales = $sales->where('sale_date' , date('Y-m-d'))->count();
+
+		return \Response::make($sales , 200);
 
 	}
 

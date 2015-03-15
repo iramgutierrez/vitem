@@ -23,6 +23,11 @@ class Sale extends \Eloquent {
         return $this->belongsTo('User');
     }
 
+    public function store()
+    {
+        return $this->belongsTo('Store');
+    }
+
     public function pay_type()
     {
         return $this->belongsTo('PayType');
