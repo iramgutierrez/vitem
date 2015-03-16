@@ -65,7 +65,7 @@ class UserWebServices extends BaseWebServices {
 
 		$id = (!empty($_GET['id'])) ? $_GET['id'] : false;
 
-		$user = UserRepo::with(['Employee']);
+		$user = UserRepo::with(['Employee' , 'Store']);
 
 		$usersPermitted = ACLFilter::generateAuthCondition();
 
@@ -92,7 +92,7 @@ class UserWebServices extends BaseWebServices {
 
 		$level_id = (!empty($_GET['level_id'])) ? $_GET['level_id'] : false;
 
-		$users = UserRepo::with(['role' , 'employee']);
+		$users = UserRepo::with(['role' , 'employee' , 'store']);
 
 		$usersPermitted = ACLFilter::generateAuthCondition();
 
@@ -125,7 +125,7 @@ class UserWebServices extends BaseWebServices {
 
 		$id = (!empty($_GET['id'])) ? $_GET['id'] : false;
 
-		$user = UserRepo::with(['Employee']);
+		$user = UserRepo::with(['Employee' , 'store']);
 
 		$usersPermitted = ACLFilter::generateAuthCondition();
 
@@ -149,8 +149,9 @@ class UserWebServices extends BaseWebServices {
 
 	static function getSellers()
 	{
+		$store_id = (!empty($_GET['store_id'])) ? $_GET['store_id'] : false;
 
-		$sellers = UserRepo::with(['Employee']);
+		$sellers = UserRepo::with(['Employee' , 'store']);
 
 		$usersPermitted = ACLFilter::generateAuthCondition();
 
@@ -164,6 +165,12 @@ class UserWebServices extends BaseWebServices {
 		if(count($storesPermitted))
 		{
 			$sellers = $sellers->whereIn('store_id' , $storesPermitted);
+		}
+
+		if($store_id)
+		{
+			$sellers = $sellers->where('store_id' , $store_id);
+
 		}
 
 		$sellers = $sellers->where('role_id' ,function($query)

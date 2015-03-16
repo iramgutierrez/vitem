@@ -33,6 +33,12 @@
     <!--common script for all pages-->
     <script src="{{ asset('library/js/common-scripts.js') }}"></script>
 
+    @if( Auth::user()->role->level_id >= 3)
+    
+      <script src="{{ asset('library/js/ng/header.js' ) }}"></script>
+
+    @endif
+
     @if( isset($js) )
       @foreach ($js as $ks => $script) 
         <script src="{{ asset( $script ) }}"></script>

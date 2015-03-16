@@ -42,6 +42,7 @@
               return normalize(user.id.toString()).indexOf(find) != -1 
                 || normalize(user.username).indexOf(find) != -1
                 || normalize(user.email).indexOf(find) != -1
+                || ( ( user.hasOwnProperty('store') &&  user.store ) ? normalize(user.store.name).indexOf(find) != -1 : '' ) 
                 || normalize(user.name).indexOf(find) != -1;
             });
           }

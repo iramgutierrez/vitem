@@ -45,6 +45,8 @@ class ProductManager extends BaseManager {
 
             $this->product->save();
 
+            $this->product->stores()->sync($data['ProductStore']);
+
             $response = [
                 'success' => true,
                 'product' => $this->product

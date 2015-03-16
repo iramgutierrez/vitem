@@ -87,6 +87,15 @@
                             </span>
                         </a>
                     </th>
+                    <th class="col-sm-1" ng-show="$root.auth_permissions.read.store" >
+                            <a href="" ng-click="sort = 'store.name'; reverse=!reverse">Sucursal
+                                <span class="pull-right" >
+                                    <i class="fa fa-sort" ng-if="sort != 'store.name' "></i>
+                                    <i class="fa fa-sort-alpha-asc" ng-if=" sort == 'store.name' && reverse == false "></i>
+                                    <i class="fa  fa-sort-alpha-desc" ng-if=" sort == 'store.name' && reverse == true "></i>
+                                </span>
+                            </a>
+                    </th>
                     <th class="col-sm-1">
                         <a href="" ng-click="sort = 'email'; reverse=!reverse">Correo electrónico
                             <span class="pull-right" >
@@ -148,6 +157,7 @@
                 <tr>
                     <th></th>
                     <th></th>
+                    <th ng-show="$root.auth_permissions.read.store"></th>
                     <th></th>
                     <th></th>
                     <th>
@@ -240,6 +250,7 @@
                 <tr class="gradeX" ng-repeat="user in usersP | orderBy:sort:reverse">
                     <td>@{{ user.id }}</td>
                     <td>@{{ user.name }}</td>
+                    <td ng-show="$root.auth_permissions.read.store">@{{ user.store.name }}</td>
                     <td>@{{ user.email }}</td>
                     <td>@{{ user.username }}</td>
                     <td>@{{ user.role.name }}</td>

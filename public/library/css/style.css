@@ -194,6 +194,10 @@ a, a:hover, a:focus {
     padding-bottom: 10px;
 }
 
+select.error , select:focus.error{
+    border: 3px solid red;
+}
+
 /*LEFT NAVIGATION ICON*/
 .dcjq-icon {
     height:17px;
@@ -682,6 +686,11 @@ ul.top-menu > li > a:hover, ul.top-menu > li > a:focus {
     border-color: transparent transparent #a9d86e;
     border-bottom-color: #a9d86e !important;
     border-top-color: #a9d86e !important;
+}
+.notify-arrow-gray {
+    border-color: transparent transparent #fff;
+    border-bottom-color: #fff !important;
+    border-top-color: #fff !important;
 }
 
 

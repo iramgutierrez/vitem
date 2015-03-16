@@ -48,7 +48,9 @@
 
 				'ng-focus' => 'searchSeller()',
 
-				'ng-blur' => 'hideItems()'
+				'ng-blur' => 'hideItems()',
+
+				'ng-disabled' => '!store_id'
 
 			]
 

@@ -9,6 +9,7 @@ class SaleValidator extends BaseValidator {
         'sale_date' => 'required',
         'pay_type_id' => 'required|exists:pay_types,id',
         'employee_id' => 'required|exists:employees,id',
+        'store_id' => 'required|exists:stores,id',
         'user_id' => 'required|exists:users,id',
         'client_id' => 'required|exists:clients,id',
         'total' => 'required',

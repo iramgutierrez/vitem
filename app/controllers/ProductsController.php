@@ -50,7 +50,9 @@ class ProductsController extends \BaseController {
 	public function create()
 	{
 
-		return View::make('products/create' );
+		$stores = Store::all();
+
+		return View::make('products/create' , compact('stores'));
 		
 	}
 
@@ -158,7 +160,11 @@ class ProductsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$product =  Product::find($id);
+		$product =  Product::with(['stores'])->find($id);
+
+		$stores = Store::all();
+		echo "<pre>";
+		dd($product->stores->toArray());
 
 		if(!$product)
 		{
@@ -167,7 +173,7 @@ class ProductsController extends \BaseController {
         	return Redirect::route('products.index');
 		}
 		
-		return View::make('products/edit')->withProduct($product);
+		return View::make('products/edit' , compact('stores') )->withProduct($product);
 	}
 
 	/**

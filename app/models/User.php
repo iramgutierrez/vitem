@@ -24,6 +24,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			'state',
 			'phone' , 
 			'role_id' ,
+			'store_id' ,
 			'image_profile'
 			];
 
@@ -116,6 +117,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function Role()
     {
         return $this->belongsTo('Role');
+    }
+
+    public function Store()
+    {
+        return $this->belongsTo('Store');
     }
 
 	public function commissions()

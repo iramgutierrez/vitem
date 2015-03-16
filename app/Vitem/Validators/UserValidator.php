@@ -12,7 +12,7 @@ class UserValidator extends BaseValidator {
         'inner_number' => 'required',
         'zip_code' => 'required',
         'role_id' => 'required',
-        'image_profile'  => 'max:500',
+        'store_id' => 'required|exists:stores,id'
     );
 
     /*public function __construct()

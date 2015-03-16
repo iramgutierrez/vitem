@@ -20,7 +20,7 @@ class UserRepo extends BaseRepo {
 
 	static function all(){
 
-		$return = \User::with(parent::with(['Employee.commissions', 'Employee', 'Role']));
+		$return = \User::with(parent::with(['Employee.commissions', 'Employee', 'Role' , 'Store']));
 
 		$usersPermitted = ACLFilter::generateAuthCondition();
 
@@ -47,7 +47,7 @@ class UserRepo extends BaseRepo {
 
 		$usersPermitted = ACLFilter::generateAuthCondition();
 
-		$return = \User::with(parent::with(['Employee.commissions', 'Employee.user', 'Role']));
+		$return = \User::with(parent::with(['Employee.commissions', 'Employee.user', 'Role' , 'Store']));
 
 		if(count($usersPermitted))
 		{
@@ -74,7 +74,7 @@ class UserRepo extends BaseRepo {
 
 		$usersPermitted = ACLFilter::generateAuthCondition();
 
-		$return =  \Sale::with(parent::with(['employee.user']));
+		$return =  \Sale::with(parent::with(['employee.user' . 'store']));
 
 		if(count($usersPermitted))
 		{

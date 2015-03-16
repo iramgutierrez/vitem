@@ -86,15 +86,63 @@
 </div>                               		     
 <div class="form-group col-md-6 col-sm-12">
 
- {{ Field::text(
- 'stock', 
- '' , 
- [ 
- 'class' => 'col-md-12' , 
- 'placeholder' => 'Ingresa la cantidad',
- ]
- )
-}}
+  @if(Auth::user()->role->level_id >= 3)
+
+    @if(Session::has('current_store'))
+
+        {{ Field::number(
+               'ProductStore.'.Session::get('current_store.id').'.quantity', 
+               '' , 
+               [ 
+                 'class' => 'col-md-12' , 
+                 'placeholder' => 'Ingresa la cantidad para esta sucursal.',
+               ]
+               )
+        }}
+
+    @else
+
+      <ul>
+
+        @foreach($stores as $k => $store)
+
+          <li>
+
+            {{ Field::number(
+               'ProductStore.'.$store->id.'.quantity', 
+               '' , 
+               [ 
+                 'class' => 'col-md-12' , 
+                 'placeholder' => 'Ingresa la cantidad para la sucursal '.$store->name,
+               ]
+               )
+            }}
+
+            <label for="ProductStore[{{$store->id}}][quantity]">Sucursal {{ $store->name }}</label>            
+
+          </li> 
+
+        @endforeach
+
+      </ul>
+
+    @endif
+
+  @else
+
+    {{ Field::number(
+               'ProductStore.'.Auth::user()->store_id.'.quantity', 
+               '' , 
+               [ 
+                 'class' => 'col-md-12' , 
+                 'placeholder' => 'Ingresa la cantidad para esta sucursal.',
+               ]
+               )
+    }}
+
+  @endif
+
+ 
 </div>                               		     
 <div class="form-group col-md-6 col-sm-12">
 

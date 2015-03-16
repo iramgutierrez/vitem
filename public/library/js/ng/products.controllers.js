@@ -242,6 +242,26 @@
 
         }
 
+        $scope.calculateTotalStock = function()
+        {
+
+          var stock = $scope.stock;
+
+          var total_stock = 0;
+
+          angular.forEach($scope.stores, function(store, key) {
+
+            total_stock += parseInt(store.quantity);
+
+          });
+
+          $scope.total_stock = total_stock;
+
+          console.log($scope.total_stock);
+
+
+        }
+
     }])
 
     .controller('ShowController', ['$scope', '$filter' , 'SalesService', function ($scope ,  $filter , SalesService) {

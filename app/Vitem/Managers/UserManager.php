@@ -19,6 +19,8 @@ class UserManager extends BaseManager {
         $userData = $this->data['User'];        
 
         $employeeData = $this->data['Employee'];
+
+        $userData = $this->prepareData( $userData );
         
         $userValid  =  $userValidator->isValid($userData);
 
@@ -26,7 +28,6 @@ class UserManager extends BaseManager {
 
         if( $userValid && $employeeValid )
         {
-            $userData = $this->prepareData( $userData );
 
             $user = new \User( $userData );
             
@@ -81,7 +82,6 @@ class UserManager extends BaseManager {
 
         $employeeValidator = new EmployeeValidator($this->user->employee); 
 
-
         $userData = $this->prepareData( $userData ); 
 
         $userValid  =  $userValidator->isValid($userData);
@@ -120,10 +120,11 @@ class UserManager extends BaseManager {
             if($userData['password'])
             {
                 $user->password = $userData['password'];
-            }
-            
+            }            
 
-            $user->role_id = $userData['role_id'];
+            $user->role_id = $userData['role_id'];           
+
+            $user->store_id = $userData['store_id'];
 
             $user->image_profile = $userData['image_profile'];
 
@@ -212,6 +213,19 @@ class UserManager extends BaseManager {
             {
                 $data['image_profile'] = $this->user->image_profile;
             }
+        }
+
+        if(\Auth::user()->role->level_id >= 3)
+        {
+            if(\Session::has('current_store.id'))
+            {
+                $data['store_id'] = \Session::get('current_store.id');
+            }
+
+        }
+        else
+        {
+            $data['store_id'] = \Auth::user()->store_id;
         }
 
         return $data;

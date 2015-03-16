@@ -43,6 +43,11 @@
                               					)
                               			}}
                               		</div>
+                                  @if(Auth::user()->role->level_id >= 3)
+
+                                    @include('users/fields/store_id')
+
+                                  @endif
                               		<div class="form-group col-md-6 col-sm-12">
                               			{{ Field::text(
                               						'email', 

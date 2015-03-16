@@ -58,7 +58,6 @@
             @include('sales/fields/sale_type')
 
           </div> 
-
           <div class="form-group col-md-offset-4 col-sm-offset-4 col-md-4 col-sm-4" ng-show="sale_type == 'apartado' ">
 
             @include('sales/fields/liquidation_date')
@@ -70,6 +69,17 @@
             @include('sales/fields/down_payment')
 
           </div> 
+
+          @if(Auth::user()->role->level_id >= 3)
+
+            @include('sales/fields/store_id')
+
+          @else
+
+            <div ng-init="store_id = {{ Auth::user()->store_id }}" ></div>
+
+          @endif
+
 
           @if(Auth::user()->role->level_id > 1)
 

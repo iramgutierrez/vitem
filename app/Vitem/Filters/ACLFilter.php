@@ -198,12 +198,31 @@ class ACLFilter
 				break;
 
 			case 3:
-				$whereStoreId = \Store::lists('id');
 
+				if(\Session::has('current_store'))
+				{
+					$whereStoreId[] = \Session::get('current_store.id');
+				}
+				else
+				{
+				
+					$whereStoreId = \Store::lists('id');
+
+				}
 				break;
 
 			case 4:
-				$whereStoreId = \Store::lists('id');
+
+				if(\Session::has('current_store'))
+				{
+					$whereStoreId[] = \Session::get('current_store.id');
+				}
+				else
+				{
+				
+					$whereStoreId = \Store::lists('id');
+
+				}
 
 				break;
 

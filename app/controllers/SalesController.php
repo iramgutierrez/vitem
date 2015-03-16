@@ -86,9 +86,11 @@ class SalesController extends \BaseController {
 
 		];
 
+		$stores = Store::lists('name' , 'id' );
+
 		$client_types = ClientType::lists('name' , 'id' );
 
-		return View::make('sales/create' , compact('sales_types' , 'pay_types' , 'destination_types' ,'client_types','types'))->render();
+		return View::make('sales/create' , compact('sales_types' , 'pay_types' , 'destination_types' ,'client_types','types' , 'stores'))->render();
 		
 	}
 

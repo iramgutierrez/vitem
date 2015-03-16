@@ -68,7 +68,7 @@ return array(
 		"string"  => "The :attribute must be :size characters.",
 		"array"   => "The :attribute must contain :size items.",
 	),
-	"unique"               => "El :attribute debe ser idn_to_unicode().",
+	"unique"               => "The :attribute has already been taken.",
 	"url"                  => "The :attribute format is invalid.",
 
 	/*
@@ -174,7 +174,8 @@ return array(
 		'user' => 'usuario',
 		'suggested_price_active' => 'aplicar precio sugerido',
 		'percent_gain' => 'porcentaje de ganancia',
-		'showDetailsInputs' => ' '
+		'showDetailsInputs' => ' ',
+		'store_id' => 'sucursal'
 
 	),
 

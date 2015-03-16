@@ -3,7 +3,7 @@
 class ProductValidator extends BaseValidator {
     
     protected $rules = array(
-        'key'     => 'required|unique:products,id',
+        'key'     => 'required|unique:products,key',
         'name' => 'required|min:4|max:40',
         'model' => 'required',
         /*'description' => 'required',

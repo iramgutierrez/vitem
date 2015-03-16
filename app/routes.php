@@ -28,6 +28,8 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::resource('stores', 'StoresController');
 
+	Route::get('change_store/{id?}', ['as' => 'stores.change', 'uses' => 'StoresController@change']);
+
 	Route::resource('users', 'UsersController');
 
 	Route::resource('roles', 'RolesController');

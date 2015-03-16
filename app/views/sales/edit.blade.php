@@ -71,11 +71,21 @@
 
                 </div>
 
+                  @if(Auth::user()->role->level_id >= 3)
+
+                    @include('sales/fields/store_id')
+
+                  @endif
+
+                  @if(Auth::user()->role->level_id > 1)
+
                 <div class="form-group col-md-12 col-sm-12 " >
 
                     @include('sales/fields/employee_id')
 
                 </div>
+
+                @endif
 
 
                 <div class="col-sm-4 col-md-4 col-sm-offset-8 col-md-offset-8 text-right">

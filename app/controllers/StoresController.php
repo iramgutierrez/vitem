@@ -203,4 +203,54 @@ class StoresController extends \BaseController {
 
 	}
 
+	public function change($store = 'all')
+	{
+
+		if(Auth::user()->role->level_id >= 3)
+		{
+
+			if($store == 'all')
+			{
+
+				if (Session::has('current_store'))
+				{
+				    Session::forget('current_store');
+				}
+
+				Session::flash('success' , 'Se cambio de sucursal correctamente.');
+
+			} else if(is_numeric($store))
+			{
+
+				$existsStore = Store::find($store);
+
+				if($existsStore)
+				{
+					Session::put('current_store', $existsStore->toArray());
+
+					Session::flash('success' , 'Se cambio de sucursal correctamente.');
+
+				}
+				else
+				{
+					Session::flash('error' , 'No existe la sucursal especificada.');
+
+				}
+
+
+			}
+			else
+			{
+				Session::flash('error' , 'No existe la sucursal especificada.');
+			}
+
+		}
+		else
+		{
+			Session::flash('error' , 'No tiene permisos para cambiar de sucursales.');
+		}
+
+		return Redirect::back();
+
+	}
 }

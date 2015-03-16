@@ -1,5 +1,6 @@
 <?php namespace Vitem\Managers;
 
+use Vitem\Repositories\PermissionRepo;
 use Vitem\Validators\SaleValidator;
 use Vitem\Managers\ProductManager;
 use Vitem\Managers\PackManager;
@@ -625,7 +626,18 @@ class SaleManager extends BaseManager {
 
         $saleData['user_id'] = \Auth::user()->id;
 
-        $saleData['store_id'] = 1;
+        if(\Auth::user()->role->level_id >= 3)
+        {
+            if(\Session::has('current_store.id'))
+            {
+                $data['store_id'] = \Session::get('current_store.id');
+            }
+
+        }
+        else
+        {
+            $data['store_id'] = \Auth::user()->store_id;
+        }
 
         $subtotal = 0;
 

@@ -65,9 +65,11 @@ class UsersController extends \BaseController {
 	{
 		$roles = Role::lists('name' , 'id' );
 
+		$stores = Store::lists('name' , 'id' );
+
 		$employee_types = EmployeeType::lists('name' , 'id' );
 		
-		return View::make('users/create', compact('roles' , 'employee_types'));
+		return View::make('users/create', compact('roles' , 'employee_types' , 'stores'));
 
 	}
 
@@ -80,7 +82,7 @@ class UsersController extends \BaseController {
 	public function store()
 	{
 
-		$userData = Input::only('username','email','password', 'password_confirmation' , 'name','street' , 'outer_number','inner_number','zip_code','colony','city','state','phone','role_id' ,'status' ,'image_profile');        
+		$userData = Input::only('username','email','password', 'password_confirmation' , 'name','street' , 'outer_number','inner_number','zip_code','colony','city','state','phone','role_id' ,'store_id','status' ,'image_profile');        
 
         $employeeData = Input::only('salary', 'entry_date');
 
@@ -171,9 +173,11 @@ class UsersController extends \BaseController {
 		
 		$roles = Role::lists('name' , 'id' );
 
+		$stores = Store::lists('name' , 'id' );
+
 		$employee_types = EmployeeType::lists('name' , 'id' );
 		
-		return View::make('users/edit', compact('roles' , 'employee_types'))->withUser($user);
+		return View::make('users/edit', compact('roles' , 'employee_types' , 'stores'))->withUser($user);
 	}
 
 	/**
@@ -195,7 +199,7 @@ class UsersController extends \BaseController {
         	return Redirect::route('users.index');
 		}
 
-		$userData = Input::only('username','email','password', 'password_confirmation' , 'name','street' , 'outer_number','inner_number','zip_code','colony','city','state','phone','role_id' ,'status' ,'image_profile');        
+		$userData = Input::only('username','email','password', 'password_confirmation' , 'name','street' , 'outer_number','inner_number','zip_code','colony','city','state','phone','role_id' ,'store_id' ,'status' ,'image_profile');        
 
         $employeeData = Input::only('salary' , 'entry_date');
 

@@ -169,11 +169,21 @@
 
       UsersService.API('getSellers').then(function (data) {
 
-          console.log(data);
-
           $scope.sellersAll = data;
 
       });
+
+      $scope.getSellersByStore = function()
+      {
+
+        var store_id = $scope.store_id || false;
+
+        UsersService.API('getSellers' , { store_id : store_id }).then(function (data) {
+
+          $scope.sellersAll = data;
+
+        });
+      }
 
 
 
@@ -804,6 +814,19 @@
           }
 
           return total;
+
+      }
+
+      $scope.changeStore = function ()
+      {
+
+          $scope.getSellersByStore();
+
+          $scope.employee_id = '';
+          
+          $scope.find_seller = '';
+
+          $scope.autocompleteSeller = false;
 
       }
 
