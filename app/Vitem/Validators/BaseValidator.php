@@ -36,7 +36,7 @@ abstract class BaseValidator
     public function isValid($data)
     { 
         if ($this->model->exists)
-        {
+        { 
             $this->rules = $this->getUpdateRules();
         }
         else

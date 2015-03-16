@@ -75,6 +75,10 @@
 
                     @include('sales/fields/store_id')
 
+                  @else
+
+                    <div ng-init="store_id = {{ Auth::user()->store_id }}" ></div>
+
                   @endif
 
                   @if(Auth::user()->role->level_id > 1)

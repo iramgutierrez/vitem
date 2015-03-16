@@ -216,11 +216,13 @@ class SalesController extends \BaseController {
 
 		];
 
+		$stores = Store::lists('name' , 'id' );
+
 		$client_types = ClientType::lists('name' , 'id' );
 
 		$productsJson = $sale->products->toJson();
 
-		return View::make('sales/edit', compact('sale' , 'sales_types' , 'pay_types' , 'destination_types' ,'client_types','types', 'productsJson'));
+		return View::make('sales/edit', compact('sale' , 'sales_types' , 'pay_types' , 'destination_types' ,'client_types','types', 'productsJson' , 'stores'));
 	}
 
 	/**

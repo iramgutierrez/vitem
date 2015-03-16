@@ -99,6 +99,8 @@ class DeliveryManager extends BaseManager {
 
         $deliveryValid  =  $DeliveryValidator->isValid($deliveryData);
 
+
+
         if( $deliveryValid )
         {
             
@@ -106,7 +108,9 @@ class DeliveryManager extends BaseManager {
             
             $delivery->save();
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['total'] );
+            $store_id = $delivery->sale->store_id;
+
+            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['total'] , $store_id );
 
             $response = [
                 'success' => true,
@@ -216,6 +220,10 @@ class DeliveryManager extends BaseManager {
 
         $totalOld = $this->delivery->total;
 
+        $store_id = $this->delivery->sale->store_id;
+
+        $store_old = (!empty($deliveryData['store_id_old'])) ? $deliveryData['store_id_old'] : $store_id;
+
         $DeliveryValidator = new DeliveryValidator($this->delivery);
 
         $deliveryData = $this->prepareData($deliveryData);
@@ -229,9 +237,9 @@ class DeliveryManager extends BaseManager {
             
             $delivery->update($deliveryData);
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $totalOld*(-1) );
+            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $totalOld*(-1) , $store_old );
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['total'] );
+            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['total'] , $store_id );
 
             $response = [
                 'success' => true,
@@ -270,7 +278,9 @@ class DeliveryManager extends BaseManager {
 
         $delivery = $this->delivery;
 
-        \Setting::checkSettingAndAddResidue('add_residue_new_delivery', ( ($delivery->total)*(-1)  ) );
+        $store_id = $delivery->sale->store_id;
+
+        \Setting::checkSettingAndAddResidue('add_residue_new_delivery', ( ($delivery->total)*(-1)  ) , $store_id );
 
         return $delivery->delete();
 

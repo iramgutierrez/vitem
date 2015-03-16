@@ -45,9 +45,9 @@
 
 		[
 
-			'ng-model' => 'employee_id' ,
+			'ng-model' => 'delivery_employee_id' ,
 
-			'ng-value' => 'employee_id',
+			'ng-value' => 'delivery_employee_id',
 
   			'ng-init' => 'driverSelectedInit(checkValuePreOrOld("'.((!empty($sale->delivery->employee_id)) ? $sale->delivery->employee_id : '').'" , "'.((Input::old('delivery.employee_id')) ? Input::old('delivery.employee_id') : '').'"))'
 

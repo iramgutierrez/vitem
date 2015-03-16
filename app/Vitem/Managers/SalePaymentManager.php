@@ -38,7 +38,7 @@ class SalePaymentManager extends BaseManager {
             
             $salePayment->save();
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment', ( $salePaymentData['total']  ) );
+            \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment', $salePaymentData['total'] , $sale->store_id );
 
             $response = [
                 'success' => true,
@@ -67,7 +67,7 @@ class SalePaymentManager extends BaseManager {
 
     }
 
-    public function update()
+    public function update($store_id = false)
     {
 
         $salePaymentData = $this->data;    
@@ -75,6 +75,10 @@ class SalePaymentManager extends BaseManager {
         $this->salePayment = \SalePayment::find($salePaymentData['id']);
 
         $quantityOld = $this->salePayment->subtotal;
+
+        $store_id = $this->salePayment->sale->store_id;
+
+        $store_old = (!empty($salePaymentData['store_id_old'])) ? $salePaymentData['store_id_old'] : $store_id;
 
         $SalePaymentValidator = new SalePaymentValidator($this->salePayment);
 
@@ -91,9 +95,9 @@ class SalePaymentManager extends BaseManager {
 
             $salePayment->update();
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment', ( ($quantityOld)*(-1)  ) );
+            \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment', ( ($quantityOld)*(-1)  ) , $store_old );
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment',  $salePaymentData['subtotal']  );
+            \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment',  $salePaymentData['subtotal'] , $store_id  );
             
             $response = [
                 'success' => true
@@ -131,7 +135,9 @@ class SalePaymentManager extends BaseManager {
 
         $salePayment = $this->salePayment;
 
-        \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment', ( ($salePayment->quantity)*(-1)  ) );
+        $store_id = $salePayment->sale->store_id;   
+
+        \Setting::checkSettingAndAddResidue('add_residue_new_sale_payment', ( ($salePayment->subtotal)*(-1)  ) , $store_id );
 
         return $salePayment->delete();
 

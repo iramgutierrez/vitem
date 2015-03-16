@@ -410,6 +410,8 @@
               product.quantity = 0;
             }
 
+            product.quantity_init = $scope.quantityInit(product);
+
             inProductsSelected = false;
 
             for (var p = 0, len = $rootScope.productsSelected.length; p < len; p++) {
@@ -503,12 +505,19 @@
 
         }
 
-        $scope.addQuantity = function (quantity , stock)
-        {
+        $scope.addQuantity = function (quantity , stock , init)
+        { 
+
+          if(!init)
+            init = 0;
 
           quantity = (isNaN(parseInt(quantity))) ? 0 : parseInt(quantity);
 
           stock = (isNaN(parseInt(stock))) ? false : parseInt(stock);
+
+          stock = parseInt(stock) + parseInt(init);
+
+          console.log(stock);
 
           if(stock)
           {
@@ -627,7 +636,13 @@
 
           SalesService.getProducts(sale_id).then(function (data) {
 
-            $rootScope.productsSelected = data;
+            angular.forEach(data, function(product, key) {
+
+              $scope.addProduct(product);
+
+            });
+
+          //$rootScope.productsSelected = data;
 
           });
 
@@ -751,7 +766,7 @@
       { 
 
       
-            $scope.employee_id = driver.employee.id;
+            $scope.delivery_employee_id = driver.employee.id;
 
             $scope.find_driver = driver.name;
 

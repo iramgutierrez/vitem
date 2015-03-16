@@ -191,7 +191,7 @@
 
         SalesService.API('findBySheet' , {sheet : $scope.sheet})
 
-        .then(function (sale) { 
+        .then(function (sale) { console.log(sale);
 
             $scope.error = false;
 
@@ -303,7 +303,7 @@
               if(value.in_commission)
               {
 
-                total_commission += parseFloat(value.quantity);
+                total_commission += parseFloat(value.subtotal);
 
               } 
 
@@ -630,7 +630,7 @@
               if(value.in_commission)
               {
 
-                total_commission += parseFloat(value.quantity);
+                total_commission += parseFloat(value.subtotal);
 
               } 
 
@@ -642,7 +642,7 @@
       }
 
       $scope.getTotals = function()
-      {
+      { console.log('fd')
 
         $scope.getTotalCommission();
 
@@ -650,7 +650,7 @@
 
       }
       $scope.getTotal = function()
-      {
+      { console.log($scope.total_commission);
 
         var total = 0;
 

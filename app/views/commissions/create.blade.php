@@ -72,7 +72,7 @@
   		  	  	  <tr ng-repeat="(k ,sale_payment) in sale.sale_payments"  ng-if="sale.sale_type == 'apartado' && commission_type == 'sale_payments' ">  	  	  	
   		  	  	  	<td><?php echo Form::checkbox('SalePayments[{{ sale_payment.id }}][]' , '1' , false , ['ng-model' => 'sale.sale_payments[k].in_commission' , 'ng-change' => 'getTotals()'] ); ?></td>
   		  	  	  	<td>@{{ k+1 }}</td>
-  		  	  	  	<td>@{{ sale_payment.quantity | currency }}</td>
+  		  	  	  	<td>@{{ sale_payment.subtotal | currency }}</td>
   		  	  	  	<td>@{{ sale_payment.employee.user.name }}</td>
   		  	  	  	<td>@{{ sale_payment.created_at }}</td>
   		  	  	  </tr>

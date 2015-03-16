@@ -58,7 +58,7 @@
 
       <tbody>
                                     
-      	<tr ng-repeat="(k , product) in $root.productsSelected" >
+      	<tr ng-repeat="(k , product) in $root.productsSelected" ng-class="{ quantity_null : product.quantity_null  }">
       
   	    	<td>
 
@@ -74,7 +74,7 @@
 
   		    <td> @{{product.model }}</td>
 
-  		    <td> @{{product.stock }}</td>
+  		    <td> @{{product.stock_store }}</td>
 
   		    <td> @{{product.price | currency }}</td>
 
@@ -88,7 +88,7 @@
                       
                         <div class="spinner-buttons input-group-btn btn-group-vertical">
                         
-                          <button ng-click= "product.quantity = addQuantity(product.quantity , product.stock)" type="button" class="btn spinner-up btn-xs btn-default">
+                          <button ng-disabled="product.quantity_null" ng-click= "product.quantity = addQuantity(product.quantity , product.stock_store , product.quantity_init )" type="button" class="btn spinner-up btn-xs btn-default">
                             
                               <i class="fa fa-angle-up"></i>
 

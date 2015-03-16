@@ -66,7 +66,7 @@ class ACLFilter
 
 					}
 
-					if(in_array($entity , ['User' , 'Sale']))
+					if(in_array($entity , ['User' , 'Sale' , 'Expense']))
 					{
 						$record = $entity::where('id', $segment_2)->first();
 

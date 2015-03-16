@@ -3,8 +3,8 @@
 class SaleValidator extends BaseValidator {
     
     protected $rules = array(
-        //'sheet'     => 'required|unique:sales,sheet',
-        'sheet'     => 'required',
+        'sheet'     => 'required|unique:sales,sheet',
+        //'sheet'     => 'required',
         'sale_type' => 'required',
         'down_payment' => 'required_if:sale_type,apartado',
         'sale_date' => 'required',

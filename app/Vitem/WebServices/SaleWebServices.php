@@ -295,7 +295,7 @@ class SaleWebServices extends BaseWebServices {
 				'employee.user',
 				'client',
 				'store',
-				'sale_payments',
+				'sale_payments.employee.user',
 				'commissions.employee.user',
 				'delivery.employee.user',
 				'delivery.destination',
@@ -312,7 +312,7 @@ class SaleWebServices extends BaseWebServices {
         if(count($whereStoreId))
             $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 
-        $sales = $sales->where('sheet' , $sheet)->get();
+        $sales = $sales->where('sheet' , $sheet)->first();
 
 		return \Response::json($sales);
 

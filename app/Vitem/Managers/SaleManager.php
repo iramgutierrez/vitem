@@ -254,6 +254,8 @@ class SaleManager extends BaseManager {
 
             $deliveryData['sale_id'] = $saleData['id'];
 
+            $deliveryData['store_id_old'] = $saleData['store_id'];
+
             $createDelivery = new DeliveryManager( $deliveryData );
 
             $deliveryData = $createDelivery->prepareData($deliveryData);
@@ -323,6 +325,8 @@ class SaleManager extends BaseManager {
 
                         'sale_id' => $sale->id,
 
+                        'store_id_old' => $saleOld->store_id,
+
                         'employee_id' => $sale->employee_id,
 
                         'pay_type_id' => $sale->pay_type_id
@@ -359,18 +363,19 @@ class SaleManager extends BaseManager {
             if($saleTypeOld == 'contado' && $sale->sale_type == 'apartado')
             {
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1)  );
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1) , $saleOld->store_id );
 
             }elseif($saleTypeOld == 'contado' && $sale->sale_type == 'contado'){
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1)  );
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1) , $saleOld->store_id );
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] );
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] , $saleData['store_id'] );
 
             }elseif($saleTypeOld == 'apartado' && $sale->sale_type == 'contado'){
 
+
                 foreach($sale->sale_payments as $sale_payment)
-                {
+                { 
                     $salePaymentData = [
 
                         'id' => $sale_payment->id
@@ -382,7 +387,7 @@ class SaleManager extends BaseManager {
                     $deleteSalePayment->delete();
                 }
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] );
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] , $saleData['store_id'] );
 
             }
 

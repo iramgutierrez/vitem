@@ -25,7 +25,9 @@ class CommissionManager extends BaseManager {
             
             $commission->save(); 
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( $commissionData['total']  ) );
+            $store_id = $commission->sale->store_id;
+
+            \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( $commissionData['total']*(-1)  ) , $store_id );
 
             if($commission->type == 'sale_payments')
             {
@@ -120,9 +122,11 @@ class CommissionManager extends BaseManager {
             
             $commission->update($commissionData); 
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($totalOld)*(-1)  ) );
+            $store_id = $commission->sale->store_id;
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_commission',  $commissionData['total']  );
+            \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($totalOld)  ) , $store_id );
+
+            \Setting::checkSettingAndAddResidue('add_residue_new_commission',  ($commissionData['total'] *(-1)), $store_id  );
 
             if($commission->type == 'sale_payments')
             {
@@ -171,9 +175,11 @@ class CommissionManager extends BaseManager {
 
         $this->commission = \Commission::find($commissionData['id']);        
 
-        $commission = $this->commission;
+        $commission = $this->commission; 
 
-        \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($commission->total)*(-1)  ) );
+        $store_id = $commission->sale->store_id;
+
+        \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($commission->total)  ) , $store_id );
 
         return $commission->delete();
 

@@ -33,7 +33,7 @@ class SaleRepo extends BaseRepo {
 		if(!$canReadProducts)
 			return [];
 
-		$sale = self::with(['products']); 
+		$sale = self::with(['products.stores']); 
 
 		$sale = $sale->where('id' , $saleId);
 
@@ -93,7 +93,7 @@ class SaleRepo extends BaseRepo {
 		$offset = ($page - 1 ) * $perPage;
 
 		self::$sales = \Sale::with([
-										'products',
+										'products.store',
 										'packs',
 										'employee' , 
 										'employee.user',
@@ -141,7 +141,7 @@ class SaleRepo extends BaseRepo {
 
 
 		self::$sales = \Sale::with([
-										'products',
+										'products.store',
 										'packs',
 										'employee' , 
 										'employee.user',
@@ -187,7 +187,7 @@ class SaleRepo extends BaseRepo {
 		$offset = ($page - 1 ) * $perPage;
 
 		self::$sales = \Sale::with([
-										'products',
+										'products.store',
 										'packs',
 										'user',
 										'employee' , 
@@ -232,7 +232,7 @@ class SaleRepo extends BaseRepo {
 
 
 		self::$sales = \Sale::with([
-										'products',
+										'products.store',
 										'packs',
 										'user',
 										'employee' , 
@@ -276,7 +276,7 @@ class SaleRepo extends BaseRepo {
 
 
 		self::$sales = \Sale::with([
-										'products',
+										'products.store',
 										'packs',
 										'user',
 										'employee' , 
