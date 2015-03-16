@@ -13,7 +13,7 @@ class ProductWebServices extends BaseWebServices {
 	static function all()
 	{
 
-		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' ])->get());
+		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Stores' ])->get());
 		
 	}
 	static function findById()
@@ -24,7 +24,7 @@ class ProductWebServices extends BaseWebServices {
 			return false;
 
 
-		$product = \Product::where('id' , $id)->first();
+		$product = \Product::with(['stores'])->where('id' , $id)->first();
 
 		return \Response::json($product);
 

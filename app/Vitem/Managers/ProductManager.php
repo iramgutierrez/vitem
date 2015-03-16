@@ -43,6 +43,17 @@ class ProductManager extends BaseManager {
 
             $this->product = new \Product( $data );
 
+            $stores = \Store::all();
+
+            $ProductStore = [];
+
+            foreach($stores as $k => $store)
+            {
+                $ProductStore[$store->id]['quantity'] = 0; 
+            }
+
+            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+
             $this->product->save();
 
             $this->product->stores()->sync($data['ProductStore']);
@@ -97,7 +108,20 @@ class ProductManager extends BaseManager {
 
             $this->product = new \Product( $data );
 
+            $stores = \Store::all();
+
+            $ProductStore = [];
+
+            foreach($stores as $k => $store)
+            {
+                $ProductStore[$store->id]['quantity'] = 0; 
+            }
+
+            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+
             $this->product->save();
+
+            $this->product->stores()->sync($data['ProductStore']);
 
             $responseProduct = [
                 'success' => true,
@@ -219,7 +243,18 @@ class ProductManager extends BaseManager {
 
             $product->user_id = $data['user_id'];
 
+            $ProductStore = [];
+
+            foreach($product->stores as $k => $store)
+            {
+                $ProductStore[$store->id]['quantity'] = $store->pivot->quantity; 
+            }
+
+            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+
             $this->product->save();
+
+            $this->product->stores()->sync($data['ProductStore']);
 
             $response = [
                 'success' => true
@@ -294,8 +329,21 @@ class ProductManager extends BaseManager {
             $product->supplier_id = $data['supplier_id'];
 
             $product->user_id = $data['user_id'];
-$userData = $this->data;
+
+            $userData = $this->data;          
+
+            $ProductStore = [];
+
+            foreach($product->stores as $k => $store)
+            {
+                $ProductStore[$store->id]['quantity'] = $store->pivot->quantity; 
+            }
+
+            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+
             $this->product->save();
+
+            $this->product->stores()->sync($data['ProductStore']);
 
             $responseProduct = [
                 'success' => true
@@ -452,23 +500,30 @@ $userData = $this->data;
         return $data;
     }
 
-    public function addStock($quantity)
+    public function addStock($quantity , $store_id)
     {
 
         $productData = $this->data;
 
-        $this->product = \Product::find($productData['id']);
+        $this->product = \Product::with(['stores'])->find($productData['id']);
 
-        if($this->product)
+        $store = $this->product->stores->find($store_id);
+
+        if($store)
         {
 
-            $product = $this->product;
+            $quantityOld = $store->pivot->quantity;
 
-            $newStock = (int) $product->stock + (int) $quantity;
+            $attributes = [
 
-            return $product->update(['stock' => $newStock]);
+                'quantity' => $quantityOld + $quantity
 
+            ]; 
+
+            $this->product->stores()->updateExistingPivot($store_id, $attributes);
+            
         }
+        
 
     }
 

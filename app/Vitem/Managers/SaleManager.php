@@ -82,7 +82,7 @@ class SaleManager extends BaseManager {
             if($saleData['sale_type'] == 'contado')
             {
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total']);
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] , $saleData['store_id']);
 
             }
 
@@ -123,7 +123,7 @@ class SaleManager extends BaseManager {
                         
                     $addStockProduct = new ProductManager( $product );
 
-                    $addStockProduct->addStock( ($p['quantity']) * (-1) );
+                    $addStockProduct->addStock( ($p['quantity']) * (-1) , $saleData['store_id'] );
 
                 }
 
@@ -405,7 +405,7 @@ class SaleManager extends BaseManager {
                         
                     $addStockProduct = new ProductManager( $product );
 
-                    $addStockProduct->addStock( $p->pivot->quantity );
+                    $addStockProduct->addStock( $p->pivot->quantity , $this->sale->store_id);
 
                 }
 
@@ -444,7 +444,7 @@ class SaleManager extends BaseManager {
                         
                     $addStockProduct = new ProductManager( $product );
 
-                    $addStockProduct->addStock( ($p['quantity']) * (-1) );
+                    $addStockProduct->addStock( ($p['quantity']) * (-1) , $saleData['store_id']);
 
                 }
 
@@ -566,7 +566,7 @@ class SaleManager extends BaseManager {
                         
                         $addStockProduct = new ProductManager( $product );
 
-                        $addStockProduct->addStock($p->pivot->quantity);
+                        $addStockProduct->addStock($p->pivot->quantity , $this->sale->store_id);
 
                     }
 

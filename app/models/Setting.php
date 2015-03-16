@@ -26,12 +26,12 @@ class Setting extends \Eloquent {
 
 
 
-	public static function checkSettingAndAddResidue($field = '' , $quantity = 0)
-	{
+	public static function checkSettingAndAddResidue($field = '' , $quantity = 0 , $store_id = false)
+	{ 
 		
 		$SettingRepo = new SettingRepo();
 
-		return SettingRepo::checkSettingAndAddResidue($field , $quantity);	
+		return SettingRepo::checkSettingAndAddResidue($field , $quantity , $store_id );	
 
 	}
 

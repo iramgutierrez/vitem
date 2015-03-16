@@ -16,7 +16,7 @@ class SettingRepo extends BaseRepo {
         return new \Sale;
     }
 
-	static function addResidue($quantity)
+    /*static function addResidue($quantity , $store_id)
 	{
 		$setting = \Setting::where('key', 'residue')
 				->first();
@@ -33,6 +33,20 @@ class SettingRepo extends BaseRepo {
 		$setting->update([
 					'value' => $key
 				]);
+	}*/
+
+	static function addResidue($quantity , $store_id)
+	{ 
+
+		$store = \Store::find($store_id); 
+
+		$residue = $store->residue;
+
+		$residue = $residue + $quantity;
+
+		$store->residue = $residue;
+
+		$store->update();
 	}
 
 	static function checkSetting($field)
@@ -52,13 +66,13 @@ class SettingRepo extends BaseRepo {
 
 	}
 
-	static function checkSettingAndAddResidue($field , $quantity)
+	static function checkSettingAndAddResidue($field , $quantity , $store_id)
 	{ 
 
-		if(self::checkSetting($field))
+		if(self::checkSetting($field) && $store_id)
 		{ 
 
-			return self::addResidue($quantity);
+			return self::addResidue($quantity , $store_id);
 
 		}
 

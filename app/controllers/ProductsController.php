@@ -163,8 +163,52 @@ class ProductsController extends \BaseController {
 		$product =  Product::with(['stores'])->find($id);
 
 		$stores = Store::all();
-		echo "<pre>";
-		dd($product->stores->toArray());
+
+		$current_store = false;
+
+		if(Auth::user()->role->level_id >= 3)
+		{
+
+			if(Session::has('current_store'))
+			{
+				$current_store = Session::get('current_store');
+			}
+		}
+		else
+		{
+			$current_store = Auth::user()->store->toArray();
+
+		}
+
+		$current_store = (Session::has('current_store')) ? Session::get('current_store') : false;
+
+		foreach($stores as $ks => $store)
+		{
+			$stores[$ks]->quantity = 0;
+
+			if(!empty($product->stores))
+			{
+
+				foreach($product->stores as $pk => $pstore)
+				{
+
+					if($store->id == $pstore->id)
+					{
+						$stores[$ks]->quantity = $pstore->pivot->quantity;
+					}
+
+					if(!empty($current_store['id']) && $current_store['id'] == $pstore->id)
+					{
+
+						$current_store['quantity'] = $pstore->pivot->quantity;
+
+					}
+
+				}
+
+			}
+
+		}
 
 		if(!$product)
 		{
@@ -173,7 +217,7 @@ class ProductsController extends \BaseController {
         	return Redirect::route('products.index');
 		}
 		
-		return View::make('products/edit' , compact('stores') )->withProduct($product);
+		return View::make('products/edit' , compact('stores' , 'current_store') )->withProduct($product);
 	}
 
 	/**

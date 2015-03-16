@@ -88,11 +88,11 @@
 
   @if(Auth::user()->role->level_id >= 3)
 
-    @if(Session::has('current_store'))
+    @if($current_store)
 
         {{ Field::number(
-               'ProductStore.'.Session::get('current_store.id').'.quantity', 
-               '' , 
+               'ProductStore.'.$current_store['id'].'.quantity', 
+               $current_store['quantity'] , 
                [ 
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',
@@ -110,7 +110,7 @@
 
             {{ Field::number(
                'ProductStore.'.$store->id.'.quantity', 
-               '' , 
+               $store->quantity , 
                [ 
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para la sucursal '.$store->name,
@@ -132,7 +132,7 @@
 
     {{ Field::number(
                'ProductStore.'.Auth::user()->store_id.'.quantity', 
-               '' , 
+               $current_store['quantity'] , 
                [ 
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',

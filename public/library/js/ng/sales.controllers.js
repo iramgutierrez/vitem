@@ -374,7 +374,8 @@
           
             if($scope.find_product.length != '')
             {
-                $scope.products = ProductsService.search($scope.find_product , $scope.productsAll , 1 , $rootScope.productsSelected);
+
+                $scope.products = ProductsService.search($scope.find_product , $scope.productsAll , $rootScope.productsSelected );
 
                 $scope.autocompleteProduct = true;
 
@@ -398,6 +399,17 @@
             }
             product.quantity = quantity;
 
+            product.stock_store = $scope.getStockPerStore(product , $scope.store_id);
+
+            product.quantity_null = false;
+
+            if(!product.stock_store)
+            {
+              product.quantity_null = true;
+
+              product.quantity = 0;
+            }
+
             inProductsSelected = false;
 
             for (var p = 0, len = $rootScope.productsSelected.length; p < len; p++) {
@@ -420,8 +432,6 @@
             {
                 $rootScope.productsSelected.push(product);
             }
-
-
 
             $scope.find_product = '';
 
@@ -674,7 +684,9 @@
 
                 data.quantity = value.quantity;
 
-                $rootScope.productsSelected.push(data);
+                //$rootScope.productsSelected.push(data);
+
+                $scope.addProduct(data , data.quantity);
 
               });
 
@@ -817,6 +829,29 @@
 
       }
 
+      $scope.getStockPerStore = function (product , store_id)
+      {
+
+        var quantity = 0;
+
+        if(product.hasOwnProperty('stores'))
+        {
+
+          angular.forEach(product.stores, function(store, key) {
+
+            if(store.id == store_id)
+            {
+              quantity = store.pivot.quantity;
+            }
+
+          });
+
+        }
+
+        return quantity;
+
+      }
+
       $scope.changeStore = function ()
       {
 
@@ -827,6 +862,8 @@
           $scope.find_seller = '';
 
           $scope.autocompleteSeller = false;
+
+          $rootScope.productsSelected = [];
 
       }
 
@@ -842,8 +879,6 @@
 
           if(old)
               value = old;
-
-          console.log(value);
 
           return value;
 
@@ -863,8 +898,6 @@
                       previewTemplate : "",
                       paramName : "image_profile",
                       success : function(file , data) {
-
-                          console.log(data);
 
                           if(data.hasOwnProperty('success') && data.success)
                           {
@@ -1097,8 +1130,6 @@
                     previewTemplate : "",
                     paramName : "image",
                     success : function(file , data) {
-
-                        console.log(data);
 
                         if(data.hasOwnProperty('success') && data.success)
                         {
@@ -1436,8 +1467,6 @@
 
           if(old)
               value = old;
-
-          console.log(value);
 
           return value;
 

@@ -24,7 +24,9 @@
 
 				'ng-focus' => 'searchPack()',
 
-				'ng-blur' => 'hideItems()'
+				'ng-blur' => 'hideItems()',
+
+				'ng-disabled' => '!store_id'
 
 			]
 

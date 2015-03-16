@@ -62,22 +62,21 @@
         return deferred.promise;
       }
 
-      function search(find, productsAll , status , productsExcluded , supplier_id)
+      function search(find, productsAll , productsExcluded , supplier_id , store_id )
       { 
 
         find = normalize(find);
 
         var products;
-
-        if(status)       
-          productsAll = findByStatus(status , productsAll);
-
         
         if(productsExcluded && productsExcluded.length)
           productsAll = excludeProducts(productsExcluded , productsAll)
 
         if(supplier_id)
           productsAll = findBySupplierId(supplier_id , productsAll);
+
+        /*if(store_id)
+          productsAll = getStockPerStore(store_id , productsAll);*/
 
         if(find == '')
             products =  productsAll;
@@ -91,9 +90,56 @@
             });
           }
 
-        console.log(products);
-
           return products;
+      }
+
+      function getStockPerStore(store_id , productsAll)
+      { 
+
+        var products;
+
+        if(store_id == '')
+          products =  productsAll;
+        else
+        {
+          products = productsAll.filter(function (product) 
+          {
+
+            var quantity = false;
+
+            if(product.hasOwnProperty('stores'))
+            {
+
+              angular.forEach(product.stores, function(store, key) {
+
+                  
+
+                if(store.id == store_id)
+                {
+
+                  console.log(store.pivot.quantity);
+                  
+                  if(store.pivot.quantity > 0)
+                  {
+
+                    quantity = true
+
+                  }
+
+                }
+
+              });
+
+            }
+
+            return quantity;
+
+          }); 
+
+        }        
+
+        return products;
+
       }
 
       function findByStatus(status, productsAll) 

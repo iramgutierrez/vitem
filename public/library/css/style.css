@@ -24,6 +24,10 @@ label.error
     clear: both
 }
 
+.quantity_null td{
+    background-color: #bec3c6 !important;
+}
+
 ul li {
     list-style: none;
 }
