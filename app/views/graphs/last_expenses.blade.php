@@ -1,5 +1,5 @@
 <!--work progress start-->
-                      <section class="panel" ng-controller="LastExpensesController">
+                      <section class="panel" ng-controller="LastExpensesController" ng-init="$root.generateAuthPermissions({{ Auth::user()->role_id }})" ng-show="$root.auth_permissions.read.expense">
                           <div class="panel-body progress-panel">
                               <div class="task-progress col-sm-12">
                                   <h1>Ultimos gastos</h1>
@@ -12,7 +12,8 @@
 	                              	<th>#</th>
 	                              	<th>Concepto</th>
 	                              	<th>Categoria</th>
-	                              	<th>Empleado</th>
+	                              	<th ng-if="$root.auth_permissions.read.user" >Empleado</th>
+	                              	<th ng-if="$root.auth_permissions.read.store" >Sucursal</th>
 	                              	<th>Fecha</th>
 	                              	<th></th>
 	                              </tr>
@@ -20,11 +21,12 @@
 	                                  <td>@{{ k+1 }}</td>
 	                                  <td>@{{expense.concept }}</td>
 	                                  <td>@{{ expense.expense_type.name }}</td>
-	                                  <td>
+	                                  <td ng-if="$root.auth_permissions.read.user" >
 	                                  	<a href="@{{expense.employee.user.url_show}}">
 	                                    	@{{ expense.employee.user.name }}
 	                                    </a>
 	                                  </td>
+	                                  <td ng-if="$root.auth_permissions.read.store" >@{{ expense.store.name }}</td>
 	                                  <td>@{{ expense.date | date:'d MMMM'}}</td>
 	                                  <td>
 	                                  	<a href="@{{expense.url_show}}">

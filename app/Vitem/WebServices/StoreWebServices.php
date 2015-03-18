@@ -1,6 +1,7 @@
 <?php namespace Vitem\WebServices;
 
 use Vitem\Repositories\StoreRepo;
+use Vitem\Repositories\PermissionRepo;
 
 
 class StoreWebServices extends BaseWebServices {
@@ -61,5 +62,31 @@ class StoreWebServices extends BaseWebServices {
 		$products = OrderRepo::getProducts($id);
 
 		return \Response::json($products);
+	}	
+
+	static function getTotalResidue()
+	{	
+
+        $canReadSettings = PermissionRepo::checkAuth('Setting' , 'Read');
+
+        if(!$canReadSettings)
+        	return 0;
+
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        $residue = 0;
+
+        foreach($whereStoreId as $k => $store_id)
+        {
+
+        	$store = \Store::find($store_id);
+        	
+        	if(is_numeric($store->residue))
+        	{
+        		$residue += $store->residue;
+        	}
+        }
+
+		return \Response::make($residue , 200);
 	}
 }

@@ -20,22 +20,9 @@
 @section('content')
               <div ng-app="dashboard" >
               <!--state overview start-->
-              <div class="row state-overview" ng-controller="CountsController">
-                  <!--<div class="alert alert-block alert-danger fade in">
-                    <strong>Nota: </strong> <br>
-                    Esta sección aun no es funcional, los widgets que se pueden ver a continuación, son demostrativos a como quedaran los widgets finales. <br>
-                    Es decir, no estan mostrando datos reales y no todos los widgets se utilizaran en la version final.<br><br>
-                    <strong>Algunos de los widgets que estoy pensando incluir son:</strong><br>
-                    Gráfica de ventas por semana y/o mes.<br>
-                    Ranking de mejores vendedores.<br>
-                    Ranking de mejores clientes.<br>
-                    Listado de productos agotados o con poca existencia en almacen. <br>
-                    Linea del tiempo con los ultimos movimientos que se han hecho en la tienda.<br>
-                    Próximas entregas.<br>
-                    Ventas pendientes de agendar entrega.<br>
-                    Ultimos gastos<br>
-                  </div>-->
-                  <div class="col-lg-4 col-sm-12">
+              <div class="row state-overview" ng-controller="CountsController" ng-init="$root.generateAuthPermissions({{ Auth::user()->role_id }})">
+                  
+                  <div class="col-lg-4 col-sm-12" ng-show="$root.auth_permissions.read.client" >
                       <section class="panel">
                           <div class="symbol terques">
                               <i class="fa fa-user"></i>
@@ -48,7 +35,7 @@
                           </div>
                       </section>
                   </div>
-                  <div class="col-lg-4 col-sm-12">
+                  <div class="col-lg-4 col-sm-12" ng-show="$root.auth_permissions.read.sale" >
                       <section class="panel">
                           <div class="symbol red">
                               <i class="fa fa-tags"></i>
@@ -61,7 +48,7 @@
                           </div>
                       </section>
                   </div>
-                  <div class="col-lg-4 col-sm-12"  > 
+                  <div class="col-lg-4 col-sm-12"  ng-show="$root.auth_permissions.read.setting && $root.auth_permissions.read.store"> 
                       <section class="panel">
                           <div class="symbol blue">
                               <i class="fa fa-dollar"></i>

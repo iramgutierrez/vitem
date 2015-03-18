@@ -88,7 +88,7 @@ class ExpenseWebServices extends BaseWebServices {
 
 		$limit = (!empty($_GET['limit'])) ? $_GET['limit'] : 20;
 
-		$expenses = ExpenseRepo::with(['user' , 'expense_type' , 'employee.user']);
+		$expenses = ExpenseRepo::with(['user' , 'expense_type' , 'employee.user' ,'store']);
 		
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 

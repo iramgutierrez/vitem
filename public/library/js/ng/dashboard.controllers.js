@@ -147,7 +147,7 @@
     $scope.countBalance = 0;
 
     GraphService.API(
-      'settings' , 
+      'stores' , 
       'getTotalResidue' , 
       {
              
@@ -349,7 +349,6 @@
 
         $scope.deliveries = data;
 
-        console.log(data);
       })
 
 

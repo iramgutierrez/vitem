@@ -1,5 +1,5 @@
 <!--work progress start-->
-                      <section class="panel" ng-controller="TopSellersController">
+                      <section class="panel" ng-controller="TopSellersController" ng-init="$root.generateAuthPermissions({{ Auth::user()->role_id }})" ng-if="$root.auth_permissions.read.user && $root.auth_permissions.read.sale">
                           <div class="panel-body progress-panel">
                               <div class="task-progress col-sm-6">
                                   <h1>Mejores vendedores</h1>
@@ -63,6 +63,7 @@
                               <tr>
                               	<th>#</th>
                               	<th>Vendedor</th>
+                              	<th ng-if="$root.auth_permissions.read.store">Sucursal</th>
                               	<th>Total de ventas</th>
                               	<th>Cantidad total</th>
                               </tr>
@@ -72,7 +73,8 @@
                                   	<a href="@{{seller.employee.user.url_show}}">
                                       @{{seller.employee.user.name }}
                                     </a>
-                                  </td>
+                                  </td>                                  
+                              	  <td ng-if="$root.auth_permissions.read.store">@{{ seller.employee.user.store.name }}</td>
                                   <td>
                                       <span class="badge bg-success">@{{ seller.total_sales }}</span>
                                   </td>

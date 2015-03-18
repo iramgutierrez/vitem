@@ -3,6 +3,7 @@
 use Vitem\Repositories\SaleRepo;
 use Vitem\Repositories\SalePaymentRepo;
 use Vitem\Repositories\PackRepo;
+use Vitem\Repositories\PermissionRepo;
 
 
 class SaleWebServices extends BaseWebServices {
@@ -427,7 +428,9 @@ class SaleWebServices extends BaseWebServices {
 			$sales = SaleRepo::getByRange($init , $end , $showBy);
 		}		
 
-		if($showSalePayments == 'true'){
+		$canReadSalePayments = PermissionRepo::checkAuth('SalePayment', 'Read' );
+
+		if($showSalePayments == 'true' && $canReadSalePayments){
 			$salePayments = SalePaymentRepo::getByRange($init , $end , $showBy);
 		}		
 
@@ -508,7 +511,7 @@ class SaleWebServices extends BaseWebServices {
         if(count($whereStoreId))
             $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 
-        $sales = $sales->where('sale_date' , date('Y-m-d'))->count();
+        $sales = $sales->where('sale_date' , date('Y-m-d' , time() - (60*60*6) ))->count();
 
 		return \Response::make($sales , 200);
 

@@ -1,10 +1,10 @@
-<div class="col-lg-12" ng-controller="GraphController">
+<div class="col-lg-12" ng-controller="GraphController" ng-init="$root.generateAuthPermissions({{ Auth::user()->role_id }})" ng-show="$root.auth_permissions.read.sale || $root.auth_permissions.read.sale_payment" >
 	<!--custom chart start-->
     <div class="border-head" style="height: 100px;">
     
         <h3>Ingresos</h3>
 
-        <div class="col-sm-2" >
+        <div class="col-sm-2" ng-show="$root.auth_permissions.read.sale">
 
 	        {{ Field::checkbox
 
@@ -13,7 +13,8 @@
 					null ,
 					[
 						'ng-model' => 'showSales' ,
-		                'ng-change' => 'getData()'
+		                'ng-change' => 'getData()',
+		                'ng-disabled' => '!$root.auth_permissions.read.sale || !$root.auth_permissions.read.sale_payment'
 					],
 					[
 						'label-value' => 'Ventas'
@@ -22,7 +23,7 @@
 			}}
 
 		</div>
-		<div class="col-sm-2" >
+		<div class="col-sm-2" ng-show="$root.auth_permissions.read.sale_payment" >
 
 	        {{ Field::checkbox
 
@@ -31,7 +32,8 @@
 					null ,
 					[
 						'ng-model' => 'showSalePayments' ,
-		                'ng-change' => 'getData()'
+		                'ng-change' => 'getData()',
+		                'ng-disabled' => '!$root.auth_permissions.read.sale || !$root.auth_permissions.read.sale_payment'
 					],
 					[
 						'label-value' => 'Abonos'

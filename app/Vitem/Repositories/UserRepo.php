@@ -72,20 +72,28 @@ class UserRepo extends BaseRepo {
 
 		$endDate = date('Y-m-d' , $end);
 
-		$usersPermitted = ACLFilter::generateAuthCondition();
+		$usersPermitted = ACLFilter::generateAuthCondition(); 
 
-		$return =  \Sale::with(parent::with(['employee.user' . 'store']));
+		$return =  \Sale::with(parent::with(['employee.user.store']));
 
 		if(count($usersPermitted))
 		{
 			$return->whereIn('employee_id' , $usersPermitted);
 		}
 
-		$storesPermitted = ACLFilter::generateStoreCondition();
+		$storesPermitted = ACLFilter::generateStoreCondition(); 	
 
 		if(count($storesPermitted))
 		{
-			$return->whereIn('store_id' , $storesPermitted);
+			$return->whereIn('employee_id', function ($query) use ($storesPermitted) {
+
+				$query->select(\DB::raw('id'))
+						->from('users')
+						->whereIn('users.store_id' , $storesPermitted);
+
+			});
+
+			//$return->whereIn('employee_id' , function());
 		}
 		
 		$sales = $return
