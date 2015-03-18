@@ -6,13 +6,18 @@ class Expense extends \Eloquent {
 
 	use SoftDeletingTrait;
 
-	protected $fillable = ['expense_type_id' , 'user_id' , 'employee_id' , 'date' , 'concept' , 'description' , 'quantity'];
+	protected $fillable = ['expense_type_id' , 'user_id' , 'store_id' ,'employee_id' , 'date' , 'concept' , 'description' , 'quantity'];
 
 	protected $appends = ['url_show' , 'url_edit' ,  'url_delete'  ];
 
 	public function User()
     {
         return $this->belongsTo('User', 'user_id' ,'id');
+    }
+
+    public function Store()
+    {
+        return $this->belongsTo('Store');
     }
 
     public function Employee()

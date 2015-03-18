@@ -16,18 +16,7 @@ class ExpenseRepo extends BaseRepo {
 
 	static function all(){
 
-		$return = \Expense::with(parent::with(['user' , 'employee.user' , 'expense_type']));
-
-		$usersPermitted = \ACLFilter::generateAuthCondition();
-
-		if(count($usersPermitted))
-		{
-			$return = $return->whereIn('employee_id' , $usersPermitted);
-		}
-
-		$expenses = $return->get();
-
-		return $expenses;
+		
 
 	}	
 
@@ -36,13 +25,20 @@ class ExpenseRepo extends BaseRepo {
 		
 		$offset = ($page - 1 ) * $perPage;
 
-		self::$expenses = \Expense::with(parent::with(['user' , 'employee.user' , 'expense_type']));
+		self::$expenses = \Expense::with(parent::with(['user' , 'employee.user' , 'expense_type' , 'Store']));
 
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 
 		if(count($usersPermitted))
 		{
 			self::$expenses = self::$expenses->whereIn('employee_id' , $usersPermitted);
+		}
+
+		$storesPermitted = \ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{ 
+			self::$expenses = self::$expenses->whereIn('store_id' , $storesPermitted);
 		}
 		
 		self::generateLikeCondition( $find , ['id' , 'employee.user.name' , 'concept' , 'description']);
@@ -58,13 +54,20 @@ class ExpenseRepo extends BaseRepo {
 	static function countFind($find , $type )
 	{	
 
-		self::$expenses = \Expense::with(parent::with(['user' , 'employee.user' , 'expense_type']));
+		self::$expenses = \Expense::with(parent::with(['user' , 'employee.user' , 'expense_type' , 'Store']));
 
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 
 		if(count($usersPermitted))
 		{
 			self::$expenses = self::$expenses->whereIn('employee_id' , $usersPermitted);
+		}
+
+		$storesPermitted = \ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{ 
+			self::$expenses = self::$expenses->whereIn('store_id' , $storesPermitted);
 		}
 
 		self::generateLikeCondition( $find , ['id' , 'employee.user.name' , 'concept' , 'description']);

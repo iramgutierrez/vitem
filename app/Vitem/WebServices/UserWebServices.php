@@ -13,7 +13,31 @@ class UserWebServices extends BaseWebServices {
 
 	static function all(){
 
-		$users = UserRepo::all();
+		$store_id = (!empty($_GET['store_id'])) ? $_GET['store_id'] : false;
+
+		$return = UserRepo::with(['Employee.commissions', 'Employee', 'Role' , 'Store']);
+
+		$usersPermitted = \ACLFilter::generateAuthCondition();
+
+		if(count($usersPermitted))
+		{
+			$return->whereIn('id' , $usersPermitted);
+		}
+
+		$storesPermitted = \ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$return->whereIn('store_id' , $storesPermitted);
+		}
+
+		if($store_id)
+		{
+			$return = $return->where('store_id' , $store_id);
+
+		}
+
+		$users = $return->get();
 
 		return \Response::json($users);
 		

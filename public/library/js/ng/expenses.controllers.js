@@ -154,6 +154,32 @@
 
       });
 
+      $scope.getUsersByStore = function()
+      {
+
+        var store_id = $scope.store_id || false;
+
+        UsersService.API('all',{ store_id : store_id }).then(function (data) {
+
+          $scope.employeesAll = data;
+
+        });
+      }
+
+
+      $scope.changeStore = function ()
+      {
+
+          $scope.getUsersByStore();
+
+          $scope.employee_id = '';
+          
+          $scope.find_employee = '';
+
+          $scope.autocompleteEmployee = false;
+
+      }
+
       $scope.searchEmployee = function ()
       {           
             if($scope.find_employee.length != '')
@@ -185,6 +211,45 @@
             $scope.autocompleteEmployee = false;
 
             return false;
+      }
+
+      $scope.employeeSelectedInit = function (id)
+          {
+
+              if(id)
+              {
+
+                  UsersService.API('getUserById', {
+
+                    'id' : id
+
+
+                  }).then(function (employee) { 
+
+                      $scope.addEmployee(employee);
+
+                  });
+
+              }
+
+          }
+
+      $scope.checkValuePreOrOld = function (pre , old , def)
+      {
+          if(!def)
+            def = '';
+
+          var value = def;
+
+          if(pre)
+            value = pre;
+
+          if(old)
+              value = old;
+
+          return value;
+
+
       }
 
 

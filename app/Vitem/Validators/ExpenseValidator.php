@@ -5,6 +5,7 @@ class ExpenseValidator extends BaseValidator {
     protected $rules = array(
         'expense_type_id' => 'required|exists:expense_types,id',
         'user_id' => 'required|exists:users,id',
+        'store_id' => 'required|exists:stores,id',
         'employee_id' => 'required|exists:employees,id',
         'quantity' => 'required',
         'date' => 'required'

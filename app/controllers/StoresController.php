@@ -13,15 +13,15 @@ class StoresController extends \BaseController {
 	{
 		$this->api = $StoreAPI;
 
-		/*$this->beforeFilter('ACL:Order,Read', ['only' => [ 'index' , 'show' ] ]);
+		$this->beforeFilter('ACL:Store,Read', ['only' => [ 'index' , 'show' ] ]);
 
-		$this->beforeFilter('ACL:Order,Read,true', ['only' => [ 'API'] ]);
+		$this->beforeFilter('ACL:Store,Read,true', ['only' => [ 'API'] ]);
 
-		$this->beforeFilter('ACL:Order,Create', ['only' => [ 'create' , 'store' ] ]);
+		$this->beforeFilter('ACL:Store,Create', ['only' => [ 'create' , 'store' ] ]);
 
-		$this->beforeFilter('ACL:Order,Update', [ 'only' => [ 'edit' , 'update' ] ]);
+		$this->beforeFilter('ACL:Store,Update', [ 'only' => [ 'edit' , 'update' ] ]);
 
-		$this->beforeFilter('ACL:Order,Delete', [ 'only' => 'destroy' ] );*/
+		$this->beforeFilter('ACL:Store,Delete', [ 'only' => 'destroy' ] );
 		
 	}
 

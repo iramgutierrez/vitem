@@ -23,13 +23,13 @@
 
 				'ng-model' => 'find_employee',
 
-				'ng-init' => 'find_employee = "'.$expense->employee->user->name.'"',
-
 				'ng-change' => 'searchEmployee()',
 
 				'ng-focus' => 'searchEmployee()',
 
-				'ng-blur' => 'hideItems()'
+				'ng-blur' => 'hideItems()',
+
+				'ng-disabled' => '!store_id'
 
 			]
 
@@ -51,7 +51,9 @@
 
 			'ng-value' => 'employee_id' ,
 
-			'ng-init' => 'employee_id = "'.$expense->employee_id.'"'
+  			'ng-init' => 'employeeSelectedInit(checkValuePreOrOld("'.((!empty($expense->employee_id)) ? $expense->employee_id : '').'" , "'.(( !empty(Input::old() ) ) ? 'dfdff' : '').'"))'
+
+
 
 
 		]

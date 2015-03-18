@@ -77,6 +77,15 @@
                             </span>
                         </a>
                     </th>
+                    <th class="col-sm-1" ng-show="$root.auth_permissions.read.store" >
+                            <a href="" ng-click="sort = 'store.name'; reverse=!reverse">Sucursal
+                                <span class="pull-right" >
+                                    <i class="fa fa-sort" ng-if="sort != 'store.name' "></i>
+                                    <i class="fa fa-sort-alpha-asc" ng-if=" sort == 'store.name' && reverse == false "></i>
+                                    <i class="fa  fa-sort-alpha-desc" ng-if=" sort == 'store.name' && reverse == true "></i>
+                                </span>
+                            </a>
+                    </th>
                     <th class="col-sm-1">
                         <a href="" ng-click="sort = 'expense_type.name'; reverse=!reverse">Tipo
                             <span class="pull-right" >
@@ -119,6 +128,7 @@
                 </tr>
                 <tr>
                     <th></th>
+                    <th ng-show="$root.auth_permissions.read.store"></th>
                     <th>
                         <span class="">
                             {{ Field::select(
@@ -142,6 +152,7 @@
             <tbody ng-if="viewGrid == 'list'" >
                 <tr class="gradeX" ng-repeat="expense in expensesP | orderBy:sort:reverse">
                     <td>@{{ expense.id }}</td>
+                    <td ng-show="$root.auth_permissions.read.store">@{{ expense.store.name }}</td>
                     <td>@{{ expense.expense_type.name }}</td>
                     <td ng-if="$root.auth_permissions.read.user"  >@{{ expense.employee.user.name }}</td>
                     <td>@{{ expense.date }}</td>

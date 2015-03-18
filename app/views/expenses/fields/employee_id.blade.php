@@ -29,7 +29,9 @@
 
 				'ng-focus' => 'searchEmployee()',
 
-				'ng-blur' => 'hideItems()'
+				'ng-blur' => 'hideItems()',
+
+				'ng-disabled' => '!store_id'
 
 			]
 

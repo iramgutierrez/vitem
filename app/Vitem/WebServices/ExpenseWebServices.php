@@ -13,9 +13,26 @@ class ExpenseWebServices extends BaseWebServices {
 	static function all()
 	{
 
-		return \Response::json(ExpenseRepo::all());
-								/*with('user' , 'employee.user' , 'expense_type')
-								->get());*/
+
+		$return = ExpenseRepo::with(['user' , 'employee.user' , 'expense_type', 'store']);
+
+		$usersPermitted = \ACLFilter::generateAuthCondition();
+
+		if(count($usersPermitted))
+		{
+			$return = $return->whereIn('employee_id' , $usersPermitted);
+		}
+
+		$storesPermitted = \ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{ 
+			$return = $return->whereIn('store_id' , $storesPermitted);
+		}
+
+		$expenses = $return->get();
+
+		return \Response::json($expenses);
 		
 	}
 	static function findById()
@@ -25,11 +42,25 @@ class ExpenseWebServices extends BaseWebServices {
 		if(!$id)
 			return false;
 
+		$expense = ExpenseRepo::with(['store']);
+		
+		$usersPermitted = \ACLFilter::generateAuthCondition();
 
-		$destination = \Expense::with()
-						 ->where('id' , $id)->first();
+		if(count($usersPermitted))
+		{
+			$expense = $expense->whereIn('employee_id' , $usersPermitted);
+		}
 
-		return \Response::json($destination);
+		$storesPermitted = \ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{ 
+			$expense = $expense->whereIn('store_id' , $storesPermitted);
+		}
+
+		$expense = $expense->where('id' , $id)->first();
+
+		return \Response::json($expense);
 
 	}
 	static function find()
@@ -57,9 +88,26 @@ class ExpenseWebServices extends BaseWebServices {
 
 		$limit = (!empty($_GET['limit'])) ? $_GET['limit'] : 20;
 
-		return \Response::json(\Expense::with(['user' , 'expense_type' , 'employee.user'])
-										->take($limit)
+		$expenses = ExpenseRepo::with(['user' , 'expense_type' , 'employee.user']);
+		
+		$usersPermitted = \ACLFilter::generateAuthCondition();
+
+		if(count($usersPermitted))
+		{
+			$expenses = $expenses->whereIn('employee_id' , $usersPermitted);
+		}
+
+		$storesPermitted = \ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{ 
+			$expenses = $expenses->whereIn('store_id' , $storesPermitted);
+		}
+
+		$expenses = $expenses->take($limit)
 										->orderBy('id' , 'desc')
-					  				  	->get());
+					  				  	->get();
+
+		return \Response::json($expenses);
 	}
 }

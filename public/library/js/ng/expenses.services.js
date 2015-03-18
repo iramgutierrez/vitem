@@ -69,6 +69,7 @@
               return normalize(expense.id.toString()).indexOf(find) != -1
                 || normalize(expense.concept).indexOf(find) != -1
                 || normalize(expense.description).indexOf(find) != -1 
+                || ( ( expense.hasOwnProperty('store') &&  expense.store ) ? normalize(expense.store.name).indexOf(find) != -1 : '' ) 
                 || normalize(expense.employee.user.name).indexOf(find) != -1;
             });
           }   

@@ -24,7 +24,7 @@ class ProductWebServices extends BaseWebServices {
 			return false;
 
 
-		$product = \Product::with(['stores'])->where('id' , $id)->first();
+		$product = \ProductRepo::with(['stores'])->where('id' , $id)->first();
 
 		return \Response::json($product);
 
@@ -60,7 +60,7 @@ class ProductWebServices extends BaseWebServices {
 			return \Response::json([]);
 		}
 
-		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' ])
+		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Store' ])
 								->where('supplier_id' , $supplier_id)
 								->get());
 		

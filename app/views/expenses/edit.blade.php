@@ -43,6 +43,23 @@
                               				)
                               			}}
                               		</div>
+
+                                  @if(Auth::user()->role->level_id >= 3)
+
+                                    @include('expenses/fields/store_id')
+
+                                  @else
+
+                                    <div ng-init="store_id = {{ Auth::user()->store_id }}" ></div>
+
+                                  @endif
+
+                                  <div class="form-group col-md-12 col-sm-12 " >
+
+                                    @include('expenses/fields/employee_id_edit')
+
+                                  </div>  
+
                               		<div class="form-group col-md-6 col-sm-12">
                                    
                               			{{ Field::textarea(
@@ -90,13 +107,7 @@
                               					]
                               				)
                               			}}
-                              		</div>   
-
-						            <div class="form-group col-md-12 col-sm-12 " >
-
-						              @include('expenses/fields/employee_id_edit')
-
-						            </div>                             		                        
+                              		</div>                              		                        
                                    <div class="form-group col-md-12 ">                                  	 
                                   		<button type="submit" class="btn btn-success pull-right">Actualizar</button>
                                    </div>

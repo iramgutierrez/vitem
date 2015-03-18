@@ -25,7 +25,9 @@ class ExpenseManager extends BaseManager {
             
             $expense->save();
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_expense', ( ($expenseData['quantity'])*(-1)  ) );
+            $store_id = $expenseData['store_id'];
+
+            \Setting::checkSettingAndAddResidue('add_residue_new_expense', ( ($expenseData['quantity'])*(-1)  ) , $store_id );
 
             $response = [
                 'success' => true,
@@ -62,6 +64,8 @@ class ExpenseManager extends BaseManager {
 
         $quantityOld = $this->expense->quantity;
 
+        $store_old = $this->expense->store_id;
+
         $ExpenseValidator = new ExpenseValidator($this->expense);
 
         $expenseData = $this->prepareData($expenseData);
@@ -76,9 +80,11 @@ class ExpenseManager extends BaseManager {
             
             $expense->update($expenseData); 
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_expense', $quantityOld );
+            $store_id = $expense->store_id;
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_expense',  ( ($expenseData['quantity'])*(-1) )  );
+            \Setting::checkSettingAndAddResidue('add_residue_new_expense', $quantityOld , $store_old );
+
+            \Setting::checkSettingAndAddResidue('add_residue_new_expense',  ( ($expenseData['quantity'])*(-1) ) , $store_id  );
 
             $response = [
                 'success' => true,
@@ -117,7 +123,9 @@ class ExpenseManager extends BaseManager {
 
         $expense = $this->expense;
 
-        \Setting::checkSettingAndAddResidue('add_residue_new_commission', $expense->quantity );
+        $store_id = $expense->store_id;
+
+        \Setting::checkSettingAndAddResidue('add_residue_new_commission', $expense->quantity , $store_id );
 
         return $expense->delete();
 
@@ -128,7 +136,21 @@ class ExpenseManager extends BaseManager {
         
         $expenseData['user_id'] = \Auth::user()->id;
 
+         if(\Auth::user()->role->level_id >= 3)
+        {
+            if(\Session::has('current_store.id'))
+            {
+                $data['store_id'] = \Session::get('current_store.id');
+            }
+
+        }
+        else
+        {
+            $data['store_id'] = \Auth::user()->store_id;
+        }
+
         return $expenseData;
+
     }
 
 } 

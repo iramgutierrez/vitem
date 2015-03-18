@@ -45,8 +45,10 @@ class ExpensesController extends \BaseController {
 	{
 
 		$types = ExpenseType::lists('name' ,'id');
+
+		$stores = Store::lists('name' , 'id' );
 		
-		return View::make('expenses/create', compact('types'));
+		return View::make('expenses/create', compact('types' , 'stores'));
 	}
 
 	/**
@@ -121,8 +123,10 @@ class ExpensesController extends \BaseController {
 		}
 
 		$types = ExpenseType::lists('name' ,'id');
+
+		$stores = Store::lists('name' , 'id' );
 		
-		return View::make('expenses/edit')->withExpense($expense)->withTypes($types);
+		return View::make('expenses/edit' , compact('stores'))->withExpense($expense)->withTypes($types);
 	}
 
 	/**
