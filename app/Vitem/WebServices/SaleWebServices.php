@@ -277,7 +277,7 @@ class SaleWebServices extends BaseWebServices {
         if(count($whereStoreId))
             $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 
-        $sales = $sales->where('id' , $id)->get();
+        $sales = $sales->where('id' , $id)->first();
 
 		return \Response::json($sales);
 

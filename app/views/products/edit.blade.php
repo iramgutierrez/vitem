@@ -88,14 +88,68 @@
 
   @if(Auth::user()->role->level_id >= 3)
 
+    {{ Field::number(
+        'stock', 
+        
+        null , 
+        
+        [ 
+          'min' => ( ($product->stock < 0) ? $product->stock : 0 ),
+          'class' => 'col-md-12' , 
+          'placeholder' => 'Ingresa la cantidad para el almacen.',
+          'ng-model' => 'stock',
+          'ng-init' => 'stock = '. $product->stock
+        ]
+      )
+    }}
+
+  @else
+
+    {{ Field::hidden(
+        'stock', 
+        
+        null , 
+        
+        [ 
+          'ng-model' => 'stock',
+          'ng-value' => 'stock',
+          'ng-init' => 'stock = '. $product->stock
+        ]
+      )
+    }}
+
+  @endif
+
+  <?php echo
+      Field::checkbox(
+        'restrict', 
+        '1',
+        [
+        'ng-model' => 'restrict',
+        'ng-true-value' => "1",
+        'ng-false-value' => "0",
+        'ng-init' => "restrict = 1"
+        ] ,
+        [
+        'label-value' => 'Restringir la cantidad en sucursal a la cantidad en almacen ({{ stock }})',
+        ]                                     
+      ) 
+    ?>
+
+  @if(Auth::user()->role->level_id >= 3)    
+
     @if($current_store)
 
         {{ Field::number(
                'ProductStore.'.$current_store['id'].'.quantity', 
                $current_store['quantity'] , 
                [ 
+                 'min' => ( ($current_store['quantity'] < 0) ? $current_store['quantity'] : 0 ),  
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',
+                 'ng-model' => 'ProductStore['.$current_store['id'].'].quantity',
+                 'ng-init' => 'ProductStore['.$current_store['id'].'].quantity = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_pre = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_init = '.$current_store['quantity'],
+                 'ng-change' => 'checkQuantityByStore('.$current_store['id'].')'
                ]
                )
         }}
@@ -108,15 +162,19 @@
 
           <li>
 
-            {{ Field::number(
+            <?php echo Field::number(
                'ProductStore.'.$store->id.'.quantity', 
                $store->quantity , 
                [ 
+                 'min' => ( ($store->quantity < 0) ? $store->quantity : 0 ),
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para la sucursal '.$store->name,
+                 'ng-model' => 'ProductStore['.$store->id.'].quantity',
+                 'ng-init' => 'ProductStore['.$store->id.'].quantity = '.$store->quantity.'; ProductStore['.$store->id.'].quantity_pre = '.$store->quantity.'; ProductStore['.$store->id.'].quantity_init = '.$store->quantity,
+                 'ng-change' => 'checkQuantityByStore('.$store->id.')'
                ]
-               )
-            }}
+               );
+            ?>
 
             <label for="ProductStore[{{$store->id}}][quantity]">Sucursal {{ $store->name }}</label>            
 
@@ -134,11 +192,15 @@
                'ProductStore.'.Auth::user()->store_id.'.quantity', 
                $current_store['quantity'] , 
                [ 
+                 'min' => ( ($current_store['quantity'] < 0) ? $current_store['quantity'] : 0 ),  
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',
+                 'ng-model' => 'ProductStore['.$current_store['id'].'].quantity',
+                 'ng-init' => 'ProductStore['.$current_store['id'].'].quantity = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_pre = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_init = '.$current_store['quantity'],
+                 'ng-change' => 'checkQuantityByStore('.$current_store['id'].')'
                ]
                )
-    }}
+        }}
 
   @endif
 

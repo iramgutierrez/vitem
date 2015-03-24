@@ -199,21 +199,22 @@
 
             $scope.products = {};
 
+            $scope.productsAll = [];
+
             ProductsService.all().then(function (data) {
 
                 $scope.productsAll = data;
-                console.log(data);
 
             });
 
             $scope.productsOld = [];
 
             $scope.searchProduct = function ()
-            {
+            { 
 
                 if($scope.find_product.length != '')
-                {
-                    $scope.products = ProductsService.search($scope.find_product , $scope.productsAll , 1 , $rootScope.productsSelected , $rootScope.supplier_id );
+                { 
+                    $scope.products = ProductsService.search($scope.find_product , $scope.productsAll , $rootScope.productsSelected , $rootScope.supplier_id );
 
                     $scope.autocompleteProduct = true;
 

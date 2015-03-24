@@ -79,20 +79,32 @@
 
                   </div>
               </div>
-              <div class="row">
+              {{--<div class="row">
                   <div class="col-lg-7">
 
                       @include('graphs/timeline')
                       <!--timeline end-->
                   </div>
-                  <div class="col-lg-5">
+
+              </div>--}}
+              
+              <div class="row">
+                  <div class="col-sm-12">
 
                       @include('graphs/finished_products_coming') 
+
+                  </div>
+              </div>
+
+              <div class="row">
+
+                  <div clas="col-sm-12 col-md-12">
 
                       @include('graphs/upcoming_deliveries') 
                       
                   </div>
               </div>
+
               <?php /* <div class="row">
                   <div class="col-lg-8">
                       <!--latest product info start-->

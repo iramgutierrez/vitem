@@ -180,7 +180,12 @@ class ProductsController extends \BaseController {
 
 		}
 
-		$current_store = (Session::has('current_store')) ? Session::get('current_store') : false;
+		//$current_store = (Session::has('current_store')) ? Session::get('current_store') : false;
+
+		if($current_store)
+		{
+			$current_store['quantity'] = 0;
+		}
 
 		foreach($stores as $ks => $store)
 		{

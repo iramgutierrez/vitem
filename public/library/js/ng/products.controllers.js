@@ -262,6 +262,51 @@
 
         }
 
+        $scope.checkQuantityByStore = function(store_id)
+        { 
+
+          quantity = $scope.ProductStore[store_id].quantity;
+          
+          if(!isNaN(quantity) )
+          {
+
+            if($scope.restrict == 1)
+            {
+              var stock = $scope.stock;
+
+              var pre = $scope.ProductStore[store_id].quantity_pre;
+
+              var init = $scope.ProductStore[store_id].quantity_init;
+
+              var diff = parseInt(quantity) - parseInt(pre);  
+
+              stock -= diff;
+
+              if(stock <= 0)
+              {
+
+                quantity = quantity + stock;
+
+                stock = 0;              
+                
+              }
+
+              $scope.stock = stock;
+
+            }
+
+          }
+          else
+          {
+            quantity = $scope.ProductStore[store_id].quantity_init;
+          }
+          
+          $scope.ProductStore[store_id].quantity_pre = quantity;
+
+          $scope.ProductStore[store_id].quantity = quantity;
+
+        }
+
     }])
 
     .controller('ShowController', ['$scope', '$filter' , 'SalesService', function ($scope ,  $filter , SalesService) {

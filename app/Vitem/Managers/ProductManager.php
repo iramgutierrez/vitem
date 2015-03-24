@@ -52,15 +52,17 @@ class ProductManager extends BaseManager {
                 $ProductStore[$store->id]['quantity'] = 0; 
             }
 
-            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+            $data['ProductStore'] = ( !empty($data['ProductStore']) ? $data['ProductStore'] : [] ) + $ProductStore ;
 
             $this->product->save();
 
             $this->product->stores()->sync($data['ProductStore']);
 
+            $product_return = \Product::with(['stores' ,  'user' , 'supplier'])->where('id' , $this->product->id)->first();
+
             $response = [
                 'success' => true,
-                'product' => $this->product
+                'product' => $product_return
             ];
 
         }
@@ -213,7 +215,6 @@ class ProductManager extends BaseManager {
         {
 
             $data = $this->prepareData( $data );
-
 
             $product = $this->product;
 
@@ -500,28 +501,43 @@ class ProductManager extends BaseManager {
         return $data;
     }
 
-    public function addStock($quantity , $store_id)
+    public function addStock($quantity = 0 , $store_id = false)
     {
 
         $productData = $this->data;
 
         $this->product = \Product::with(['stores'])->find($productData['id']);
 
-        $store = $this->product->stores->find($store_id);
-
-        if($store)
+        if($store_id)
         {
 
-            $quantityOld = $store->pivot->quantity;
+            $store = $this->product->stores->find($store_id);
 
-            $attributes = [
+            if($store)
+            {
 
-                'quantity' => $quantityOld + $quantity
+                $quantityOld = $store->pivot->quantity;
 
-            ]; 
+                $attributes = [
 
-            $this->product->stores()->updateExistingPivot($store_id, $attributes);
-            
+                    'quantity' => $quantityOld + $quantity
+
+                ]; 
+
+                $this->product->stores()->updateExistingPivot($store_id, $attributes);
+                
+            }
+
+        }
+        else
+        {
+            $quantityOld = $this->product->stock;
+
+            $this->product->stock = $quantityOld + $quantity;
+
+            $this->product->update();
+
+
         }
         
 

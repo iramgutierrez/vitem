@@ -40,7 +40,14 @@ class HomeController extends BaseController {
 
 	public function dashboard()
 	{
-		return View::make('dashboard');
+
+		$stores = Store::lists('name' , 'id' );
+
+		$stores = $stores + [0 => 'Almacen'];
+
+		sort($stores);
+
+		return View::make('dashboard' , compact('stores'));
 	}
 
 	public function API( $method = 'all')

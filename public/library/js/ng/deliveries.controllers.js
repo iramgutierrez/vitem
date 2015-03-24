@@ -115,7 +115,7 @@
       $scope.getSale = function()
       { 
 
-        SalesService.API('findById' , {id : $scope.sale_id}).then(function (sale) {
+        SalesService.API('findById' , {id : $scope.sale_id}).then(function (sale) { console.log(sale);
 
             if(!sale.hasOwnProperty('id'))
             {
@@ -509,8 +509,6 @@
 
           if(old)
               value = old;
-
-          console.log(value);
 
           return value;
 

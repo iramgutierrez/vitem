@@ -401,6 +401,8 @@
 
             product.stock_store = $scope.getStockPerStore(product , $scope.store_id);
 
+            console.log(product.stock_store);
+
             product.quantity_null = false;
 
             if(!product.stock_store)
@@ -845,7 +847,7 @@
       }
 
       $scope.getStockPerStore = function (product , store_id)
-      {
+      { 
 
         var quantity = 0;
 
@@ -879,6 +881,8 @@
           $scope.autocompleteSeller = false;
 
           $rootScope.productsSelected = [];
+
+          $rootScope.store_id = $scope.store_id;
 
       }
 
@@ -1261,6 +1265,21 @@
 
                       data.product.quantity = 1;
 
+                      console.log(data.product);
+
+                      data.product.stock_store = $scope.getStockPerStore(data.product , $rootScope.store_id);
+
+                      data.product.quantity_null = false;
+
+                      if(!data.product.stock_store)
+                      {
+                        data.product.quantity_null = true;
+
+                        data.product.quantity = 1;
+                      }
+
+                      data.product.quantity_init = $scope.quantityInit(data.product);
+
                       $rootScope.productsSelected.push(data.product);
 
                       $scope.find = '';
@@ -1316,6 +1335,53 @@
             });            
 
         }
+
+        $scope.getStockPerStore = function (product , store_id)
+        { 
+
+          var quantity = 0;
+
+          if(product.hasOwnProperty('stores'))
+          {
+
+            angular.forEach(product.stores, function(store, key) {
+
+              if(store.id == store_id)
+              {
+                quantity = store.pivot.quantity;
+              }
+
+            });
+
+          }
+
+          return quantity;
+
+        }
+
+        $scope.quantityInit = function (item)
+        {
+
+          quantity = item.quantity;
+
+          if(item.hasOwnProperty('pivot'))
+          {
+            
+            if(item.pivot.hasOwnProperty('quantity'))
+            
+            {
+
+              quantity = item.pivot.quantity;
+
+            }
+
+          }
+
+          return quantity; 
+
+        }
+
+
     }])
 
     

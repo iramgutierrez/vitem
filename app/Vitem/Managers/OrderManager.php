@@ -26,7 +26,7 @@ class OrderManager extends BaseManager {
             
             $order->save();
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_order', $orderData['total']*(-1) );
+            //\Setting::checkSettingAndAddResidue('add_residue_new_order', $orderData['total']*(-1) );
 
             $order->products()->sync($orderData['ProductOrder']);
 
@@ -96,32 +96,86 @@ class OrderManager extends BaseManager {
 
             $orderOld = $this->order; 
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_order', ( ($orderOld->total)*(-1)  ) );
+            $orderProductsOld = [];
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_order',  $orderData['total']  );         
+            foreach($this->order->products as $k => $p)
+            {
+
+                $orderProductsOld[$p->pivot->product_id] = $p;
+            }
+
+            //\Setting::checkSettingAndAddResidue('add_residue_new_order', ( ($orderOld->total)*(-1)  ) );
+
+            //\Setting::checkSettingAndAddResidue('add_residue_new_order',  $orderData['total']  );         
 
             $order->update($orderData);
 
             $order->products()->sync($orderData['ProductOrder']);
 
-            if(count($order->products))
+            if(count($orderData['ProductOrder']))
             {
-
-                foreach($order->products as $kp => $p)
+                foreach($orderData['ProductOrder'] as $kp => $p)
                 {
-                    
-                    if($p->pivot->status == 2)
+                    if( !empty($orderProductsOld[$kp]) && !empty($orderData['ProductOrder'][$kp]))
+                    { 
+
+                        if($orderProductsOld[$kp]->pivot->status != $orderData['ProductOrder'][$kp]['status'])
+                        {   
+                            
+
+                            $status = 1;
+
+                            if($orderData['ProductOrder'][$kp]['status'] == 1)
+                            {
+                                $status = -1;
+                            }
+                            
+                            $product = [
+
+                                'id' => $kp
+
+                            ];
+
+                            $addStockProduct = new ProductManager( $product );
+
+                            $addStockProduct->addStock( $orderData['ProductOrder'][$kp]['quantity'] * ($status) );
+
+
+                        } else if( $orderProductsOld[$kp]->pivot->status == 2 && $orderData['ProductOrder'][$kp]['status'] == 2 && $orderProductsOld[$kp]->pivot->quantity != $orderData['ProductOrder'][$kp]['quantity'])
+                        {                               
+                            
+                            $product = [
+
+                                'id' => $kp
+
+                            ];                         
+
+                            $addStockProduct = new ProductManager( $product );
+
+                            $addStockProduct->addStock( $orderProductsOld[$kp]->pivot->quantity  * (-1) );
+
+                            $addStockProduct->addStock( $orderData['ProductOrder'][$kp]['quantity'] );
+
+                        }
+
+                        unset($orderProductsOld[$kp]);
+
+                    }
+                    else
                     {
-                        $product = [
+                        if($p['status'] == 2)
+                        {
+                            $product = [
 
-                            'id' => $p->id
+                                'id' => $kp
 
-                        ];
+                            ];
 
-                        $addStockProduct = new ProductManager( $product );
+                            $addStockProduct = new ProductManager( $product );
 
-                        $addStockProduct->addStock( $p->pivot->quantity * (-1) );
+                            $addStockProduct->addStock( $p['quantity'] );
 
+                        }
                     }
                     
 
@@ -129,12 +183,12 @@ class OrderManager extends BaseManager {
 
             }
 
-            if(count( $orderData['ProductOrder'] ))
+            if(count( $orderProductsOld))
             { 
 
-                foreach( $orderData['ProductOrder'] as $kp => $p)
+                foreach( $orderProductsOld as $kp => $p)
                 { 
-                    if($p['status'] == 2)
+                    if($p->pivot->status == 2)
                     {
                         $product = [
 
@@ -144,7 +198,7 @@ class OrderManager extends BaseManager {
                             
                         $addStockProduct = new ProductManager( $product );
 
-                        $addStockProduct->addStock( ($p['quantity'])  );
+                        $addStockProduct->addStock( ($p->pivot->quantity) * (-1) );
 
                     }
 
@@ -190,6 +244,29 @@ class OrderManager extends BaseManager {
         
         $order = $this->order;
 
+        if(count( $order->products))
+        { 
+
+            foreach( $order->products as $kp => $p)
+            { 
+                if($p->pivot->status == 2)
+                {
+                    $product = [
+
+                        'id' => $p->id
+
+                    ];
+                            
+                    $addStockProduct = new ProductManager( $product );
+
+                    $addStockProduct->addStock( ($p->pivot->quantity) * (-1) );
+
+                }
+
+            }
+
+        }
+
         $order->products()->detach();
 
         return $order->delete();
@@ -200,8 +277,6 @@ class OrderManager extends BaseManager {
     {
         
         $orderData['user_id'] = \Auth::user()->id;
-
-        $orderData['store_id'] = 1;
 
         $total = 0;
 

@@ -283,18 +283,52 @@
     .controller('FinishedProductsController', ['$scope', '$filter' ,  'GraphService' , function ($scope , $filter , GraphService ) {
     
       $scope.products = {};
+      $scope.sort = 'stock_store';
+      $scope.reverse = false;
 
-      GraphService.API(
-        'products' , 
-        'getFinishedComing' , 
-        {
-          limitStock : 5
-        }
-      ).then(function (data) { 
+      $scope.getProducts = function ()
+      {
 
-        $scope.products = data;
+          GraphService.API(
+            'products' , 
+            'getFinishedComing' , 
+            {
+              limitStock : 5,
+              store_id : ( $scope.store_id || 0 )
+            }
+          ).then(function (data) { 
 
-      });
+              $scope.products = data;
+
+              angular.forEach($scope.products, function(product, key) {
+
+                var stock_store = product.stock;
+
+                if($scope.store_id)
+                {   
+                  if(product.stores.hasOwnProperty(0))
+                  {
+                    if(product.stores[0].hasOwnProperty('pivot'))
+                    {
+
+                      stock_store = product.stores[0].pivot.quantity;
+
+                    }
+
+                  }
+
+                }    
+
+                $scope.products[key].stock_store = stock_store;      
+
+              });
+
+
+              console.log($scope.products);
+
+          });
+
+      }   
 
     }])   
 

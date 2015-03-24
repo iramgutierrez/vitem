@@ -88,12 +88,24 @@
 
   @if(Auth::user()->role->level_id >= 3)
 
+    {{ Field::number(
+          'stock', 
+          
+          0 , 
+          
+          [ 
+            'min' => 0 ,
+          ]
+        )
+    }}
+
     @if(Session::has('current_store'))
 
         {{ Field::number(
                'ProductStore.'.Session::get('current_store.id').'.quantity', 
-               '' , 
+               0 , 
                [ 
+                 'min' => 0 ,
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',
                ]
@@ -110,8 +122,9 @@
 
             {{ Field::number(
                'ProductStore.'.$store->id.'.quantity', 
-               '' , 
+               0 , 
                [ 
+                 'min' => 0 ,
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para la sucursal '.$store->name,
                ]
@@ -132,8 +145,9 @@
 
     {{ Field::number(
                'ProductStore.'.Auth::user()->store_id.'.quantity', 
-               '' , 
-               [ 
+               0 , 
+               [                
+                  'min' => 0 ,
                  'class' => 'col-md-12' , 
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',
                ]
@@ -141,7 +155,6 @@
     }}
 
   @endif
-
  
 </div>                               		     
 <div class="form-group col-md-6 col-sm-12">

@@ -74,16 +74,78 @@
 											</div>                               		     
 											<div class="form-group col-md-6 col-sm-12">
 
-											 {{ Field::text(
-											 'stock', 
-											 '' , 
-											 [ 
-											 'class' => 'col-md-12' , 
-											 'placeholder' => 'Ingresa la cantidad'
-											 ]
-											 )
-											}}
-											</div>                               		     
+										  @if(Auth::user()->role->level_id >= 3)
+
+										    {{ Field::number(
+										          'stock', 
+										          
+										          0 , 
+										          
+										          [ 
+										            'min' => 0 ,
+										          ]
+										        )
+										    }}
+
+										    @if(Session::has('current_store'))
+
+										        {{ Field::number(
+										               'ProductStore.'.Session::get('current_store.id').'.quantity', 
+										               1 , 
+										               [ 
+										                 'min' => 0 ,
+										                 'class' => 'col-md-12' , 
+										                 'placeholder' => 'Ingresa la cantidad para esta sucursal.',
+										               ]
+										               )
+										        }}
+
+										    @else
+
+										      <ul>
+
+										        @foreach($stores as $k => $store)
+
+										          <li>
+
+										            {{ Field::number(
+										               'ProductStore.'.$k.'.quantity', 
+										               1 , 
+										               [ 
+										                 'min' => 0 ,
+										                 'class' => 'col-md-12' , 
+										                 'placeholder' => 'Ingresa la cantidad para la sucursal '.$store,
+										               ]
+										               )
+										            }}
+
+										            <label for="ProductStore[{{$k}}][quantity]">Sucursal {{ $store }}</label>            
+
+										          </li> 
+
+										        @endforeach
+
+										      </ul>
+
+										    @endif
+
+										  @else
+
+										    {{ Field::number(
+										               'ProductStore.'.Auth::user()->store_id.'.quantity', 
+										               1 , 
+										               [                
+										                  'min' => 0 ,
+										                 'class' => 'col-md-12' , 
+										                 'placeholder' => 'Ingresa la cantidad para esta sucursal.',
+										               ]
+										               )
+										    }}
+
+										  @endif
+
+										  </div> 
+
 											<div class="form-group col-md-6 col-sm-12">
 
 											    {{ Field::text(

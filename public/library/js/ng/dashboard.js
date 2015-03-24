@@ -89,8 +89,6 @@
 
                  })
 
-                 console.log($rootScope.auth_permissions);
-
              })
 
      }

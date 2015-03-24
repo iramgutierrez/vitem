@@ -76,7 +76,7 @@
 
           @else
 
-            <div ng-init="store_id = {{ Auth::user()->store_id }}" ></div>
+            <div ng-init="store_id = {{ Auth::user()->store_id }}; $root.store_id = {{ Auth::user()->store_id }}; " ></div>
 
           @endif
 
@@ -147,7 +147,7 @@
 
             <a data-toggle="modal" href="#addProduct" >
 
-              <button type="button" class="col-sm-6 col-sm-offset-6 btn btn-danger">Crear nuevo producto <br>y agregarlo a la venta</button>
+              <button type="button" class="col-sm-6 col-sm-offset-6 btn btn-danger" ng-disabled="!store_id" >Crear nuevo producto <br>y agregarlo a la venta</button>
             
             </a>  
 

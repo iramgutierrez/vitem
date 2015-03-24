@@ -25,7 +25,7 @@ class DeliveryWebServices extends BaseWebServices {
 			return false;
 
 
-		$delivery = DeliveryRepo::with(['employee.user' , 'destination']);
+		$delivery = DeliveryRepo::with(['employee.user' , 'destination' , 'sale']);
 
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 

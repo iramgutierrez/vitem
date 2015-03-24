@@ -24,7 +24,7 @@ class ProductWebServices extends BaseWebServices {
 			return false;
 
 
-		$product = \ProductRepo::with(['stores'])->where('id' , $id)->first();
+		$product = ProductRepo::with(['stores'])->where('id' , $id)->first();
 
 		return \Response::json($product);
 
@@ -93,10 +93,35 @@ class ProductWebServices extends BaseWebServices {
 
 		$limitStock = (!empty($_GET['limitStock'])) ? $_GET['limitStock'] : 5; 
 
-		$products = ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' ])
+		$store_id = (!empty($_GET['store_id']) && $_GET['store_id'] > 0) ? $_GET['store_id'] : false; 
+
+		if($store_id)
+		{
+
+			$products = \Product::with(array('stores' => function($query) use ($store_id , $limitStock)
+			{
+			    $query->orderBy('quantity' ,'asc')
+			    	  ->where('store_id', $store_id)
+			    	  ->where('quantity', '<=' , $limitStock); 
+
+			}))->whereHas( 'stores' , function($query) use ($store_id , $limitStock)
+			{
+			    $query->orderBy('quantity' ,'asc')
+			    	  ->where('store_id', $store_id)
+			    	  ->where('quantity', '<=' , $limitStock); 
+
+			})->get();
+
+
+		}
+		else
+		{
+			$products = ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'stores' ])
 							->orderBy('stock' ,'asc')
 							->where('stock' , '<=' , $limitStock)
 							->get();
+
+		}		
 
 		return \Response::json($products);
 	}

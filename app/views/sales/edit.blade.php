@@ -147,7 +147,7 @@
 
                     <a data-toggle="modal" href="#addProduct" >
 
-                        <button type="button" class="col-sm-6 col-sm-offset-6 btn btn-danger">Crear nuevo producto <br>y agregarlo a la venta</button>
+                        <button type="button" class="col-sm-6 col-sm-offset-6 btn btn-danger" ng-disabled="!store_id" >Crear nuevo producto <br>y agregarlo a la venta</button>
 
                     </a>
 
@@ -236,9 +236,17 @@
 
         {{ Form::close() }}
 
-        @include('sales/fields/new_product')
+          <div ng-show="$root.auth_permissions.create.product">
 
-        @include('sales/fields/new_client')
+            @include('sales/fields/new_product')
+
+          </div>
+
+          <div ng-show="$root.auth_permissions.create.client">
+
+            @include('sales/fields/new_client')
+
+          </div>
 
     </div>
 
