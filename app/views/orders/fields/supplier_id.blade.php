@@ -34,26 +34,26 @@
     }}
 
     {{ Field::hidden
-    (
+        (
 
-        'supplier_id',
+            'supplier_id',
 
-        null ,
+            null ,
 
-        [
+            [
 
-            'ng-model' => '$root.supplier_id' ,
+                'ng-model' => '$root.supplier_id' ,
 
-            'ng-value' => '$root.supplier_id' ,
+                'ng-value' => '$root.supplier_id' ,
 
-            'ng-init' => 'supplierSelectedInit(checkValuePreOrOld("'.((!empty($order->supplier_id)) ? $order->supplier_id : '').'" , "'.((Input::old('supplier_id')) ? Input::old('supplier_id') : '').'"))'
+                'ng-init' => 'supplierSelectedInit(checkValuePreOrOld("'.((!empty($order->supplier_id)) ? $order->supplier_id : '').'" , "'.((Input::old('supplier_id')) ? Input::old('supplier_id') : '').'" , "'.((!empty($supplier_id)) ? $supplier_id : '').'"))'
 
 
-        ]
+            ]
 
-    );
+        );
 
-}}
+    }}
 
 </div>
 

@@ -81,7 +81,7 @@
 
                         <div class="spinner-buttons input-group-btn btn-group-vertical">
 
-                            <button ng-click= "product.quantity = addQuantity(product.quantity , product.stock)" type="button" class="btn spinner-up btn-xs btn-default">
+                            <button ng-click= "product.quantity = addQuantity(product.quantity)" type="button" class="btn spinner-up btn-xs btn-default">
 
                                 <i class="fa fa-angle-up"></i>
 

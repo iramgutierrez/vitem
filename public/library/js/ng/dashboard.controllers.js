@@ -388,6 +388,25 @@
 
     }])   
 
+    .controller('PendingDeliveriesController', ['$scope', '$filter' ,  'GraphService' , function ($scope , $filter , GraphService ) {
+    
+      $scope.sales = {};
+
+      GraphService.API(
+        'sales',
+        'getWithPendingDeliveries' ,
+        {
+          limit: 10,
+        }
+      ).then(function(data) {
+
+        $scope.sales = data;
+
+      })
+
+
+    }])   
+
 
        
       

@@ -68,6 +68,8 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::resource('orders', 'OrdersController');
 
+	Route::get('orders/create/{supplier_id?}/{product_id?}' , ['as' => 'orders.create.supplier_id', 'uses' => 'OrdersController@create']);
+
 	Route::resource('pay_types', 'PayTypesController');
 
 	Route::get('API/lists/{method}' , ['as' => 'usersAPI', 'uses' => 'HomeController@API']);
@@ -137,6 +139,10 @@ Route::group(['before' => 'auth'], function () {
 	Route::get('API/stores/{method?}' , ['as' => 'storesAPI', 'uses' => 'StoresController@API']);
 
 	Route::get('reports/sales' , ['as' => 'reports.sales', 'uses' => 'ReportsController@sales']);
+
+	Route::get('reports/compare-sellers' , ['as' => 'reports.compare_sellers', 'uses' => 'ReportsController@compare_sellers']);
+
+	Route::get('reports/compare-drivers' , ['as' => 'reports.compare_drivers', 'uses' => 'ReportsController@compare_drivers']);
 
 	Route::post('reports/generate_xls' , ['as' => 'reports.generate_xls', 'uses' => 'ReportsController@generateXls']);
 	

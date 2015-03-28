@@ -1,8 +1,8 @@
 <!--work progress start-->
-                      <section class="panel" ng-controller="UpcomingDeliveriesController" ng-init="$root.generateAuthPermissions({{ Auth::user()->role_id }})" ng-show="$root.auth_permissions.read.delivery">
+                      <section class="panel" ng-controller="PendingDeliveriesController" ng-init="$root.generateAuthPermissions({{ Auth::user()->role_id }})" ng-show="$root.auth_permissions.read.sale && $root.auth_permissions.read.delivery">
                           <div class="panel-body progress-panel">
                               <div class="task-progress col-sm-12">
-                                  <h1>Próximas entregas.</h1>
+                                  <h1>Ventas con entrega pendiente.</h1>
                               </div>
                           </div>
                           <div class="finishedProductsContent">
@@ -10,29 +10,23 @@
 	                              <tbody>
 	                              <tr>
 	                              	<th>#</th>
-	                              	<th>Destino</th>
-	                              	<th>Chofer</th>
+	                              	<th>Id de venta</th>
 	                              	<th>Fecha</th>
 	                              	<th ng-show="$root.auth_permissions.read.store">Sucursal</th>
 	                              	<th></th>
 	                              </tr>
-	                              <tr ng-repeat="(k , delivery) in deliveries">
+	                              <tr ng-repeat="(k , sale) in sales">
 	                                  <td>@{{ k+1 }}</td>
-	                                  <td>@{{delivery.destination.type | destination_types}}: @{{ delivery.destination.value_type }}</td>
+	                                  <td>@{{ sale.id }}</td>
+	                                  <td>@{{sale.sale_date | date:'d MMMM' }}</td>
+	                                  <td ng-show="$root.auth_permissions.read.store" >@{{ sale.store.name }}</td>
 	                                  <td>
-	                                  	<a href="@{{delivery.employee.user.url_show}}">
-	                                  		@{{delivery.employee.user.name}}
-	                                  	</a>
-	                                  </td>
-	                                  <td>@{{delivery.delivery_date | date:'d MMMM' }}</td>
-	                                  <td ng-show="$root.auth_permissions.read.store" >@{{ delivery.sale.store.name }}</td>
-	                                  <td>
-	                                  	<a href="@{{delivery.sale.url_show}}">
-	                                      Ver venta
+	                                  	<a href="{{ route('deliveries.create')}}/@{{sale.id}}">
+	                                      Agregar entrega
 	                                    </a>
 	                                  </td>
 	                              </tr>
-	                              <tr ng-if="!deliveries.length">
+	                              <tr ng-if="!sales.length">
 	                              	<td colspan="4" class="text-center"> <h3> No se encontraron resultados</h3></td>
 	                              </tr>
 	                              </tbody>

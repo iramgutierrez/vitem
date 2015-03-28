@@ -9,10 +9,14 @@
 			<th>Cliente</th>
 			<th>Fecha de venta</th>
 			<th>Tipo de venta</th>
-			<th>Forma de pago</th>						
-			<th>Total</th>				
+			<th>Cantidad pagado</th>
+			<th>Porcentaje pagado</th>
+			<th>Forma de pago</th>							
+			<th></th>>Total de venta</th>								
+			<th>Comisión a forma de pago</th>								
+			<th>Total en caja</th>	
 			<th>Productos</th>					
-			<th>Paquetes</th>				
+			{{--<th>Paquetes</th>--}}				
 			<th>Comisiones</th>			
 			<th>Entrega</th>
 	  </tr>      
@@ -21,14 +25,18 @@
 		@foreach($sales as $k => $sale)
 		<tr class="gradeX" >
 			<td>{{ $k + 1 }}</td>
-			<td>{{ $sale->id }}</td>
-			<td>{{ $sale->sheet }}</td>
-			<td>{{ $sale->employee->user->name }}</td>
-			<td>{{ $sale->client->name }}</td>
-			<td>{{ $sale->sale_date }}</td>
-			<td>{{ $sale->sale_type }}</td>
-			<td>{{ $sale->pay_type }}</td>
-			<td>{{ $sale->total}}</td>
+			<td>@if(!empty($sale->id)) {{ $sale->id }} @endif </td>
+			<td>@if(!empty($sale->sheet)) {{ $sale->sheet }} @endif </td>
+			<td>@if(!empty($sale->employee->user->name)) {{ $sale->employee->user->name }} @endif </td>
+			<td>@if(!empty($sale->client->name)) {{ $sale->client->name }} @endif </td>
+			<td>@if(!empty($sale->sale_date)) {{ $sale->sale_date }} @endif </td>
+			<td>@if(!empty($sale->sale_type)) {{ $sale->sale_type }} @endif </td>
+			<td>@if(!empty($sale->cleared_payment)) {{ number_format($sale->cleared_payment, 2) }} @endif </td>
+			<td>@if(!empty($sale->percent_cleared_payment)) {{ $sale->percent_cleared_payment }} @endif </td>
+			<td>@if(!empty($sale->pay_type->name)) {{ $sale->pay_type->name }} @endif </td>
+			<td>@if(!empty($sale->subtotal)) {{ number_format($sale->subtotal, 2) }} @endif </td>			
+			<td>@if(!empty($sale->commission_pay)) {{ number_format($sale->commission_pay, 2) }} @endif </td>			
+			<td>@if(!empty($sale->total)) {{ number_format($sale->total, 2) }} @endif </td>
 			<td>
 				@if(count($sale->products))
 				<table>
@@ -45,7 +53,7 @@
 				</table>
 				@endif
 			</td>
-			<td>
+			{{--<td>
 				@if(count($sale->packs))
 				<table>
 					<tr>
@@ -60,7 +68,7 @@
 					@endforeach
 				</table>
 				@endif
-			</td>
+			</td>--}}
 			<td>
 				@if(count($sale->commissions))
 				<table >

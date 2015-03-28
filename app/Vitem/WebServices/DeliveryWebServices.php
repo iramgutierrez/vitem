@@ -17,6 +17,24 @@ class DeliveryWebServices extends BaseWebServices {
 		
 	}
 
+	static function find()
+	{
+
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+
+		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
+
+		$find = (!empty($_GET['find'])) ? $_GET['find'] : '';
+
+		$destinations = [
+		
+			'data' => DeliveryRepo::findByPage($page , $perPage , $find ),
+			'total' => DeliveryRepo::countFind($find )
+		];
+
+		return \Response::json($destinations);
+	}
+
 	static function findById()
 	{
 		$id = (isset($_GET['id'])) ? $_GET['id'] : false;
@@ -25,14 +43,24 @@ class DeliveryWebServices extends BaseWebServices {
 			return false;
 
 
-		$delivery = DeliveryRepo::with(['employee.user' , 'destination' , 'sale']);
+		$delivery = DeliveryRepo::with(['employee.user' , 'destination' , 'sale' , 'destination']);
 
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 
 		if(count($usersPermitted))
 		{
 			$delivery = $delivery->whereIn('employee_id' , $usersPermitted);
-		}
+		}		
+
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        $delivery = $delivery->whereIn('sale_id' , function($query) use ($whereStoreId) {
+
+								$query->select(\DB::raw('id'))
+									  ->from('sales')
+									  ->whereIn('store_id' , $whereStoreId);
+
+							});
 
 		$delivery = $delivery->where('id' , $id)->first();
 
@@ -48,17 +76,27 @@ class DeliveryWebServices extends BaseWebServices {
 
 		$date = date('Y-m-d' , $date);
 
-		$delivery = DeliveryRepo::with(['employee.user', 'destination']);
+		$delivery = DeliveryRepo::with(['employee.user', 'destination' , 'sale.store', 'destination']);
 
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 
 		if(count($usersPermitted))
 		{
 			$delivery = $delivery->whereIn('employee_id' , $usersPermitted);
-		}
+		}	
+
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        $delivery = $delivery->whereIn('sale_id' , function($query) use ($whereStoreId) {
+
+								$query->select(\DB::raw('id'))
+									  ->from('sales')
+									  ->whereIn('store_id' , $whereStoreId);
+
+							});
 
 		$delivery = $delivery
-							->where('delivery_date' , '>=' , $date)
+							->where('delivery_date' , '>=' , $date)							
 						 	->take($limit)	
 						 	->orderBy('delivery_date' ,'asc')
 						 	->get();

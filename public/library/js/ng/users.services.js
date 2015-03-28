@@ -17,7 +17,7 @@
       }
 
       function search(find, usersAll , role_id , status , operatorEntryDate , entryDate , operatorSalary , salary ) 
-      {
+      { console.log(usersAll);
 
         find = normalize(find);    
 

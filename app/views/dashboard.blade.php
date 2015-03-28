@@ -98,11 +98,24 @@
 
               <div class="row">
 
-                  <div clas="col-sm-12 col-md-12">
+                  <div class="col-sm-6 col-md-6">
 
                       @include('graphs/upcoming_deliveries') 
                       
                   </div>
+
+                  <div class="col-sm-6 col-md-6">
+
+                      @include('graphs/pending_deliveries') 
+                      
+                  </div>
+
+              </div>
+
+
+
+              <div class="row">
+
               </div>
 
               <?php /* <div class="row">

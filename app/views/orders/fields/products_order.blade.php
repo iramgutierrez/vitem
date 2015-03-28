@@ -34,6 +34,13 @@
 
     }}
 
+    @if(!empty($product_id))
+
+        <span ng-init="productSelectedInit(checkValuePreOrOld('{{ ((!empty($product_id)) ? $product_id : '') }}' , ''))"></span>
+
+
+    @endif
+
     <section ng-if="autocompleteProduct" class="panel col-sm-12">
 
         <ul class="list-group">

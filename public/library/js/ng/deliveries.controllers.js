@@ -1,10 +1,134 @@
 (function () {
 
-  angular.module('deliveries.controllers', [])    
+  angular.module('deliveries.controllers', []) 
+
+    .controller('DeliveriesController', ['$scope', '$filter' , 'DeliveriesService' , function ($scope ,  $filter , DeliveriesService ) {
+        
+        $scope.find = '';   
+        $scope.type = '';
+        $scope.sort = 'id';
+        $scope.reverse = false;
+        $scope.pagination = true;
+        $scope.page = 1;
+        $scope.perPage = 10;
+        $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
+        $scope.viewGrid = 'list';
+
+        $scope.init = function() 
+        { 
+          
+          DeliveriesService.API(
+
+            'find',
+            {              
+              page : $scope.page ,
+              perPage : $scope.perPage , 
+              find : $scope.find , 
+              type : $scope.type , 
+
+            }).then(function (data) {      
+
+              console.log(data);        
+
+                $scope.deliveriesP = data.data;
+
+                $scope.total = data.total;
+
+                $scope.pages = Math.ceil( $scope.total / $scope.perPage );
+
+            });  
+
+        }
+
+        $scope.init();
+
+        DeliveriesService.all().then(function (data) {
+
+          $scope.deliveriesAll = data;
+
+          $scope.deliveries = data;
+
+          $scope.search(true);
+
+          $scope.paginate();     
+
+        });
+
+        $scope.paginate = function( p )
+        {
+          if($scope.pagination)
+          {            
+
+            if(p)
+              $scope.page = parseInt(p);   
+
+            if(!$scope.deliveriesAll)
+            {
+            
+              $scope.init();
+
+            }
+            else
+            {  
+
+              $scope.total = $scope.deliveries.length;          
+
+              $scope.pages = Math.ceil( $scope.total / $scope.perPage );
+
+              $scope.deliveriesP = $scope.deliveries.slice( ( ($scope.page -1) *  $scope.perPage ) , ($scope.page *  $scope.perPage ) );
+
+            }
+
+          }
+          else
+          {
+            $scope.deliveriesP = $scope.deliveries
+          }
+        }
+
+
+
+        $scope.search = function ( init )
+        { 
+
+          if(!$scope.deliveriesAll)
+          {
+          
+            $scope.init();
+
+          }
+          else
+          {
+          
+            $scope.deliveries = DeliveriesService.search($scope.find , $scope.deliveriesAll );
+
+            
+          }
+
+          if(!init){
+
+            $scope.paginate(1);
+
+          }
+
+        }
+
+        $scope.clear = function () 
+        {
+          $scope.find = '';   
+          $scope.type = '';
+          $scope.sort = 'id';
+          $scope.reverse = false;
+          $scope.deliveries = $scope.deliveriesAll;
+          $scope.paginate(1);
+          $scope.modal = false;
+
+        }
+
+
+    }])   
 
     .controller('FormController', [ '$scope' , '$filter','SalesService' , 'UsersService' , 'DestinationsService' , function ($scope , $filter, SalesService , UsersService , DestinationsService) {
-
-      
 
       $scope.sale_id = false;
 

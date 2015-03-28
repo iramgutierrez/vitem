@@ -121,6 +121,7 @@
         'library/js/ng/sales.services.js',
         'library/js/ng/users.services.js',
         'library/js/ng/users.filters.js',
+        'library/js/ng/directives.js',
         'library/js/ng/ng-date.js',
         'library/js/jquery-ui-1.9.2.custom.min.js' ,
         'library/assets/bootstrap-fileupload/bootstrap-fileupload.js'

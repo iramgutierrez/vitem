@@ -6,7 +6,7 @@ class Sale extends \Eloquent {
 
 	protected $fillable = ['sheet' , 'total' ,'subtotal' ,'commission_pay' , 'sale_date' , 'sale_type' , 'pay_type_id' , 'liquidation_date' , 'client_id' , 'employee_id' , 'user_id' ,'store_id' , 'delivery_tab'];
     
-    protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'remaining_payment' , 'cleared_payment' , 'week' , 'month' ];
+    protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'remaining_payment' , 'percent_cleared_payment','cleared_payment' , 'week' , 'month' ];
 
 	public function products()
     {
@@ -108,6 +108,11 @@ class Sale extends \Eloquent {
     public function getRemainingPaymentAttribute()
     {
         return SaleRepo::getRemainingPayment($this);
+    }
+    
+    public function getPercentClearedPaymentAttribute()
+    {
+        return SaleRepo::getPercentClearedPayment($this);
     }
     
     public function getClearedPaymentAttribute()

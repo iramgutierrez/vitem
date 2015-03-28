@@ -209,4 +209,82 @@ class UserWebServices extends BaseWebServices {
 
 	}
 
+	static function getDrivers()
+	{
+		$store_id = (!empty($_GET['store_id'])) ? $_GET['store_id'] : false;
+
+		$sellers = UserRepo::with(['Employee' , 'store']);
+
+		$usersPermitted = ACLFilter::generateAuthCondition();
+
+		if(count($usersPermitted))
+		{
+			$sellers = $sellers->whereIn('id' , $usersPermitted);
+		}
+
+		$storesPermitted = ACLFilter::generateStoreCondition();
+
+		if(count($storesPermitted))
+		{
+			$sellers = $sellers->whereIn('store_id' , $storesPermitted);
+		}
+
+		if($store_id)
+		{
+			$sellers = $sellers->where('store_id' , $store_id);
+
+		}
+
+		$sellers = $sellers->where('role_id' ,function($query)
+		{
+			$query->select(\DB::raw('id'))
+				->from('roles')
+				->whereRaw('roles.slug = "chofer"');
+
+		})->get();
+
+		return \Response::json($sellers);
+
+	}
+
+	static function compareSellers()
+	{
+		$seller_1 = (!empty($_GET['seller_1'])) ? $_GET['seller_1'] : false;
+
+		$seller_2 = (!empty($_GET['seller_2'])) ? $_GET['seller_2'] : false;
+
+		$init_date = (!empty($_GET['init_date'])) ? $_GET['init_date'] : false;
+
+		$end_date = (!empty($_GET['end_date'])) ? $_GET['end_date'] : false;
+
+		$compare = [];
+
+		if(!$seller_1 || !$seller_2)
+			return \Response::json($compare);
+
+		$compare = UserRepo::compareSellers($seller_1 , $seller_2 , $init_date , $end_date);
+
+		return \Response::json($compare);
+	}
+
+	static function compareDrivers()
+	{
+		$driver_1 = (!empty($_GET['driver_1'])) ? $_GET['driver_1'] : false;
+
+		$driver_2 = (!empty($_GET['driver_2'])) ? $_GET['driver_2'] : false;
+
+		$init_date = (!empty($_GET['init_date'])) ? $_GET['init_date'] : false;
+
+		$end_date = (!empty($_GET['end_date'])) ? $_GET['end_date'] : false;
+
+		$compare = [];
+
+		if(!$driver_1 || !$driver_2)
+			return \Response::json($compare);
+
+		$compare = UserRepo::compareDrivers($driver_1 , $driver_2 , $init_date , $end_date);
+
+		return \Response::json($compare);
+	}
+
 }

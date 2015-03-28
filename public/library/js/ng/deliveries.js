@@ -9,6 +9,7 @@
     'sales.services',
     'users.services',
     'users.filters',
+    'directives'
   ]).run([ '$q' , '$http' ,  '$rootScope' , function( $q , $http , $rootScope){
 
      $rootScope.user_permissions = [];

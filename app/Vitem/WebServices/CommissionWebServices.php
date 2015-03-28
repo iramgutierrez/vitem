@@ -36,6 +36,16 @@ class CommissionWebServices extends BaseWebServices {
 			$commission = $commission->whereIn('employee_id' , $usersPermitted);
 		}
 
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        $commission = $commission->whereIn('sale_id' , function($query) use ($whereStoreId) {
+
+								$query->select(\DB::raw('id'))
+									  ->from('sales')
+									  ->whereIn('store_id' , $whereStoreId);
+
+							});
+
 		$commission = $commission->where('id' , $id)->first();
 
 		return \Response::json($commission);

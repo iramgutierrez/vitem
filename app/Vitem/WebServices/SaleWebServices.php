@@ -382,16 +382,20 @@ class SaleWebServices extends BaseWebServices {
 
 		$sale_type = (!empty($_GET['sale_type'])) ? $_GET['sale_type'] : false;
 
-		$pay_type = (!empty($_GET['pay_type'])) ? $_GET['pay_type'] : false;
+		$pay_type_id = (!empty($_GET['pay_type_id'])) ? $_GET['pay_type_id'] : false;
 
 		$initDate = (!empty($_GET['initDate'])) ? $_GET['initDate'] : false;
 
 		$endDate = (!empty($_GET['endDate'])) ? $_GET['endDate'] : false;
 
+		$percent_cleared_payment_type = (!empty($_GET['percent_cleared_payment_type'])) ? $_GET['percent_cleared_payment_type'] : false;
+
+		$percent_cleared_payment = (!empty($_GET['percent_cleared_payment'])) ? $_GET['percent_cleared_payment'] : false;
+
 		$sales = [
 		
-			'data' => SaleRepo::findByPageReport($page , $perPage , $employee_id , $client_id , $sale_type , $pay_type , $initDate , $endDate ),
-			'total' => SaleRepo::countFindReport($employee_id , $client_id  , $sale_type , $pay_type , $initDate , $endDate )
+			'data' => SaleRepo::findByPageReport($page , $perPage , $employee_id , $client_id , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment),
+			'total' => SaleRepo::countFindReport($employee_id , $client_id  , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment)
 		];
 
 		return \Response::json($sales);
@@ -514,6 +518,34 @@ class SaleWebServices extends BaseWebServices {
         $sales = $sales->where('sale_date' , date('Y-m-d' , time() - (60*60*6) ))->count();
 
 		return \Response::make($sales , 200);
+
+	}
+
+	static function getWithPendingDeliveries()
+	{
+
+		$limit = (isset($_GET['limit'])) ? $_GET['limit'] : 10;
+
+		$sales = SaleRepo::with([
+				'store'
+			]);
+
+		$whereUserId = \ACLFilter::generateAuthCondition();
+
+        if(count($whereUserId))
+            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+
+		$whereStoreId = \ACLFilter::generateStoreCondition();
+
+        if(count($whereStoreId))
+            $sales = $sales->whereIn( 'store_id' , $whereStoreId);
+
+        $sales = $sales
+        			->where('delivery_tab' , 2 )
+					->take($limit)
+					->get();
+
+		return \Response::json($sales);
 
 	}
 

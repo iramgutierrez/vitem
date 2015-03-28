@@ -3,7 +3,40 @@
   angular.module('deliveries.services', [])
 
     .factory('DeliveriesService', ['$http', '$q', '$filter' , function ($http, $q , $filter) {
-      var normalize = $filter('normalize');      
+      var normalize = $filter('normalize');
+
+      function all() {
+        var deferred = $q.defer();
+
+        $http.get('API/deliveries')
+          .success(function (data) {
+            deferred.resolve(data);
+          });
+
+        return deferred.promise;
+      }  
+
+
+      function search(find, deliveriesAll ) 
+      { 
+
+        find = normalize(find);
+
+        var deliveries;
+        
+        if(find == '')
+            deliveries =  deliveriesAll;
+          else
+          {   
+            deliveries = deliveriesAll.filter(function (delivery) {
+              return normalize(delivery.id).indexOf(find) != -1
+                || normalize(delivery.sale.sheet).indexOf(find) != -1 
+                || normalize(delivery.employee.user.name).indexOf(find) != -1;
+            });
+          }   
+
+          return deliveries;
+      }    
 
       function API( method , params) 
       {
@@ -40,7 +73,9 @@
 
       return {
         
-        API : API
+        API : API ,
+        all : all ,
+        search : search
 
       };
 

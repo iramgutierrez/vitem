@@ -84,6 +84,16 @@ class SalePaymentRepo extends BaseRepo {
 		if(count($whereUserId))
 			self::$sale_payments->whereIn( 'employee_id' , $whereUserId);
 
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        self::$sale_payments->whereIn('sale_id' , function($query) use ($whereStoreId) {
+
+								$query->select(\DB::raw('id'))
+									  ->from('sales')
+									  ->whereIn('store_id' , $whereStoreId);
+
+							});
+
 		//self::generateSaleTypeCondition( 'contado');
 
 		self::generateDateRangeCondition( $initDate , $endDate);

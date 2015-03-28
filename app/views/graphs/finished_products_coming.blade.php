@@ -1,5 +1,5 @@
 <!--work progress start-->
-                      <section class="panel" ng-controller="FinishedProductsController">
+                      <section class="panel" ng-controller="FinishedProductsController" ng-show="$root.auth_permissions.read.product">
                           <div class="panel-body progress-panel">
                               <div class="task-progress col-sm-12">
                                   <h1>Productos agotados o próximos a agotarse</h1>
@@ -74,7 +74,7 @@
 	                                    </a>
 	                                  </td>
 	                                  <td class="text-center"  ng-if="$root.auth_permissions.create.order">
-	                                  	<a href="@{{product.supplier.url_show}}">
+	                                  	<a href="{{ route('orders.create.supplier_id' ) }}/@{{ product.supplier_id }}/@{{ product.id }}">
 	                                      <button type="button" class="btn"><i class="fa fa-edit"></i> Realizar pedido</button>
 	                                    </a>
 	                                  </td>

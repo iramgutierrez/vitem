@@ -34,10 +34,6 @@
 
 			 	
 			<hr>
-			<div class="col-sm-12">
-				<pagination></pagination>
-
-			</div>
 			<div class="clearfix"></div>
 			<hr>
 
@@ -55,7 +51,7 @@
   	  			@include('reports/fields/client_id')
 
   	    	</div>   
-			<div class="col-sm-3">
+			<div class="form-group col-sm-4">
 				
 				{{ 
 				Field::date
@@ -70,7 +66,7 @@
 				}}
 
 			</div>
-			<div class="col-sm-3">
+			<div class="form-group col-sm-4">
 				
 				{{ 
 				Field::date
@@ -86,7 +82,22 @@
 				
 			</div>
 
-			<div class="col-sm-3">
+			<div class="form-group col-sm-4">
+
+				{{ Field::select(
+					'pay_type_id', 
+					$pay_types,
+					'' ,
+					[ 
+					'ng-model' => 'pay_type_id',
+					'ng-change' => 'search()'
+					]
+					) 
+				}}
+
+			</div>
+
+			<div class="form-group col-sm-4">
 
             	{{ Field::select(
 					'sale_type', 
@@ -101,27 +112,57 @@
 
 			</div>
 
-			<div class="col-sm-3">
+			<div class="form-group col-sm-4">
 
-				{{ Field::select(
-					'pay_type', 
-					$pay_types,
+            	{{ Field::select(
+					'percent_cleared_payment_type', 
+					[
+						"<=" => 'Menor o igual que',
+						"==" => 'Igual',
+						">=" => 'Mayor o igual que'
+					],
 					'' ,
 					[ 
-					'ng-model' => 'pay_type',
+					'ng-model' => 'percent_cleared_payment_type',
 					'ng-change' => 'search()'
 					]
 					) 
 				}}
 
 			</div>
-			<hr>
-			<br><br><br>
-			<div class="clearfix"></div>
-			<div class="col-sm-12">
-				<p class="col-sm-2">
-				<span class="badge bg-success">@{{total}}</span> ventas</p>    
-				<div class="pull-right">    
+
+			<div class="form-group col-sm-4">
+				{{ Field::text
+					(
+						'percent_cleared_payment',
+						'' ,
+						[ 
+
+							'addon-last' => '%' , 
+
+							'placeholder' => 'Ingresa el porcentaje',
+
+							'ng-model' => 'percent_cleared_payment',
+
+							'ng-change' => 'search()',
+
+						]
+
+					) 
+
+				}}   
+
+			</div>
+			<div class="form-group col-sm-12">
+
+				<div class="form-group col-sm-12">
+					<pagination></pagination>
+
+				</div>
+				<p class="form-group col-sm-2">
+					<span class="badge bg-success">@{{total}}</span> ventas
+				</p>    
+				<div class="form-group pull-right">    
 					<button type="button" ng-click="clear()" class="btn btn-info">Limpiar filtros</button>     
 					<button type="submit" class="btn btn-success">Generar XLS</button>
 				</div>
@@ -133,18 +174,22 @@
 				<table  class="display table table-bordered table-striped" id="dynamic-table" >
 					<thead>
 						<tr >
-							<th>ID</th>
-							<th>Folio</th>
-							<th>Empleado</th>
-							<th>Cliente</th>
-							<th>Fecha de venta</th>
-							<th>Tipo de venta</th>
-							<th>Forma de pago</th>						
-							<th>Total</th>				
-							<th>Productos</th>					
-							<th>Paquetes</th>				
+							<th class="col-sm-1" >ID</th>
+							<th class="col-sm-1" >Folio</th>
+							<th class="col-sm-1" >Empleado</th>
+							<th class="col-sm-1" >Cliente</th>
+							<th class="col-sm-1" >Fecha de venta</th>
+							<th class="col-sm-1" >Tipo de venta</th>
+							<th class="col-sm-1" >Cantidad pagado</th>
+							<th class="col-sm-1" >Porcentaje pagado</th>
+							<th class="col-sm-1" >Forma de pago</th>						
+							<th class="col-sm-1" >Total de venta</th>								
+							<th class="col-sm-1" >Comisión a forma de pago</th>								
+							<th class="col-sm-1" >Total en caja</th>				
+							{{--<th>Productos</th>					
+							<th>Paquetes</th>
 							<th>Comisiones</th>			
-							<th>Entrega</th>
+							<th>Entrega</th>--}}
 	                </tr>      
 	</thead>
 	<tbody ng-if="viewGrid == 'list'" >
@@ -155,9 +200,13 @@
 			<td>@{{ sale.client.name }}</td>
 			<td>@{{ sale.sale_date }}</td>
 			<td>@{{ sale.sale_type }}</td>
-			<td>@{{ sale.pay_type }}</td>
+			<td>@{{ sale.cleared_payment | currency}}</td>
+			<td>@{{ sale.percent_cleared_payment }}%</td>
+			<td>@{{ sale.pay_type.name }}</td>
+			<td>@{{ sale.subtotal | currency}}</td>
+			<td>@{{ sale.commission_pay | currency}}</td>
 			<td>@{{ sale.total | currency}}</td>
-			<td>
+			{{--<td>
 				<table  ng-if="sale.products.length > 0">
 					<tr>
 						<th>Producto</th>
@@ -180,7 +229,7 @@
 						<td>@{{pack.pivot.quantity}}</td>
 					</tr>
 				</table>
-			</td>
+			</td>-
 			<td>
 				<table  ng-if="sale.commissions.length > 0">
 					<tr>
@@ -206,7 +255,7 @@
 						<td>@{{sale.delivery.employee.user.name}}</td>
 					</tr>
 				</table>
-			</td>
+			</td>--}}
 		</tr>              
 	</tbody>
 	</table> 

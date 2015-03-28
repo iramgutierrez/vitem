@@ -50,14 +50,14 @@ class OrdersController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create($supplier_id = false , $product_id = false)
 	{
 		$statuses = [
 			1 => 'Solicitado',
 			2 => 'Recibido'
 		];
 
-		return View::make('orders/create', compact( 'statuses' ));
+		return View::make('orders/create', compact( 'statuses' , 'supplier_id' , 'product_id'));
 	}
 
 	/**
@@ -78,7 +78,7 @@ class OrdersController extends \BaseController {
         {
         	Session::flash('success' , 'El pedido se ha guardado correctamente.');
 
-            return Redirect::route('sales.index');
+            return Redirect::route('orders.index');
         }
         else
         {

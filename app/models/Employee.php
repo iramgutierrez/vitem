@@ -30,4 +30,14 @@ class Employee extends \Eloquent {
 		return $this->hasMany('Sale');
 	}
 
+	public function expenses()
+	{
+		return $this->hasMany('Expense');
+	}
+
+	public function sale_payments()
+	{
+		return $this->hasMany('SalePayment');
+	}
+
 }

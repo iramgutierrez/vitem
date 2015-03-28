@@ -150,6 +150,7 @@ return array(
 		'sale_type' => 'tipo de venta',
 		'sale_date' => 'fecha de venta',
 		'pay_type' => 'forma de pago',
+		'pay_type_id' => 'forma de pago',
 		'liquidation_date' => 'fecha de liquidación',
 		'employee_id' => 'vendedor',
 		'client_id' => 'cliente',
@@ -175,7 +176,8 @@ return array(
 		'suggested_price_active' => 'aplicar precio sugerido',
 		'percent_gain' => 'porcentaje de ganancia',
 		'showDetailsInputs' => ' ',
-		'store_id' => 'sucursal'
+		'store_id' => 'sucursal',
+		'percent_cleared_payment_type' => 'porcentaje pagado'
 
 	),
 

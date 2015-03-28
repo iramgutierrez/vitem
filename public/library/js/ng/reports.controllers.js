@@ -6,7 +6,7 @@
         
         $scope.find = '';   
         $scope.sale_type = '';
-        $scope.pay_type = '';
+        $scope.pay_type_id = '';
         $scope.sort = 'id';
         $scope.reverse = false;
         $scope.pagination = true;
@@ -16,6 +16,8 @@
         $scope.viewGrid = 'list';
         $scope.initDate = '';
         $scope.endDate = '';
+        $scope.percent_cleared_payment_type = '';
+        $scope.percent_cleared_payment = '';
 
         $scope.employee_id = '';
 
@@ -27,7 +29,7 @@
 
         $scope.seller = {};
 
-        UsersService.getByRoleId(1).then(function (data) {
+        UsersService.API('getSellers').then(function (data) {
 
             $scope.sellersAll = data;
 
@@ -195,7 +197,7 @@
         }
 
         $scope.init = function() 
-        { 
+        { console.log($scope.pay_type_id)
           
           SalesService.API(
 
@@ -206,7 +208,9 @@
               employee_id : $scope.employee_id,
               client_id : $scope.client_id,
               sale_type : $scope.sale_type , 
-              pay_type : $scope.pay_type, 
+              pay_type_id : $scope.pay_type_id, 
+              percent_cleared_payment_type : $scope.percent_cleared_payment_type, 
+              percent_cleared_payment : $scope.percent_cleared_payment, 
               initDate : (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate, 
               endDate : (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate
 
@@ -226,15 +230,13 @@
 
         SalesService.all().then(function (data) {
 
-          console.log(data);
-
-          /*$scope.salesAll = data;
+          $scope.salesAll = data;
 
           $scope.sales = data;
 
           $scope.search(true);
 
-          $scope.paginate(); */ 
+          $scope.paginate();
 
         });
 
@@ -282,9 +284,9 @@
 
           }
           else
-          {
+          { 
           
-          	$scope.sales = SalesService.search2($scope.employee_id , $scope.client_id , $scope.salesAll , $scope.sale_type , $scope.pay_type, (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate , (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate);
+          	$scope.sales = SalesService.search2($scope.employee_id , $scope.client_id , $scope.salesAll , $scope.sale_type , $scope.pay_type_id, (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate , (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate , $scope.percent_cleared_payment_type , $scope.percent_cleared_payment);
 
             
           }

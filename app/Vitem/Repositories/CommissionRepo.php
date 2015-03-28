@@ -13,12 +13,22 @@ class CommissionRepo extends BaseRepo {
 
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 
-		$return = \Commission::with(parent::with((['user', 'employee.user'])));
+		$return = \Commission::with(parent::with((['user', 'employee.user' , 'sale'])));
 
 		if(count($usersPermitted))
 		{
 			$return->whereIn('employee_id' , $usersPermitted);
-		}
+		}		
+
+        $whereStoreId = \ACLFilter::generateStoreCondition();
+
+        $return->whereIn('sale_id' , function($query) use ($whereStoreId) {
+
+								$query->select(\DB::raw('id'))
+									  ->from('sales')
+									  ->whereIn('store_id' , $whereStoreId);
+
+							});
 
 		$commissions = $return->get();
 

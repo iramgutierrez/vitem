@@ -193,6 +193,25 @@
 
             }
 
+            $scope.productSelectedInit = function (id)
+            { 
+
+                if(id)
+                {
+
+                    ProductsService.findById(id).then(function (data) { 
+
+                        data.quantity = 1;
+
+                        $rootScope.productsSelected.push(data);
+
+                    });
+
+                }
+
+            }
+
+
             $scope.find_product = '';
 
             $scope.autocompleteProduct = false;
@@ -281,29 +300,10 @@
 
             }
 
-            $scope.addQuantity = function (quantity , stock)
+            $scope.addQuantity = function (quantity)
             {
 
                 quantity = (isNaN(parseInt(quantity))) ? 0 : parseInt(quantity);
-
-                stock = (isNaN(parseInt(stock))) ? false : parseInt(stock);
-
-                if(stock)
-                {
-                    if( (quantity + 1) <= stock)
-                    {
-
-                        return quantity + 1;
-
-                    }
-                    else
-                    {
-
-                        return quantity;
-
-                    }
-
-                }
 
                 return quantity + 1;
 
@@ -354,11 +354,6 @@
 
                 return cost;
 
-            }
-
-            $scope.test = function(test)
-            {
-                console.log(test);
             }
 
             $scope.hideItems = function ()
@@ -414,7 +409,7 @@
 
                 angular.forEach($scope.productsOld, function(value, key) { 
 
-                    ProductsService.findById(value.product_id).then(function (data) { console.log(data);
+                    ProductsService.findById(value.product_id).then(function (data) { 
 
                         data.quantity = value.quantity;
 

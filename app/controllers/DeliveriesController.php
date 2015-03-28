@@ -34,7 +34,8 @@ class DeliveriesController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+
+		return View::make('deliveries/index');
 	}
 
 	/**
@@ -223,14 +224,14 @@ class DeliveriesController extends \BaseController {
 		{
 			Session::flash('error' , 'La entrega especificada no existe.');
 
-        	return Redirect::route('sales.index');
+        	return Redirect::route('deliveries.index');
 		}
 
 		Delivery::destroy($id);
 
 	    Session::flash('success' , 'La entrega se ha eliminado correctamente.');
 
-        return Redirect::route('sales.show' , [$delivery->sale_id] );
+        return Redirect::route('deliveries.index' );
 	}
 
 	public function API( $method = 'all')

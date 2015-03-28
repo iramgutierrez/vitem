@@ -93,7 +93,7 @@ class SaleRepo extends BaseRepo {
 		$offset = ($page - 1 ) * $perPage;
 
 		self::$sales = \Sale::with([
-										'products.store',
+										'products',
 										'packs',
 										'employee' , 
 										'employee.user',
@@ -141,7 +141,7 @@ class SaleRepo extends BaseRepo {
 
 
 		self::$sales = \Sale::with([
-										'products.store',
+										'products',
 										'packs',
 										'employee' , 
 										'employee.user',
@@ -181,19 +181,20 @@ class SaleRepo extends BaseRepo {
 
 	}
 
-	static function findByPageReport($page , $perPage , $employee_id , $client_id , $sale_type , $pay_type , $initDate , $endDate )
+	static function findByPageReport($page , $perPage , $employee_id , $client_id , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment)
 	{		
 		
 		$offset = ($page - 1 ) * $perPage;
 
 		self::$sales = \Sale::with([
-										'products.store',
+										'products',
 										'packs',
 										'user',
 										'employee' , 
 										'employee.user',
 										'client',
 										'store',
+										'pay_type',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -206,9 +207,11 @@ class SaleRepo extends BaseRepo {
 
 		self::generateSaleTypeCondition( $sale_type);
 
-		self::generatePayTypeCondition( $pay_type);
+		self::generatePayTypeIdCondition( $pay_type_id);
 
 		self::generateSaleDateRangeCondition( $initDate , $endDate);
+
+		self::generatePercentClearedPaymentCondition( $percent_cleared_payment_type , $percent_cleared_payment);
 
 		self::paginate($offset , $perPage);
 
@@ -226,7 +229,7 @@ class SaleRepo extends BaseRepo {
 
 	}
 
-	static function countFindReport($employee_id , $client_id  , $sale_type , $pay_type , $initDate , $endDate )
+	static function countFindReport($employee_id , $client_id  , $sale_type , $pay_type_id , $initDate , $endDate, $percent_cleared_payment_type , $percent_cleared_payment )
 	{				
 		
 
@@ -239,6 +242,7 @@ class SaleRepo extends BaseRepo {
 										'employee.user',
 										'client',
 										'store',
+										'pay_type',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -251,9 +255,11 @@ class SaleRepo extends BaseRepo {
 
 		self::generateSaleTypeCondition( $sale_type);
 
-		self::generatePayTypeCondition( $pay_type);
+		self::generatePayTypeIdCondition( $pay_type_id);
 
 		self::generateSaleDateRangeCondition( $initDate , $endDate);
+
+		self::generatePercentClearedPaymentCondition( $percent_cleared_payment_type , $percent_cleared_payment);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
@@ -270,19 +276,20 @@ class SaleRepo extends BaseRepo {
 
 	}
 
-	static function findReport($employee_id , $client_id  , $sale_type , $pay_type , $initDate , $endDate )
+	static function findReport($employee_id , $client_id  , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment)
 	{				
 		
 
 
 		self::$sales = \Sale::with([
-										'products.store',
+										'products',
 										'packs',
 										'user',
 										'employee' , 
 										'employee.user',
 										'client',
 										'store',
+										'pay_type',
 										'sale_payments',
 										'commissions.employee.user',
 										'delivery.employee.user',
@@ -307,15 +314,21 @@ class SaleRepo extends BaseRepo {
 
 		}
 		
-		if($pay_type){
+		if($pay_type_id){
 
-			self::generatePayTypeCondition( $pay_type);		
+			self::generatePayTypeIdCondition( $pay_type_id);		
 
 		}
 		
 		if($initDate && $endDate){
 
 			self::generateSaleDateRangeCondition( $initDate , $endDate);
+
+		}
+		
+		if($percent_cleared_payment_type && $percent_cleared_payment){
+
+			self::generatePercentClearedPaymentCondition( $percent_cleared_payment_type , $percent_cleared_payment);
 
 		}
 
@@ -406,12 +419,23 @@ class SaleRepo extends BaseRepo {
 
 	}
 
-	private static function generatePayTypeCondition( $pay_type )
+	private static function generatePayTypeCondition( $pay_type)
 	{
 
 		if( $pay_type != '' ){
 		
 			self::$sales->where( 'pay_type', '=' ,$pay_type );
+
+		}
+
+	}
+
+	private static function generatePayTypeIdCondition( $pay_type_id )
+	{
+
+		if( $pay_type_id != '' ){
+		
+			self::$sales->where( 'pay_type_id', '=' ,$pay_type_id );
 
 		}
 
@@ -443,6 +467,54 @@ class SaleRepo extends BaseRepo {
 
 	}
 
+
+
+	private static function generatePercentClearedPaymentCondition( $type , $value )
+	{ 
+		$sales = \Sale::all();
+
+		$salesInPercent = [];
+
+		foreach($sales as $k => $sale)
+		{
+		
+			$percent = SaleRepo::getPercentClearedPayment($sale);
+
+			$inPercent = false;
+
+			switch($type)
+			{
+				case '>=':
+					$inPercent = ($percent >= $value);
+					break;
+				case '==':
+					$inPercent = ($percent == $value);
+					break;
+				case '<=':
+					$inPercent = ($percent <= $value);
+					break;
+			}
+
+			if($inPercent)
+			{
+				$salesInPercent[] = $sale->id;
+			}
+
+		}
+
+		if(!empty($salesInPercent))
+		{
+			self::$sales
+					->whereIn( 'id', $salesInPercent );
+
+		}
+		
+			
+
+	}
+
+
+
 	private static function paginate( $offset , $perPage )
 	{
 
@@ -451,27 +523,11 @@ class SaleRepo extends BaseRepo {
 
 	}
 
-	static function getRemainingPayment( $sale )
-	{
-		if($sale->sale_type != 'apartado')
-		{
-			return false;
-		}
-
-		$clearedPayment = self::getClearedPayment($sale);
-
-		$total = $sale->total;
-
-		return $total - $clearedPayment;
-
-
-	}
-
 	static function getClearedPayment( $sale )
 	{
 		if($sale->sale_type != 'apartado')
 		{
-			return false;
+			return $sale->subtotal;
 		}
 
 		$clearedPayment = 0;
@@ -484,13 +540,33 @@ class SaleRepo extends BaseRepo {
 				$clearedPayment += $sale_payment->subtotal;
 			}
 			
-		}
-
-		
+		}	
 
 		return $clearedPayment;
+	}
 
+	static function getRemainingPayment( $sale )
+	{
+		
+		$clearedPayment = self::getClearedPayment($sale);
 
+		$total = $sale->subtotal;
+
+		return $total - $clearedPayment;
+
+	}
+
+	static function getPercentClearedPayment( $sale )
+	{
+		$clearedPayment = self::getClearedPayment($sale);
+
+		$total = ( $sale->subtotal > 0 ) ? $sale->subtotal : 1;
+
+		$percentClearedPayment = ($clearedPayment * 100) / ( $total ) ;
+
+		$percentClearedPayment = number_format($percentClearedPayment, 2);
+
+		return $percentClearedPayment;
 	}
 
 	static function getByRange($init , $end , $groupBy)

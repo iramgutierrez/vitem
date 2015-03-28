@@ -107,10 +107,8 @@
           return products;
       }
 
-      function search2(employee_id , client_id , productsAll , sale_type , pay_type , initDate , endDate) 
-      { 
-
-        
+      function search2(employee_id , client_id , productsAll , sale_type , pay_type_id , initDate , endDate , percent_cleared_payment_type , percent_cleared_payment) 
+      {       
 
         var products = productsAll;
        
@@ -123,11 +121,14 @@
         if(sale_type) 
           products = findBySaleType(sale_type , products);
 
-        if(pay_type) 
-          products = findByPayType(pay_type , products);
+        if(pay_type_id) 
+          products = findByPayTypeId(pay_type_id , products);
 
         if(initDate && endDate)
           products = findByRangeDate(initDate , endDate , products);
+
+        if(percent_cleared_payment_type && percent_cleared_payment)
+          products = findByPercentClearedPayment(percent_cleared_payment_type , percent_cleared_payment , products);
  
 
           return products;
@@ -218,6 +219,32 @@
 
       }
 
+      function findByPayTypeId(pay_type_id, productsAll) 
+      { 
+
+        var products;
+
+        if(pay_type_id == '')
+          products =  productsAll;
+        else
+        {
+          products = productsAll.filter(function (product) 
+          {
+            if(product.hasOwnProperty('pay_type_id') && product.pay_type_id)
+            {
+               
+                  return product.pay_type_id ==  pay_type_id;
+            }
+
+            return false;
+
+          }); 
+        }        
+
+        return products;
+
+      }
+
       function findBySaleDate(operator , saleDate , productsAll)
       { 
 
@@ -281,6 +308,44 @@
         }
 
         return products;
+      }
+
+      function findByPercentClearedPayment(percent_cleared_payment_type , percent_cleared_payment , productsAll)
+      {
+
+        var products;
+
+        if(percent_cleared_payment_type == '' || percent_cleared_payment == '')
+          products = productsAll;
+        else
+        {
+          products = productsAll.filter(function ( product )
+          { console.log(percent_cleared_payment_type);
+            console.log(product.percent_cleared_payment);
+            console.log(percent_cleared_payment);
+
+            switch(percent_cleared_payment_type)
+            {
+              case '<=':
+                return  ( parseFloat(product.percent_cleared_payment) <= parseFloat(percent_cleared_payment) );
+                break;
+              case '==':
+                return  ( parseFloat(product.percent_cleared_payment) == parseFloat(percent_cleared_payment) );
+                break;
+              case '>=':
+                return  ( parseFloat(product.percent_cleared_payment) >= parseFloat(percent_cleared_payment) );
+                break;
+              default:
+                return false;
+                break;
+            }
+            
+          });
+
+        }
+
+        return products;
+
       }
 
       function excludeProducts(productsExcluded , productsAll)
