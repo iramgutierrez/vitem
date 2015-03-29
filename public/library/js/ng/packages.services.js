@@ -16,6 +16,41 @@
         return deferred.promise;
       }
 
+
+
+      function API( method , params) 
+      {
+
+        var deferred = $q.defer();
+
+        var url = 'API/packs/';
+
+        url += method + '?';
+
+        var count = 0;
+
+        angular.forEach( params , function(value, key) {
+
+          url += key + '=' + value;
+
+          count++;
+
+          if(count < Object.keys(params).length)
+          {
+            url += '&';
+          }
+
+        });
+
+        $http.get(url)
+          .success(function (data) {
+            deferred.resolve(data);
+          });
+
+        return deferred.promise;
+
+      }
+
       function findById(id)
       {
         var deferred = $q.defer();
@@ -116,7 +151,8 @@
         all: all ,
         search : search,
         findById : findById, 
-        getProducts : getProducts
+        getProducts : getProducts,
+        API : API
 
 
       };

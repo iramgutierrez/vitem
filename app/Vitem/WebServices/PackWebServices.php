@@ -40,4 +40,15 @@ class PackWebServices extends BaseWebServices {
 
 		return \Response::json($pack);
 	}
+
+	static function getMaxProducts()
+	{
+		return $maxProducts = \DB::table('pack_product')
+					->select(\DB::raw('pack_id') , \DB::raw('count(*) as count'))
+					->groupBy('pack_id')
+					->orderBy('count' ,'desc')
+					->take(1)
+					->first()
+					->count; 
+	}
 }

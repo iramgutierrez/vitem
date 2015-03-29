@@ -14,11 +14,86 @@
         $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
         $scope.viewGrid = 'list';
 
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_paquetes';
+
+        $scope.dataExport = false;
+
+        $scope.headersExport = [
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : 'key',
+            label : 'Código'
+          },
+          {
+            field : 'name',
+            label : 'Nombre'
+          },
+          {
+            field : 'description',
+            label : 'Descripción'
+          },
+        ];   
+
+        PackagesService.API('getMaxProducts').then(function (count) {
+
+          for(c = 0; c < count; c++)
+          {
+            products = []
+
+            products[c] = 'name';
+
+            $scope.headersExport.push({
+              field : {
+                products : products
+              },
+              label : 'Producto ' + (c+1)
+            });
+
+            products = []
+
+            products[c] = {
+              'pivot' : 'quantity'
+            };
+
+            $scope.headersExport.push({
+              field : {
+                products : products
+              },
+              label : 'Cantidad de producto ' + (c+1)
+            })
+          }
+
+          console.log($scope.headersExport);
+
+          $scope.headersExport = JSON.stringify($scope.headersExport);
+
+        })     
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
         PackagesService.all().then(function (data) {
 
           $scope.packsAll = data;
 
           $scope.packs = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.packs);  
+
+          /*Generar XLS */      
 
           $scope.paginate(1);
 
@@ -51,6 +126,12 @@
         {
           
         	$scope.packs = PackagesService.search($scope.find , $scope.packsAll , $scope.status );
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.packs);  
+
+          /*Generar XLS */      
 
           $scope.paginate(1);
 

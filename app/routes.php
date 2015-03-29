@@ -145,6 +145,8 @@ Route::group(['before' => 'auth'], function () {
 	Route::get('reports/compare-drivers' , ['as' => 'reports.compare_drivers', 'uses' => 'ReportsController@compare_drivers']);
 
 	Route::post('reports/generate_xls' , ['as' => 'reports.generate_xls', 'uses' => 'ReportsController@generateXls']);
+
+	Route::post('reports/generate_custom_xls' , ['as' => 'reports.generate_custom_xls', 'uses' => 'ReportsController@generateCustomXls']);
 	
 });
 

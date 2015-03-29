@@ -68,9 +68,6 @@ class ReportsController extends \BaseController {
 		$percent_cleared_payment = (!empty(Input::only('percent_cleared_payment')['percent_cleared_payment'])) ? Input::only('percent_cleared_payment')['percent_cleared_payment'] : false;
 
 		$sales =  SaleRepo::findReport($employee_id , $client_id  , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment);
-
-
-		//dd($sales);
 		
 		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=reporte_ventas_".date('Y-m-d_H-i-s').".xls");  //File name extension was wrong
@@ -80,6 +77,209 @@ class ReportsController extends \BaseController {
 
 		return View::make('reports/sales_xls',compact('sales'));
 
+	}
+
+	public function generateCustomXls()
+	{ 
+		$headers = Input::get('headersExport');
+
+		$data = Input::get('dataExport');
+
+		if(empty($headers) || !$data)
+		{
+			Session::flash('error' , 'No se recibieron datos correctos para generar el archivo.');
+
+            return Redirect::back();
+		}
+
+		$headers = json_decode($headers , true);
+
+		$data = json_decode($data , true);
+
+		if( !isset($headers[0]['field']) || !isset($headers[0]['label']) )
+		{
+			Session::flash('error' , 'No se recibieron datos correctos para generar el archivo.');
+
+            return Redirect::back();
+		}
+
+		$headerXLS = [];
+
+		foreach($headers as $header)
+		{
+			$headerXLS = '';
+
+			if(!empty($header['field']))
+			{
+
+				if( is_array($header['field']) )
+				{
+					foreach($header['field'] as $k => $v)
+					{
+						if(!is_null($v))
+						{
+							$subkey = $k;
+
+							$subheader = $v;
+
+							break;
+
+						}
+					}
+
+					/*$subkey = array_keys($header['field'])[0];
+
+					$subheader = array_values($header['field'])[0];*/
+
+					$headerXLS = $this->getLabelArray($subheader);
+
+				}else
+				{
+					$headerXLS = $header['field'];
+				}
+			}
+
+			$headersXLS[] = [
+				'field' => $headerXLS,
+				'label' => $header['label']
+			];
+				
+		}
+		$dataXLS = [];
+
+		foreach($data as $key => $record)
+		{
+			$recordXLS = [];
+
+			foreach($headers as $header)
+			{
+				$fieldXLS = '';
+
+				$labelXLS = '';
+
+				if(!empty($header['field'])){
+
+					if( is_array($header['field']) )
+					{
+
+						foreach($header['field'] as $k => $v)
+						{
+							if(!is_null($v))
+							{
+								$subkey = $k;
+
+								$subheader = $v;
+
+								break;
+
+							}
+						}
+
+						/*$subkey = array_keys($header['field'])[0];
+
+						$subheader = array_values($header['field'])[0];*/
+
+						$fieldXLS = $this->getFieldArray($subheader , $record[$subkey]);
+
+					}else
+					{
+						$fieldXLS = $record[ $header['field'] ];
+					}
+				}
+
+				$recordXLS[] = $fieldXLS;
+
+			}
+
+			$dataXLS[] = $recordXLS;
+
+		}
+
+		if(!is_array($headers) || !is_array($data))
+		{
+			Session::flash('error' , 'No se recibieron datos correctos para generar el archivo.');
+
+            return Redirect::back();
+		}
+
+		$filename = (Input::has('filename')) ? Input::get('filename') : 'reporte';
+
+		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+		header("Content-Disposition: attachment; filename=".$filename."_".date('Y-m-d_H-i-s').".xls");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: private",false);
+
+		return View::make('reports/generate_custom_xls',compact('headersXLS' , 'dataXLS'));
+
+	}
+
+	private function getLabelArray($field)
+	{
+		if( is_array($field) )
+		{
+			foreach($field as $k => $v)
+			{
+				if(!is_null($v))
+				{
+					$subkey = $k;
+
+					$subheader = $v;
+
+					break;
+
+				}
+			}
+			/*$subkey = array_keys($field)[0];
+
+			$subheader = array_values($field)[0];*/
+
+			$headerXLS = $this->getLabelArray($subheader);
+
+		}else
+		{
+			$headerXLS = $field;
+		}
+
+		return $headerXLS;
+	}
+
+	private function getFieldArray($field , $record)
+	{
+		$fieldXLS = '';
+
+		if( is_array($field) )
+		{
+			foreach($field as $k => $v)
+			{
+				if(!is_null($v))
+				{
+					$subkey = $k;
+
+					$subheader = $v;
+
+					break;
+
+				}
+			}
+
+			/*$subkey = array_keys($field)[0];
+
+			$subheader = array_values($field)[0];*/
+
+			if(isset($record[$subkey]))
+			{
+
+				$fieldXLS = $this->getFieldArray($subheader ,  $record[$subkey]);
+
+			}
+
+		}else
+		{
+			$fieldXLS = $record[ $field ];
+		}
+
+		return $fieldXLS;
 	}
 
 }

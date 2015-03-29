@@ -15,6 +15,104 @@
         $scope.viewGrid = 'list';
         $scope.productsAll = false;
 
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_productos';
+
+        $scope.dataExport = false;
+
+        $scope.headersExport = JSON.stringify([
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : 'key',
+            label : 'Código'
+          },
+          {
+            field : 'name',
+            label : 'Nombre'
+          },
+          {
+            field : 'username',
+            label : 'Nombre de usuario'
+          },
+          {
+            field : {
+              role : 'name'
+            },
+            label : 'Tipo de usuario'
+          },
+          {
+            field : {
+              store : 'name'
+            },
+            label : 'Sucursal'
+          },
+          {
+            field : {
+              employee : 'salary'
+            },
+            label : 'Salario'
+          },
+          {
+            field : {
+              employee : 'entry_date'
+            },
+            label : 'Fecha de ingreso'
+          },
+          {
+            field : 'email',
+            label : 'Correo electrónico'
+          },
+          {
+            field : 'phone',
+            label : 'Teléfono'
+          },
+          {
+            field : 'address',
+            label : 'Dirección'
+          },
+          {
+            field : 'street',
+            label : 'Calle'
+          },
+          {
+            field : 'outer_number',
+            label : 'Número exterior'
+          },
+          {
+            field : 'inner_number',
+            label : 'Número interior'
+          },
+          {
+            field : 'zip_code',
+            label : 'Código postal'
+          },
+          {
+            field : 'colony',
+            label : 'Colonia'
+          },
+          {
+            field : 'city',
+            label : 'Ciudad'
+          },
+          {
+            field : 'state',
+            label : 'Estado'
+          },
+        ]);        
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
         $scope.init = function() 
         { 
           
@@ -48,6 +146,12 @@
           $scope.productsAll = data;
 
           $scope.products = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.products);  
+
+          /*Generar XLS */      
 
           $scope.search(true);
 
@@ -106,6 +210,12 @@
           {
 
             $scope.products = ProductsService.search($scope.find , $scope.productsAll , $scope.status );
+
+            /*Generar XLS */
+
+            $scope.dataExport = $scope.generateJSONDataExport($scope.products);  
+
+            /*Generar XLS */      
 
           }
 

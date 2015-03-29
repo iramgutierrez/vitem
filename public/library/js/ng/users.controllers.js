@@ -31,11 +31,109 @@
             dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
         };
 
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_usuarios';
+
+        $scope.headersExport = JSON.stringify([
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : 'name',
+            label : 'Nombre'
+          },
+          {
+            field : 'username',
+            label : 'Nombre de usuario'
+          },
+          {
+            field : {
+              role : 'name'
+            },
+            label : 'Tipo de usuario'
+          },
+          {
+            field : {
+              store : 'name'
+            },
+            label : 'Sucursal'
+          },
+          {
+            field : {
+              employee : 'salary'
+            },
+            label : 'Salario'
+          },
+          {
+            field : {
+              employee : 'entry_date'
+            },
+            label : 'Fecha de ingreso'
+          },
+          {
+            field : 'email',
+            label : 'Correo electrónico'
+          },
+          {
+            field : 'phone',
+            label : 'Teléfono'
+          },
+          {
+            field : 'address',
+            label : 'Dirección'
+          },
+          {
+            field : 'street',
+            label : 'Calle'
+          },
+          {
+            field : 'outer_number',
+            label : 'Número exterior'
+          },
+          {
+            field : 'inner_number',
+            label : 'Número interior'
+          },
+          {
+            field : 'zip_code',
+            label : 'Código postal'
+          },
+          {
+            field : 'colony',
+            label : 'Colonia'
+          },
+          {
+            field : 'city',
+            label : 'Ciudad'
+          },
+          {
+            field : 'state',
+            label : 'Estado'
+          },
+        ]);        
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
         UsersService.all().then(function (data) {
 
           $scope.usersAll = data;
 
           $scope.users = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.users);  
+
+          /*Generar XLS */       
 
           $scope.paginate(1);          
 
@@ -68,6 +166,12 @@
         	$scope.salary = $filter('decimal')($scope.salary);
 
         	$scope.users = UsersService.search($scope.find , $scope.usersAll , $scope.type , $scope.status , $scope.operatorEntryDate , $scope.entryDate , $scope.operatorSalary , $scope.salary );
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.users);  
+
+          /*Generar XLS */      
 
           $scope.paginate(1);
 

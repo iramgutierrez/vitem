@@ -29,11 +29,98 @@
             dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
         };
 
+
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_clientes';
+
+        $scope.headersExport = JSON.stringify([
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : 'name',
+            label : 'Nombre'
+          },
+          {
+            field : 'client_type_id',
+            label : 'Tipo de cliente'
+          },
+          {
+            field : 'email',
+            label : 'Correo electrónico'
+          },
+          {
+            field : 'phone',
+            label : 'Teléfono'
+          },
+          {
+            field : 'entry_date',
+            label : 'Cliente desde'
+          },
+          {
+            field : 'rfc',
+            label : 'RFC'
+          },
+          {
+            field : 'business_name',
+            label : 'Razón social'
+          },
+          {
+            field : 'address',
+            label : 'Dirección'
+          },
+          {
+            field : 'street',
+            label : 'Calle'
+          },
+          {
+            field : 'outer_number',
+            label : 'Número exterior'
+          },
+          {
+            field : 'inner_number',
+            label : 'Número interior'
+          },
+          {
+            field : 'zip_code',
+            label : 'Código postal'
+          },
+          {
+            field : 'colony',
+            label : 'Colonia'
+          },
+          {
+            field : 'city',
+            label : 'Ciudad'
+          },
+          {
+            field : 'state',
+            label : 'Estado'
+          },
+        ]);        
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
         ClientsService.all().then(function (data) {
 
           $scope.clientsAll = data;
 
           $scope.clients = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.clients);  
+
+          /*Generar XLS */       
 
           $scope.paginate(1);
 
@@ -66,6 +153,12 @@
         {
           
         	$scope.clients = ClientsService.search($scope.find , $scope.clientsAll , $scope.type , $scope.status , $scope.operatorEntryDate , $scope.entryDate );
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.clients);  
+
+          /*Generar XLS */      
 
           $scope.paginate(1);
 

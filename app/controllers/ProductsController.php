@@ -37,8 +37,78 @@ class ProductsController extends \BaseController {
 			'1' => 'Disponible'
 		];
 
+		$headersExport = [
+			[
+				'field' => 'id',
+            	'label' => 'Id'
+			],
+			[
+				'field' => 'key',
+            	'label' => 'Código'
+			],
+			[
+				'field' => 'name',
+            	'label' => 'Nombre'
+			],
+			[
+				'field' => 'stock',
+            	'label' => 'En almacen'
+			],	
+			[
+				'field' => 'model',
+			   	'label' => 'Modelo'
+			]
 
-		return View::make('products/index',compact('statuses'));
+		];
+
+		$stores = \Store::all();
+
+		foreach($stores as $k => $store)
+		{
+			$headersExport[] = [
+				'field' => [
+					'stores' => [
+						$k => [
+							'pivot' => 'quantity'
+						]
+					]
+				],
+				'label' => 'En sucursal '.$store->name
+			];
+		}
+
+		$headersExport = array_merge($headersExport , [
+							[
+								'field' => 'description',
+				            	'label' => 'Descripción'
+							],
+							[
+								'field' => 'cost',
+				            	'label' => 'Costo'
+							],
+							[
+								'field' => 'percent_gain',
+				            	'label' => 'Porcentaje de ganancia'
+							],
+							[
+								'field' => 'price',
+				            	'label' => 'Precio'
+							],
+							[
+								'field' => 'production_days',
+				            	'label' => 'Dias de producción'
+							],
+							[
+								'field' => [
+									'supplier' => 'name'
+								],
+				            	'label' => 'Proveedor'
+							]
+						]);
+
+		$headersExport = json_encode($headersExport);
+
+		return View::make('products/index',compact('statuses' , 'headersExport'));
 	}
 
 	/**
