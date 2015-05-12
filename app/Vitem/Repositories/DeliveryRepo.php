@@ -13,7 +13,7 @@ class DeliveryRepo extends BaseRepo {
 
 		$usersPermitted = \ACLFilter::generateAuthCondition();
 
-		$return = \Delivery::with(parent::with((['user', 'employee.user', 'sale' , 'destination' ])));
+		$return = \Delivery::with(parent::with((['user', 'employee.user', 'sale' , 'destination' , 'pay_type' ])));
 
 		if(count($usersPermitted))
 		{

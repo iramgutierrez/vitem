@@ -68,11 +68,9 @@
             })
           }
 
-          console.log($scope.headersExport);
-
           $scope.headersExport = JSON.stringify($scope.headersExport);
 
-        })     
+        });   
 
         $scope.generateJSONDataExport = function( data )
         { 

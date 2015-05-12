@@ -41,6 +41,13 @@ class HomeController extends BaseController {
 	public function dashboard()
 	{
 
+		if(Auth::user()->role->level_id < 2)
+		{
+			Session::reflash();
+
+			return Redirect::route('users.show' , [Auth::user()->id]);
+		}
+
 		$stores = Store::lists('name' , 'id' );
 
 		$stores = $stores + [0 => 'Almacen'];

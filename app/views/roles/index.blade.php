@@ -122,13 +122,16 @@
 			                    </td>
 			                    <td ng-if="$first" rowspan="4">
 			                        <a href="@{{ role.url_show }}" >
-			                            <button type="button" class="col-sm-3 btn btn-success"><i class="fa fa-eye"></i></button>
+			                            <button type="button" class="col-sm-12 col-md-8 col-md-offset-2 btn btn-success"><i class="fa fa-eye"></i></button>
 			                        </a>
+                                    <br>
 			                        <a href="@{{ role.url_edit }}" >
-			                            <button  type="button" class="col-sm-3 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
+			                            <button  type="button" class="col-sm-12 col-md-8 col-md-offset-2 btn btn-info "><i class="fa fa-refresh"></i></button>
 			                        </a>
+                                    <br>
+                                    <br>
 			                        <a data-toggle="modal" href="#myModal@{{role.id}}" >
-			                            <button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+			                            <button type="button" class="col-sm-12 col-md-8 col-md-offset-2 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
 			                        </a>
 			                              <div class="modal fade" id="myModal@{{role.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			                                  <div class="modal-dialog">

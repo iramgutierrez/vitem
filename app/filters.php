@@ -91,4 +91,17 @@ Route::filter('csrf', function()
 
 
 
+Route::filter('Admin', function()
+{
+	if (Auth::check())
+	{
+		if(Auth::user()->role->level_id < 3)
+		{
+			return Redirect::to('/dashboard');
+		}
+	} 
+});
+
+
+
 Route::filter('ACL' , 'ACLFilter@check');

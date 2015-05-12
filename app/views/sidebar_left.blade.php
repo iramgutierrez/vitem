@@ -10,114 +10,188 @@
                       </a>
                   </li>
 
-                  <li class="sub-menu">
+                  @if(Auth::user()->role->level_id >= 2)
+                  <li class="sub-menu" data-entities="user" data-actions="read,create" data-permissions >
                       <a href="javascript:;" >
                           <i class="fa fa-users"></i>
                           <span>Usuarios</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('users.index') }}">Ver todos</a></li>
-                          <li><a  href="{{ route('users.create') }}">Agregar usuario</a></li>
+                          <li data-entities="user" data-actions="read" data-permissions ><a  href="{{ route('users.index') }}">Ver todos</a></li>
+                          <li data-entities="user" data-actions="create" data-permissions ><a  href="{{ route('users.create') }}">Agregar usuario</a></li>
                       </ul>
                   </li>
+                  @endif
 
-                  <li class="sub-menu">
+                  @if(Auth::user()->role->level_id >= 2)
+                  <li class="sub-menu" data-entities="role" data-actions="read,create" data-permissions >
                       <a href="javascript:;" >
-                          <i class="fa fa-truck"></i>
+                          <i class="fa fa-users"></i>
+                          <span>Roles</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="role" data-actions="read" data-permissions ><a  href="{{ route('roles.index') }}">Ver todos</a></li>
+                          <li data-entities="role" data-actions="create" data-permissions ><a  href="{{ route('roles.create') }}">Agregar rol</a></li>
+                      </ul>
+                  </li>
+                  @endif
+
+                  @if(Auth::user()->role->level_id >= 3)
+
+                  <li class="sub-menu" data-entities="store" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-home"></i>
+                          <span>Sucursales</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('stores.index') }}">Ver todas</a></li>
+                          <li data-entities="store" data-actions="create" data-permissions ><a  href="{{ route('stores.create') }}">Agregar sucursal</a></li>
+                      </ul>
+                  </li>
+                  @endif
+
+                  <li class="sub-menu" data-entities="product" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-shopping-cart"></i>
                           <span>Productos</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('products.index') }}">Ver todos</a></li>
-                          <li><a  href="{{ route('products.create') }}">Agregar producto</a></li>
+                          <li data-entities="product" data-actions="read" data-permissions ><a  href="{{ route('products.index') }}">Ver todos</a></li>
+                          <li data-entities="product" data-actions="create" data-permissions ><a  href="{{ route('products.create') }}">Agregar producto</a></li>
                       </ul>
                   </li>
 
-                  <li class="sub-menu">
+                  <li class="sub-menu" data-entities="pack" data-actions="read,create" data-permissions >
                       <a href="javascript:;" >
-                          <i class="fa fa-truck"></i>
+                          <i class="fa fa-shopping-cart"></i>
                           <span>Paquetes</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('packs.index') }}">Ver todos</a></li>
-                          <li><a  href="{{ route('packs.create') }}">Agregar paquete</a></li>
+                          <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('packs.index') }}">Ver todos</a></li>
+                          <li data-entities="pack" data-actions="create" data-permissions ><a  href="{{ route('packs.create') }}">Agregar paquete</a></li>
                       </ul>
                   </li>
 
-
-                  <li class="sub-menu">
+                  <li class="sub-menu" data-entities="sale,sale_payment,commission,delivery" data-actions="read,create" data-permissions >
                       <a href="javascript:;" >
                           <i class="fa fa-shopping-cart"></i>
                           <span>Ventas</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('sales.index') }}">Ver todas</a></li>
-                          <li><a  href="{{ route('sales.create') }}">Agregar venta</a></li>
-                          <li><a  href="{{ route('sale_payments.create') }}">Agregar abono</a></li>
-                          <li><a  href="{{ route('commissions.create') }}">Agregar comisiones</a></li>
-                          <li><a  href="{{ route('deliveries.create') }}">Agregar entrega</a></li>
+                          <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('sales.index') }}">Ver todas</a></li>
+                          <li data-entities="sale" data-actions="create" data-permissions ><a  href="{{ route('sales.create') }}">Agregar venta</a></li>
+                          <li data-entities="sale_payment" data-actions="create" data-permissions ><a  href="{{ route('sale_payments.create') }}">Agregar abono</a></li>
+                          <li data-entities="commission" data-actions="create" data-permissions ><a  href="{{ route('commissions.create') }}">Agregar comisiones</a></li>
+                          <li data-entities="delivery" data-actions="create" data-permissions ><a  href="{{ route('deliveries.create') }}">Agregar entrega</a></li>
                       </ul>
                   </li>
 
-                  <li class="sub-menu">
-                      <a href="javascript:;" >
-                          <i class="fa fa-users"></i>
-                          <span>Clientes</span>
-                      </a>
-                      <ul class="sub">
-                          <li><a  href="{{ route('clients.index') }}">Ver todos</a></li>
-                          <li><a  href="{{ route('clients.create') }}">Agregar cliente</a></li>
-                      </ul>
-                  </li>
+                  @if(Auth::user()->role->level_id >= 2)
 
-                  <li class="sub-menu">
+                  <li class="sub-menu" data-entities="supplier" data-actions="read,create" data-permissions >
                       <a href="javascript:;" >
                           <i class="fa fa-truck"></i>
                           <span>Proveedores</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('suppliers.index') }}">Ver todos</a></li>
-                          <li><a  href="{{ route('suppliers.create') }}">Agregar proveedor</a></li>
+                          <li data-entities="supplier" data-actions="read" data-permissions ><a  href="{{ route('suppliers.index') }}">Ver todos</a></li>
+                          <li data-entities="supplier" data-actions="create" data-permissions ><a  href="{{ route('suppliers.create') }}">Agregar proveedor</a></li>
                       </ul>
                   </li>
 
-                  <li class="sub-menu">
+                  @endif
+
+                  @if(Auth::user()->role->level_id >= 2)
+
+                  <li class="sub-menu" data-entities="delivery" data-actions="read,create" data-permissions >
                       <a href="javascript:;" >
-                          <i class="fa fa-truck"></i>
+                          <i class="fa fa-map-marker"></i>
+                          <span>Entregas</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="delivery" data-actions="read" data-permissions ><a  href="{{ route('deliveries.index') }}">Ver todas</a></li>
+                          <li data-entities="delivery" data-actions="create" data-permissions ><a  href="{{ route('deliveries.create') }}">Agregar entrega</a></li>
+                      </ul>
+                  </li>
+                  @endif
+                  @if(Auth::user()->role->level_id >= 2)
+                  <li class="sub-menu" data-entities="destination" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-map-marker"></i>
                           <span>Destinos para entregas</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('destinations.index') }}">Ver todos</a></li>
-                          <li><a  href="{{ route('destinations.create') }}">Agregar destino</a></li>
+                          <li data-entities="destination" data-actions="read" data-permissions ><a  href="{{ route('destinations.index') }}">Ver todos</a></li>
+                          <li data-entities="destination" data-actions="create" data-permissions ><a  href="{{ route('destinations.create') }}">Agregar destino</a></li>
                       </ul>
                   </li>
-                  <li class="sub-menu">
+                  @endif
+                  @if(Auth::user()->role->level_id >= 2)
+                  <li class="sub-menu" data-entities="order" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-truck"></i>
+                          <span>Pedidos</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="order" data-actions="read" data-permissions ><a  href="{{ route('orders.index') }}">Ver todos</a></li>
+                          <li data-entities="order" data-actions="create" data-permissions ><a  href="{{ route('orders.create') }}">Agregar pedido</a></li>
+                      </ul>
+                  </li>
+                  @endif
+                  @if(Auth::user()->role->level_id >= 2)
+                  <li class="sub-menu" data-entities="client" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-users"></i>
+                          <span>Clientes</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="client" data-actions="read" data-permissions ><a  href="{{ route('clients.index') }}">Ver todos</a></li>
+                          <li data-entities="client" data-actions="create" data-permissions ><a  href="{{ route('clients.create') }}">Agregar cliente</a></li>
+                      </ul>
+                  </li>
+                  @endif
+                  @if(Auth::user()->role->level_id >= 2)
+                  <li class="sub-menu" data-entities="expense" data-actions="read,create" data-permissions >
                       <a href="javascript:;" >
                           <i class="fa fa-dollar"></i>
                           <span>Gastos</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('expenses.index') }}">Ver todos</a></li>
-                          <li><a  href="{{ route('expenses.create') }}">Agregar gasto</a></li>
+                          <li data-entities="expense" data-actions="read" data-permissions ><a  href="{{ route('expenses.index') }}">Ver todos</a></li>
+                          <li data-entities="expense" data-actions="create" data-permissions ><a  href="{{ route('expenses.create') }}">Agregar gasto</a></li>
                       </ul>
                   </li>
-                  <li class="sub-menu">
+                  @endif
+                  @if(Auth::user()->role->level_id >= 3)
+                  <li class="sub-menu" data-entities="sale,user" data-actions="read" data-permissions >
                       <a href="javascript:;" >
                           <i class="fa fa-dollar"></i>
                           <span>Reportes</span>
                       </a>
                       <ul class="sub">
-                          <li><a  href="{{ route('reports.sales') }}">Reporte de ventas</a></li>
+                          <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('reports.sales') }}">Reporte de ventas</a></li>
+                          <li data-entities="user" data-actions="read" data-permissions ><a  href="{{ route('reports.compare_sellers') }}">Comparador de vendedores</a></li>
+                          <li data-entities="user" data-actions="read" data-permissions ><a  href="{{ route('reports.compare_drivers') }}">Comparador de choferes</a></li>
                       </ul>
                   </li>
+                  @endif
 
-                  <li class="sub-menu">
-                      <a href="{{ route('settings.index') }}" >
+                  @if(Auth::user()->role->level_id >= 2)
+
+                  <li class="sub-menu"  data-entities="setting,pay_type,expense_type,client_type" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
                           <i class="fa fa-cogs"></i>
                           <span>Configuraciónes</span>
                       </a>
+                      <ul class="sub">
+                          <li data-entities="setting" data-actions="read,create" data-permissions ><a  href="{{ route('settings.index') }}">Configuraciones generales</a></li>
+                          <li data-entities="pay_type" data-actions="read" data-permissions ><a  href="{{ route('pay_types.index') }}">Terminales de pago</a></li>
+                          <li data-entities="expense_type" data-actions="read" data-permissions ><a  href="{{ route('expense_types.index') }}">Tipos de gastos</a></li>
+                          <li data-entities="client_type" data-actions="read" data-permissions ><a  href="{{ route('client_types.index') }}">Tipos de clientes</a></li>
+                      </ul>
                   </li>
 
-
+                  @endif
                   <!--<li class="sub-menu">
                       <a href="javascript:;" >
                           <i class="fa fa-book"></i>

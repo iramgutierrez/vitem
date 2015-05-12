@@ -64,6 +64,9 @@
 				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> productos</p>        
 				<button type="button" ng-click="clear()" class="pull-right btn btn-info">Limpiar filtros</button>
 			</div>
+
+        @if(Auth::user()->role->level_id >= 3)
+
 			 <!-- Generar XLS -->
         
         <div class="clearfix"></div>
@@ -118,6 +121,9 @@
         {{ Form::close() }}
 
         <!-- Generar XLS -->
+
+        @endif
+        
 			<div class="clearfix"></div>
 			<hr>
 			<table  class="display table table-bordered table-striped col-sm-12" id="dynamic-table" >

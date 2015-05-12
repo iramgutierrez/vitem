@@ -11,8 +11,6 @@
 
       })
 
-      console.log(stores);
-
     })
 
  }

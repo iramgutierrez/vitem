@@ -14,6 +14,52 @@
         $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
         $scope.viewGrid = 'list';
 
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_destinos';
+
+        $scope.dataExport = false;
+
+        $scope.headersExport = JSON.stringify([
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : 'cost',           
+            label : 'Costo'
+          },
+          {
+            field : 'value_string',           
+            label : 'Tipo'
+          },
+          {
+            field : 'zip_code',           
+            label : 'Código postal'
+          },
+          {
+            field : 'colony',           
+            label : 'Colonia'
+          },
+          {
+            field : 'town',           
+            label : 'Ciudad'
+          },
+          {
+            field : 'state',           
+            label : 'Estado'
+          }
+        ]);   
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
         $scope.init = function() 
         { 
           
@@ -45,6 +91,12 @@
           $scope.destinationsAll = data;
 
           $scope.destinations = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.destinations);  
+
+          /*Generar XLS */      
 
           $scope.search(true);
 
@@ -99,6 +151,12 @@
           {
           
             $scope.destinations = DestinationsService.search($scope.find , $scope.destinationsAll , $scope.type );
+
+            /*Generar XLS */
+
+            $scope.dataExport = $scope.generateJSONDataExport($scope.destinations);  
+
+            /*Generar XLS */      
 
             
           }

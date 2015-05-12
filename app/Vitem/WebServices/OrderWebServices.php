@@ -62,4 +62,15 @@ class OrderWebServices extends BaseWebServices {
 
 		return \Response::json($products);
 	}
+
+	static function getMaxProducts()
+	{
+		return $maxProducts = \DB::table('order_product')
+					->select(\DB::raw('order_id') , \DB::raw('count(*) as count'))
+					->groupBy('order_id')
+					->orderBy('count' ,'desc')
+					->take(1)
+					->first()
+					->count; 
+	}
 }

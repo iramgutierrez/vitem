@@ -34,6 +34,16 @@ return array(
 
 	'supplier' => 'proveedores',
 
+	'pay_type' => 'formas de pago',
+
+	'order' => 'pedidos',
+
+	'store' => 'sucursales',
+
+	'expense_type' => 'tipos de gastos',
+
+	'client_type' => 'tipos de clientes',
+
 	'create' => 'crear',
 
 	'read' => 'ver' ,

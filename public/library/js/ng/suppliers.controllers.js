@@ -15,11 +15,91 @@
         $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
         $scope.viewGrid = 'list';
 
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_proveedores';
+
+        $scope.dataExport = false;
+
+        $scope.headersExport = JSON.stringify([
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : 'name',
+            label : 'Nombre'
+          },
+          {
+            field : 'rfc',
+            label : 'RFC'
+          },
+          {
+            field : 'business_name',
+            label : 'Razón social'
+          },      
+          {
+            field : 'email',
+            label : 'Correo electrónico'
+          },
+          {
+            field : 'phone',
+            label : 'Teléfono'
+          },
+          {
+            field : 'address',
+            label : 'Dirección'
+          },
+          {
+            field : 'street',
+            label : 'Calle'
+          },
+          {
+            field : 'outer_number',
+            label : 'Número exterior'
+          },
+          {
+            field : 'inner_number',
+            label : 'Número interior'
+          },
+          {
+            field : 'zip_code',
+            label : 'Código postal'
+          },
+          {
+            field : 'colony',
+            label : 'Colonia'
+          },
+          {
+            field : 'city',
+            label : 'Ciudad'
+          },
+          {
+            field : 'state',
+            label : 'Estado'
+          },
+        ]);   
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
         SuppliersService.all().then(function (data) {
 
           $scope.suppliersAll = data;
 
           $scope.suppliers = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.suppliers);  
+
+          /*Generar XLS */      
 
           $scope.paginate(1);
 
@@ -52,6 +132,12 @@
         {
           
         	$scope.suppliers = SuppliersService.search($scope.find , $scope.suppliersAll , $scope.status );
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.suppliers);  
+
+          /*Generar XLS */      
 
           $scope.paginate(1);
 

@@ -177,7 +177,8 @@ return array(
 		'percent_gain' => 'porcentaje de ganancia',
 		'showDetailsInputs' => ' ',
 		'store_id' => 'sucursal',
-		'percent_cleared_payment_type' => 'porcentaje pagado'
+		'percent_cleared_payment_type' => 'porcentaje pagado',
+		'order_date' => 'fecha de entrega'
 
 	),
 

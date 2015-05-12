@@ -30,6 +30,11 @@ class Delivery extends \Eloquent {
         return $this->belongsTo('Destination');
     }
 
+    public function pay_type()
+    {
+        return $this->belongsTo('PayType');
+    }
+
     public function getUrlEditAttribute()
 	{
 	    return URL::route('deliveries.edit', [$this->id]);

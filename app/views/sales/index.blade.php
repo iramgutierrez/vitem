@@ -65,6 +65,22 @@
 				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> ventas</p>        
 				<button type="button" ng-click="clear()" class="pull-right btn btn-info">Limpiar filtros</button>
 			</div>
+
+        @if(Auth::user()->role->level_id >= 3)
+
+			<!-- Generar XLS -->
+        
+        <div class="clearfix"></div>
+
+        <hr>
+        	<a href="{{ route('reports.sales') }}">
+            
+	            <button type="button" class="pull-right btn btn-success" >Reporteador de ventas</button>
+	        
+	        </a>
+        <!-- Generar XLS -->
+
+        @endif
 			<div class="clearfix"></div>
 			<hr>
 			<table  class="display table table-bordered table-striped col-sm-12" id="dynamic-table" >

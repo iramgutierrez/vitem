@@ -739,7 +739,7 @@
 
       $scope.drivers = {};
 
-      UsersService.getByRoleId(6).then(function (data) {
+      UsersService.API('getDrivers').then(function (data) {
 
             $scope.driversAll = data;
 
@@ -1497,7 +1497,7 @@
 
       $scope.sellers = {};
 
-      UsersService.getByRoleId(7).then(function (data) {
+      UsersService.API('getSellers').then(function (data) {
 
             $scope.sellersAll = data;
 

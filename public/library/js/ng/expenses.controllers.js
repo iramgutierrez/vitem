@@ -14,6 +14,64 @@
         $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
         $scope.viewGrid = 'list';
 
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_entregas';
+
+        $scope.dataExport = false;
+
+        $scope.headersExport = JSON.stringify([
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : {
+              employee: {
+                user : 'name'
+              }
+            },
+            label : 'Empleado'
+          },
+          {
+            field : {
+              store: 'name'
+            },
+            label : 'Sucursal'
+          },
+          {
+            field : {
+              expense_type: 'name'
+            },
+            label : 'Tipo de gasto'
+          },
+          {
+            field : 'date',
+            label : 'Fecha'
+          },
+          {
+            field : 'concept',
+            label : 'Concepto'
+          },
+          {
+            field : 'description',
+            label : 'Descripción'
+          },
+          {
+            field : 'quantity',
+            label : 'Cantidad'
+          },
+        ]);   
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
         $scope.init = function() 
         { 
           
@@ -45,6 +103,12 @@
           $scope.expensesAll = data;
 
           $scope.expenses = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.expenses);  
+
+          /*Generar XLS */      
 
           $scope.search(true);
 
@@ -100,6 +164,11 @@
           
             $scope.expenses = ExpensesService.search($scope.find , $scope.expensesAll , $scope.type );
 
+            /*Generar XLS */
+
+            $scope.dataExport = $scope.generateJSONDataExport($scope.expenses);  
+
+            /*Generar XLS */      
             
           }
 

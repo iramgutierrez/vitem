@@ -9,7 +9,12 @@ class ReportsController extends \BaseController {
 	public function __construct()
 	{
 
+
+		$this->beforeFilter('Admin');
+
 		$this->beforeFilter('ACL:Sale,Read', ['only' => [ 'sales'  ] ]);
+
+		$this->beforeFilter('ACL:User,Read', ['only' => [ 'compare_sellers' , 'compare_drivers'  ] ]);
 		
 	}
 
@@ -157,7 +162,8 @@ class ReportsController extends \BaseController {
 
 				$labelXLS = '';
 
-				if(!empty($header['field'])){
+				if(!empty($header['field']))
+				{
 
 					if( is_array($header['field']) )
 					{
@@ -175,15 +181,17 @@ class ReportsController extends \BaseController {
 							}
 						}
 
-						/*$subkey = array_keys($header['field'])[0];
+						if(isset($record[$subkey]))
+						{
 
-						$subheader = array_values($header['field'])[0];*/
+							$fieldXLS = $this->getFieldArray($subheader , $record[$subkey]);
 
-						$fieldXLS = $this->getFieldArray($subheader , $record[$subkey]);
+						}
 
 					}else
 					{
-						$fieldXLS = $record[ $header['field'] ];
+						if(isset($record[ $header['field'] ]))
+							$fieldXLS = $record[ $header['field'] ];
 					}
 				}
 
@@ -276,7 +284,8 @@ class ReportsController extends \BaseController {
 
 		}else
 		{
-			$fieldXLS = $record[ $field ];
+			if(isset($record[ $field ]))
+				$fieldXLS = $record[ $field ];
 		}
 
 		return $fieldXLS;

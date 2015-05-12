@@ -14,6 +14,81 @@
         $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
         $scope.viewGrid = 'list';
 
+        /*Generar XLS */
+
+        $scope.filename = 'reporte_entregas';
+
+        $scope.dataExport = false;
+
+        $scope.headersExport = JSON.stringify([
+          {
+            field : 'id',
+            label : 'Id'
+          },
+          {
+            field : {
+              sale: 'sheet'
+            },
+            label : 'Folio de venta'
+          },
+          {
+            field : {
+              employee: {
+                user : 'name'
+              }
+            },
+            label : 'Chofer'
+          },
+          {
+            field : {
+              destination: 'value_string'
+            },
+            label : 'Tipo de destino'
+          },
+          {
+            field : {
+              destination: 'value_type'
+            },
+            label : 'Destino'
+          },
+          {
+            field : 'address',
+            label : 'Direción'
+          },
+          {
+            field : 'delivery_date',
+            label : 'Fecha de entrega'
+          },
+          {
+            field : 'subtotal',
+            label : 'Total de la entrega'
+          },
+          {
+            field : {
+              pay_type: 'name'
+            },
+            label : 'Forma de pago'
+          },
+          {
+            field : 'commission_pay',
+            label : 'Comisión por forma de pago'
+          },
+          {
+            field : 'total',
+            label : 'Total en caja'
+          },
+        ]);   
+
+        $scope.generateJSONDataExport = function( data )
+        { 
+
+          return JSON.stringify(data);
+
+        }
+
+        /*Generar XLS */
+
+
         $scope.init = function() 
         { 
           
@@ -47,6 +122,12 @@
           $scope.deliveriesAll = data;
 
           $scope.deliveries = data;
+
+          /*Generar XLS */
+
+          $scope.dataExport = $scope.generateJSONDataExport($scope.deliveries);  
+
+          /*Generar XLS */      
 
           $scope.search(true);
 
@@ -101,6 +182,12 @@
           {
           
             $scope.deliveries = DeliveriesService.search($scope.find , $scope.deliveriesAll );
+
+            /*Generar XLS */
+
+            $scope.dataExport = $scope.generateJSONDataExport($scope.deliveries);  
+
+            /*Generar XLS */      
 
             
           }
@@ -290,7 +377,7 @@
 
       $scope.drivers = {};
 
-      UsersService.getByRoleId(6).then(function (data) {
+      UsersService.API('getDrivers').then(function (data) {
 
             $scope.driversAll = data;
 
@@ -516,7 +603,7 @@
 
       $scope.drivers = {};
 
-      UsersService.getByRoleId(6).then(function (data) {
+      UsersService.API('getSellers').then(function (data) {
 
             $scope.driversAll = data;
 

@@ -31,11 +31,11 @@
     <div class="panel-body" ng-app="settings">
     	{{ Form::model( $settings ,['route' => 'settings.store',  'name' => 'addsettingForm' , 'method' => 'POST', 'class' => 'form-inline' ,'role' => 'form', 'novalidate' , 'enctype' =>  'multipart/form-data' , 'ng-controller' => 'FormController'  ]) }}
 
-	        <div class="form-group col-md-12 col-sm-12">
+	        {{-- <div class="form-group col-md-12 col-sm-12">
 
 	        	@include('settings/fields/residue')                                   
             	
-            </div> 
+            </div> --}}
 
             <div class="form-group col-md-12 col-sm-12">
 
@@ -67,11 +67,11 @@
 
 			</div>
 
-            <div class="form-group col-md-12 col-sm-12">
+            {{--<div class="form-group col-md-12 col-sm-12">
 
                 @include('settings/fields/add_residue_new_order')
 
-            </div>
+            </div>--}}
 
 		<div class="form-group col-md-12 ">
 	        

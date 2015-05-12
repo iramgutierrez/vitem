@@ -30,8 +30,7 @@ class ProductsController extends \BaseController {
 	 * @return Response
 	 */
 	public function index()
-	{
-
+	{	
 		$statuses = [
 			'0' => 'No disponible',
 			'1' => 'Disponible'

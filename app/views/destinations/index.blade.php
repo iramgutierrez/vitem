@@ -63,6 +63,66 @@
             <p class="col-sm-2"><span class="badge bg-success">@{{destinations.length}}</span> destinos</p>        
             <button type="button" ng-click="clear()" class="pull-right btn btn-info">Limpiar filtros</button>
         </div>
+
+        @if(Auth::user()->role->level_id >= 3)
+        
+        <!-- Generar XLS -->
+        
+        <div class="clearfix"></div>
+
+        <hr>
+
+        {{ Form::open(['route' => 'reports.generate_custom_xls' ,'class' => 'col-sm-12']) }}
+
+            {{
+
+                Field::hidden(
+                    'headersExport',
+                    '',
+                    [
+                        'ng-model' => 'headersExport',
+                        'ng-value' => 'headersExport'
+                    ]
+                )
+
+            }} 
+
+            {{
+
+                Field::hidden(
+                    'dataExport',
+                    null,
+                    [
+                        'ng-model' => 'dataExport',
+                        'ng-value' => 'dataExport',
+                        'ng-init' => 'generateJSONDataExport()',
+                        'ng-change' => 'dataExport = generateJSONDataExport()'
+                    ]
+                )
+
+            }}
+
+            {{
+
+                Field::hidden(
+                    'filename',
+                    null,
+                    [
+                        'ng-model' => 'filename',
+                        'ng-value' => 'filename'
+                    ]
+                )
+
+            }}
+
+            <button type="submit" class="pull-right btn btn-success" ng-disabled="!dataExport">Generar XLS</button>
+
+        {{ Form::close() }}
+
+        <!-- Generar XLS -->
+
+        @endif
+        
         <div class="clearfix"></div>
         <hr>
         <table  class="display table table-bordered table-striped col-sm-12" id="dynamic-table" >

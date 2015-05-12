@@ -323,9 +323,6 @@
 
               });
 
-
-              console.log($scope.products);
-
           });
 
       }   

@@ -28,6 +28,75 @@
                 dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
             };
 
+            /*Generar XLS */
+
+            $scope.filename = 'reporte_pedidos';
+
+            $scope.dataExport = false;
+
+            $scope.headersExport = [
+              {
+                field : 'id',
+                label : 'Id'
+              },
+              {
+                field : {
+                  supplier: 'name'
+                },
+                label : 'Proveedor'
+              },
+              {
+                field : 'order_date',
+                label : 'Fecha de llegada'
+              },
+              {
+                field : 'total',
+                label : 'Total'
+              },
+            ];     
+
+            OrdersService.API('getMaxProducts').then(function (count) {
+
+              for(c = 0; c < count; c++)
+              {
+                products = []
+
+                products[c] = 'name';
+
+                $scope.headersExport.push({
+                  field : {
+                    products : products
+                  },
+                  label : 'Producto ' + (c+1)
+                });
+
+                products = []
+
+                products[c] = {
+                  'pivot' : 'quantity'
+                };
+
+                $scope.headersExport.push({
+                  field : {
+                    products : products
+                  },
+                  label : 'Cantidad de producto ' + (c+1)
+                })
+              }
+
+              $scope.headersExport = JSON.stringify($scope.headersExport);
+
+            });
+
+            $scope.generateJSONDataExport = function( data )
+            { 
+
+              return JSON.stringify(data);
+
+            }
+
+            /*Generar XLS */
+
             $scope.init = function() 
             { 
               
@@ -60,6 +129,12 @@
               $scope.ordersAll = data;
 
               $scope.orders = data;
+
+              /*Generar XLS */
+
+              $scope.dataExport = $scope.generateJSONDataExport($scope.orders);  
+
+              /*Generar XLS */      
 
               $scope.search(true);
 
@@ -114,6 +189,12 @@
               { 
                 
                 $scope.orders = OrdersService.search($scope.find , $scope.ordersAll , $scope.operatorOrderDate , $scope.orderDate);
+
+                  /*Generar XLS */
+
+                  $scope.dataExport = $scope.generateJSONDataExport($scope.orders);  
+
+                  /*Generar XLS */      
 
                 
               }

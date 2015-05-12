@@ -9,7 +9,7 @@ class Destination extends \Eloquent {
 
 	protected $fillable = ['cost' , 'type' , 'zip_code' , 'colony' , 'town' , 'state' ];
 
-	protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'value_type' ];
+	protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'value_type' , 'value_string' ];
 
 	public function User()
     {
@@ -50,6 +50,32 @@ class Destination extends \Eloquent {
 	    		break;
 	    	case 4:
 	    		$value = $this->state;
+	    		break;
+	    }
+
+
+	    return $value;
+	}
+
+    public function getValueStringAttribute()
+	{
+
+		$value = '';
+
+	    switch($this->type)
+	    {
+	    
+	    	case 1:
+	    		$value = 'Código postal';
+	    		break;
+	    	case 2:
+	    		$value = 'Colonia';
+	    		break;
+	    	case 3:
+	    		$value = 'Ciudad';
+	    		break;
+	    	case 4:
+	    		$value = 'Estado';
 	    		break;
 	    }
 

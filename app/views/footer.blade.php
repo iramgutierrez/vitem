@@ -1,7 +1,7 @@
 <!--footer start-->
       <footer class="site-footer">
           <div class="text-center">
-               2013 &copy; FlatLab by VectorLab.
+               2015 &copy; &nbsp; <a style="color : #fff; " href="http://iramgutierrez.com" target="_blank">iramgutierrez.com</a>.
               <a href="#" class="go-top">
                   <i class="fa fa-angle-up"></i>
               </a>
@@ -32,6 +32,19 @@
 
     <!--common script for all pages-->
     <script src="{{ asset('library/js/common-scripts.js') }}"></script>
+
+    <script src="{{ asset('library/js/sidebar_left.js' ) }}"></script>
+
+    <script type="text/javascript" >
+
+    (function (){
+
+      var a = new getPermissions();
+
+      console.log(a.get('{{ Auth::user()->role_id }}'));
+    })();
+
+    </script>
 
     @if( Auth::user()->role->level_id >= 3)
     
