@@ -5,10 +5,30 @@ class ProductRepo extends BaseRepo {
 
 	public function getModel()
 	{
-		return new Product;
+		return new \Product;
 	}
 
 	protected static $products;
+
+	public function search($find , $store_id)
+	{
+
+		self::$products = \Product::with('stores');
+
+		self::generateLikeCondition( $find , ['id' , 'name' , 'key' , 'model']);
+
+		self::$products->whereIn('id', function ($query) use ($store_id) {
+
+				$query->select(\DB::raw('product_id'))
+						->from('product_store')
+						->where('store_id' , $store_id)
+						->where('product_store.quantity' , '>' , 0);
+
+			});
+
+		return self::$products->get();
+
+	}
 
 
 	static function all(){
@@ -19,9 +39,27 @@ class ProductRepo extends BaseRepo {
 
 	static function getByField( $field , $search)
 	{
-		$users = \Product::where($field , $search)->get();
+		$products = \Product::where($field , $search)->get();
 
-		return $users;
+		return $products;
+	}
+
+	static function getByKeyAndStore( $key , $store_id)
+	{
+		$products = \Product::where('key' , $key);
+
+		$products = $products->whereIn('id', function ($query) use ($store_id) {
+
+				$query->select(\DB::raw('product_id'))
+						->from('product_store')
+						->where('store_id' , $store_id)
+						->where('product_store.quantity' , '>' , 0);
+
+			});
+
+		$products = $products->first();
+
+		return $products;
 	}
 
 	static function findByPage($page , $perPage , $find , $status ,$supplier_id = false)

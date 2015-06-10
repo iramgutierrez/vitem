@@ -371,4 +371,19 @@ class ProductsController extends \BaseController {
 
 	}
 
+	public function findRemote($find = ''){
+
+		header('Access-Control-Allow-Origin: http://localhost:9000');
+		
+		$product = [
+			'results' => [
+				'firstName' => 'Iram'
+			]
+
+		];
+
+		return \Response::json($product);
+
+	}
+
 }

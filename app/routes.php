@@ -13,10 +13,14 @@
 
 //Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
 
+Route::get('POS/{method?}' , ['as' => 'POS', 'uses' => 'POSController@API']);
+
 Route::group(['before' => 'guest'], function () {
 
 	Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
 	Route::post('/login', ['as' => 'login', 'uses' => 'AuthController@login']);
+
+	Route::get('API/products/findRemote/{find?}' , ['as' => 'productsAPI', 'uses' => 'ProductsController@findRemote']);
 
 });
 

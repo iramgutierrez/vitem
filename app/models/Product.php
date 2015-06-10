@@ -8,7 +8,7 @@ class Product extends \Eloquent {
 
 	protected $fillable = ['key' , 'name' , 'stock' , 'model' , 'description' , 'supplier_id' , 'image' , 'price' , 'cost' , 'production_days' , 'user_id' , 'status' ];
 
-	 protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'image_url' ];
+	 protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'image_url' , 'stock_in_stores'];
 
 	public function Supplier()
     {
@@ -54,6 +54,20 @@ class Product extends \Eloquent {
 	{
 		$image = ($this->image) ?  $this->image : 'default.jpg';
 		return URL::asset('images_products/'. $image);
+	}
+
+	public function getStockInStoresAttribute()
+	{
+		$stores = $this->stores;
+
+		$stocks = [];
+
+		foreach($stores as $k => $store)
+		{
+			$stocks[$store->id] = $store->pivot->quantity;
+		}
+
+		return $stocks;
 	}
 
 	public static function boot()

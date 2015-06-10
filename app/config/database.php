@@ -57,7 +57,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'vitem',
 			'username'  => 'root',
-			'password'  => 'sofiiavgg',
+			'password'  => 'gigigo',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

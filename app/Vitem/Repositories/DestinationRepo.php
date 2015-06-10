@@ -11,7 +11,7 @@ class DestinationRepo extends BaseRepo {
 
 	public function getModel()
     {
-        return new Destination;
+        return new \Destination;
     }
 
 	static function all(){
@@ -89,6 +89,17 @@ class DestinationRepo extends BaseRepo {
 
 		self::$destinations->skip($offset)
 					   ->take($perPage);
+
+	}
+
+	public function search($find)
+	{
+
+		self::$destinations = \Destination::with('user');
+
+		self::generateLikeCondition( $find , ['id' , 'zip_code' , 'colony' , 'town' , 'state']);
+
+		return self::$destinations->get();
 
 	}
 
