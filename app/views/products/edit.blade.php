@@ -86,7 +86,20 @@
 </div>                               		     
 <div class="form-group col-md-6 col-sm-12">
 
-  @if(Auth::user()->role->level_id >= 3)
+
+  {{ Field::text(
+   'stock', 
+   0 , 
+   [ 
+     'class' => 'col-md-12' , 
+     'placeholder' => 'Ingresa la cantidad',
+     'ng-model' => 'stock',
+     'ng-init' => 'stock = '.$product->stock
+   ]
+   )
+  }}
+
+  {{--@if(Auth::user()->role->level_id >= 3)
 
     {{ Field::number(
         'stock', 
@@ -118,9 +131,9 @@
       )
     }}
 
-  @endif
+  @endif--}}
 
-  <?php echo
+  <?php /*echo
       Field::checkbox(
         'restrict', 
         '1',
@@ -133,10 +146,10 @@
         [
         'label-value' => 'Restringir la cantidad en sucursal a la cantidad en almacen ({{ stock }})',
         ]                                     
-      ) 
+      ) */
     ?>
 
-  @if(Auth::user()->role->level_id >= 3)    
+   {{--@if(Auth::user()->role->level_id >= 3)    
 
     @if($current_store)
 
@@ -154,15 +167,15 @@
                )
         }}
 
-    @else
+    @else--}}
 
-      <ul>
+      <!--<ul>
 
-        @foreach($stores as $k => $store)
+         @foreach($stores as $k => $store)
 
           <li>
 
-            <?php echo Field::number(
+            <?php /*echo Field::number(
                'ProductStore.'.$store->id.'.quantity', 
                $store->quantity , 
                [ 
@@ -173,18 +186,18 @@
                  'ng-init' => 'ProductStore['.$store->id.'].quantity = '.$store->quantity.'; ProductStore['.$store->id.'].quantity_pre = '.$store->quantity.'; ProductStore['.$store->id.'].quantity_init = '.$store->quantity,
                  'ng-change' => 'checkQuantityByStore('.$store->id.')'
                ]
-               );
+               );*/
             ?>
 
             <label for="ProductStore[{{$store->id}}][quantity]">Sucursal {{ $store->name }}</label>            
 
           </li> 
 
-        @endforeach
+        @endforeach 
 
-      </ul>
+      </ul>-->
 
-    @endif
+    {{--@endif
 
   @else
 
@@ -202,7 +215,7 @@
                )
         }}
 
-  @endif
+  @endif--}}
 
  {{--{{ Field::text(
  'stock', 
@@ -213,7 +226,10 @@
  ]
  )
 }}--}}
-</div>
+</div>                                     
+<div class="form-group col-md-6 col-sm-12">
+  @include('products/fields/colors')
+</div>  
 
 
       <div class="form-group col-md-6 col-sm-12">
@@ -586,6 +602,7 @@
 'library/js/ng/products.services.js',
 'library/js/ng/sales.services.js',
 'library/js/ng/suppliers.services.js',
+'library/js/ng/colors.services.js',
 'library/js/ng/directives.js',
 'library/js/jquery-ui-1.9.2.custom.min.js' ,
 'library/assets/bootstrap-fileupload/bootstrap-fileupload.js'

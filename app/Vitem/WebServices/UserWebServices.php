@@ -191,17 +191,11 @@ class UserWebServices extends BaseWebServices {
 			$sellers = $sellers->whereIn('store_id' , $storesPermitted);
 		}
 
-		if($store_id)
-		{
-			$sellers = $sellers->where('store_id' , $store_id);
-
-		}
-
 		$sellers = $sellers->where('role_id' ,function($query)
 		{
 			$query->select(\DB::raw('id'))
 				->from('roles')
-				->whereRaw('roles.slug = "seller"');
+				->whereRaw('roles.slug = "vendedor"');
 
 		})->get();
 

@@ -1,16 +1,10 @@
 (function () {
 
-  var app = angular.module('products', [
-    'products.controllers',
-    'products.filters',
-    'products.services',
-    'sales.services',
-    'suppliers.services',
-    'colors.services',
-    'directives'
-  ]).run([ '$q' , '$http' ,  '$rootScope' , function( $q , $http , $rootScope){
+  var app = angular.module('colors', [
+    'colors.controllers',
+    'colors.services'
 
-     $rootScope.user_permissions = [];
+  ]).run([ '$q' , '$http' ,  '$rootScope' , function( $q , $http , $rootScope){
 
      $rootScope.auth_permissions = [];
 

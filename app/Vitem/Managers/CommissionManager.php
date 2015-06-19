@@ -21,14 +21,18 @@ class CommissionManager extends BaseManager {
         if( $commissionValid )
         {
             
-            $commission = new \Commission( $commissionData ); 
+            $commission = new \Commission( $commissionData );
             
             $commission->save(); 
 
             $store_id = $commission->sale->store_id;
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( $commissionData['total']*(-1)  ) , $store_id );
+            if($commission->status_pay == 'pagado')
+            {
 
+                \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( $commissionData['total']*(-1)  ) , $store_id );
+   
+            }
             if($commission->type == 'sale_payments')
             {
 
@@ -106,6 +110,8 @@ class CommissionManager extends BaseManager {
 
         $this->commission = \Commission::find($commissionData['id']);
 
+        $commissionOld = $this->commission;
+
         $totalOld = $this->commission->total;
 
         $CommissionValidator = new CommissionValidator($this->commission);
@@ -119,15 +125,30 @@ class CommissionManager extends BaseManager {
         {
 
             $commission = $this->commission;
-            
-            $commission->update($commissionData); 
 
             $store_id = $commission->sale->store_id;
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($totalOld)  ) , $store_id );
+            if($commissionOld->status_pay == 'pagado')
+            { echo "entra 1";
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_commission',  ($commissionData['total'] *(-1)), $store_id  );
+                \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($totalOld)  ) , $store_id );
+    
+            }
+            if($commissionData['status_pay'] == 'pagado')
+            { echo "entra 2";
 
+                \Setting::checkSettingAndAddResidue('add_residue_new_commission',  ($commissionData['total'] *(-1)), $store_id  );
+  
+            }
+            
+            $commission->update($commissionData); 
+
+            /*echo $commissionOld->status_pay.'<br>';
+
+            echo $commissionData['status_pay'].'<br>';
+
+            exit();*/
+            //exit();
             if($commission->type == 'sale_payments')
             {
 
@@ -179,8 +200,12 @@ class CommissionManager extends BaseManager {
 
         $store_id = $commission->sale->store_id;
 
-        \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($commission->total)  ) , $store_id );
+        if($commission->status_pay == 'pagado')
+        {
 
+            \Setting::checkSettingAndAddResidue('add_residue_new_commission', ( ($commission->total)  ) , $store_id );
+   
+        }
         return $commission->delete();
 
     }

@@ -78,6 +78,8 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::resource('expense_types', 'ExpenseTypesController');
 
+	Route::resource('colors', 'ColorsController');
+
 	Route::resource('client_types', 'ClientTypesController');
 
 	Route::get('API/lists/{method}' , ['as' => 'usersAPI', 'uses' => 'HomeController@API']);
@@ -143,6 +145,8 @@ Route::group(['before' => 'auth'], function () {
 	Route::get('API/pay_types/{method?}' , ['as' => 'payTypesAPI', 'uses' => 'PayTypesController@API']);
 
 	Route::get('API/expense_types/{method?}' , ['as' => 'expenseTypesAPI', 'uses' => 'ExpenseTypesController@API']);
+
+	Route::get('API/colors/{method?}' , ['as' => 'colorsAPI', 'uses' => 'ColorsController@API']);
 
 	Route::get('API/client_types/{method?}' , ['as' => 'clientTypesAPI', 'uses' => 'ClientTypesController@API']);
 

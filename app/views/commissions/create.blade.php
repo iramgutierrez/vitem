@@ -111,6 +111,12 @@
 
             </div>
 
+            <div class="form-group col-md-6 col-sm-6" >
+
+              @include('commissions/fields/status_pay')
+
+            </div>
+
             <div class"form-group col-md-6 col-sm-6">
             	<label></label>
             	<h4>Total de comisión: <span>@{{ total | currency }}</span></h4>
@@ -132,6 +138,7 @@
     	  	  		<th>Tipo de comisión</th>
     	  	  		<th>Cantidad Total</th>
     	  	  		<th>Porcentaje de comisión</th>
+                <th>Estatus de pago</th>
     	  	  		<th>Total</th>
     	  	  		<th>Eliminar</th>
 
@@ -143,6 +150,7 @@
     	  	  		<td>@{{ commission.type }} <?php echo Form::hidden('Commissions[{{k}}][type]' , '{{ commission.type }}'); ?></td>
     	  	  		<td>@{{ commission.total_commission | currency }} <?php echo Form::hidden('Commissions[{{k}}][total_commission]' , '{{ commission.total_commission }}'); ?></td>
     	  	  		<td>@{{ commission.percent }} <?php echo Form::hidden('Commissions[{{k}}][percent]' , '{{ commission.percent }}'); ?></td>
+                <td>@{{ commission.status_pay }} <?php echo Form::hidden('Commissions[{{k}}][status_pay]' , '{{ commission.status_pay }}'); ?></td>
     	  	  		<td>@{{ commission.total | currency }} <?php echo Form::hidden('Commissions[{{k}}][total]' , '{{ commission.total }}'); ?></td>
     	  	  		<td>
     	  	  			<div ng-repeat="(ks , sale_payments) in commission.SalePayments">

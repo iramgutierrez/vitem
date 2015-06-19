@@ -165,6 +165,15 @@
 								</span>
 							</a>
 						</th>
+						<th class="col-sm-1">
+							<a href="" ng-click="sort = 'stock'; reverse=!reverse">Stock
+								<span class="pull-right" >
+									<i class="fa fa-sort" ng-if="sort != 'stock' "></i>
+									<i class="fa fa-sort-alpha-asc" ng-if=" sort == 'stock' && reverse == false "></i>
+									<i class="fa  fa-sort-alpha-desc" ng-if=" sort == 'stock' && reverse == true "></i>
+								</span>
+							</a>
+						</th>
 						<th class="col-sm-1" ng-if="$root.auth_permissions.read.supplier">
 							<a href="" ng-click="sort = 'supplier.name'; reverse=!reverse">Proveedor
 								<span class="pull-right" >
@@ -215,6 +224,7 @@
 		<td>@{{ product.name }}</td>
 		<td>@{{ product.key }}</td>
 		<td>@{{ product.model }}</td>
+		<td>@{{ product.stock }}</td>
 		<td ng-if="$root.auth_permissions.read.supplier" ><a href="@{{ product.supplier.url_show }}" >@{{ product.supplier.name }}</a></td>
 		<!--<td>@{{ product.status | booleanProduct }}</td>-->
 		<td>
@@ -350,6 +360,7 @@
 'library/js/ng/products.services.js',
 'library/js/ng/sales.services.js',
 'library/js/ng/suppliers.services.js',
+'library/js/ng/colors.services.js',
 'library/js/ng/directives.js',
 'library/js/ng/ng-date.js'
 ]

@@ -178,7 +178,10 @@ return array(
 		'showDetailsInputs' => ' ',
 		'store_id' => 'sucursal',
 		'percent_cleared_payment_type' => 'porcentaje pagado',
-		'order_date' => 'fecha de entrega'
+		'order_date' => 'fecha de entrega',
+		'status_pay' => 'estatus de pago',
+		'percent' => 'porcentaje',
+		'percent_commission' => 'porcentaje de comisión'
 
 	),
 

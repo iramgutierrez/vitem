@@ -13,6 +13,11 @@ class Sale extends \Eloquent {
         return $this->belongsToMany('Product', 'product_sale')->withPivot('quantity');
     }
 
+		public function colors_products()
+		{
+			return $this->belongsToMany('ColorProduct', 'color_product_sale')->withPivot('quantity');
+		}
+
     public function packs()
     {
         return $this->belongsToMany('Pack', 'pack_sale')->withPivot('quantity');

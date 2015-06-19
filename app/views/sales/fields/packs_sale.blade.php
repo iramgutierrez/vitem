@@ -26,7 +26,7 @@
 
 				'ng-blur' => 'hideItems()',
 
-				'ng-disabled' => '!store_id'
+				'ng-disabled' => '!productsAll'
 
 			]
 

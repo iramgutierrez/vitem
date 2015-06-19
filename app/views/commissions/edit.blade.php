@@ -99,6 +99,12 @@
 
           </div>
 
+          <div class="form-group col-md-6 col-sm-6" >
+
+            @include('commissions/fields/status_pay')
+
+          </div>
+
           <div class"form-group col-md-6 col-sm-6">
           	<label></label>
           	<h4>Total de comisión: <span>@{{ total | currency }}</span></h4>

@@ -147,7 +147,7 @@
 
                     <a data-toggle="modal" href="#addProduct" >
 
-                        <button type="button" class="col-sm-6 col-sm-offset-6 btn btn-danger" ng-disabled="!store_id" >Crear nuevo producto <br>y agregarlo a la venta</button>
+                        <button type="button" class="col-sm-6 col-sm-offset-6 btn btn-danger" >Crear nuevo producto <br>y agregarlo a la venta</button>
 
                     </a>
 
@@ -171,7 +171,7 @@
 
                 </div>
 
-                <div class="col-sm-12 col-md-12">
+                <!--<div class="col-sm-12 col-md-12">
 
                     <div class="col-sm-12">
 
@@ -197,7 +197,7 @@
 
                     </div>
 
-                </div>
+                </div>-->
 
                 <div class="col-sm-12 col-md-12">
 
@@ -282,6 +282,7 @@
             'library/js/ng/products.filters.js',
             'library/js/ng/products.services.js',
             'library/js/ng/suppliers.services.js',
+            'library/js/ng/colors.services.js',
             'library/assets/dropzone/dropzone.js',
             'library/js/jquery.validate.min.js'
 

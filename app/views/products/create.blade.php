@@ -86,7 +86,19 @@
 </div>                               		     
 <div class="form-group col-md-6 col-sm-12">
 
-  @if(Auth::user()->role->level_id >= 3)
+  {{ Field::number(
+        'stock', 
+        
+        0 , 
+        
+        [ 
+          'ng-model' => 'stock',
+          'ng-init' => 'stock = 0'
+        ]
+      )
+  }}
+
+  {{-- @if(Auth::user()->role->level_id >= 3)
 
     {{ Field::number(
           'stock', 
@@ -154,9 +166,12 @@
                )
     }}
 
-  @endif
+  @endif--}}
  
 </div>                               		     
+<div class="form-group col-md-6 col-sm-12">
+  @include('products/fields/colors')
+</div>                                  
 <div class="form-group col-md-6 col-sm-12">
 
           {{ Field::text(
@@ -526,6 +541,7 @@
 'library/js/ng/products.services.js',
 'library/js/ng/sales.services.js',
 'library/js/ng/suppliers.services.js',
+'library/js/ng/colors.services.js',
 'library/js/ng/directives.js',
 'library/js/jquery-ui-1.9.2.custom.min.js' ,
 'library/assets/bootstrap-fileupload/bootstrap-fileupload.js'

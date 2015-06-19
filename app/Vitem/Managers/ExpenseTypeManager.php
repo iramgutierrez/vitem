@@ -35,7 +35,7 @@ class ExpenseTypeManager extends BaseManager {
             }
             else
             {
-                $expenseType = new \expenseType( $expenseTypeData ); 
+                $expenseType = new \ExpenseType( $expenseTypeData ); 
             
                 $expenseType->save(); 
 

@@ -35,15 +35,20 @@ class OrderManager extends BaseManager {
 
                 foreach( $orderData['ProductOrder'] as $kp => $p)
                 {
-                    $product = [
+                    if($p['status'] == 2)
+                    {
 
-                        'id' => $kp
+                        $product = [
 
-                    ];
-                        
-                    $addStockProduct = new ProductManager( $product );
+                            'id' => $kp
 
-                    $addStockProduct->addStock( ($p['quantity']) );
+                        ];
+                            
+                        $addStockProduct = new ProductManager( $product );
+
+                        $addStockProduct->addStock( ($p['quantity']) );
+
+                    } 
 
                 }
 

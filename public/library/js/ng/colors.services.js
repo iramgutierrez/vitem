@@ -1,15 +1,15 @@
 (function () {
 
-  angular.module('pay_types.services', [])
+  angular.module('colors.services', [])
 
-    .factory('PayTypeService', ['$http', '$q',  function ($http, $q ) {      
+    .factory('ColorService', ['$http', '$q',  function ($http, $q ) {      
 
       function API( method , params) 
       {
 
         var deferred = $q.defer();
 
-        var url = 'API/pay_types/';
+        var url = 'API/colors/';
 
         url += method + '?';
 
@@ -42,7 +42,7 @@
 
         var deferred = $q.defer();
 
-        var url = 'pay_types';
+        var url = 'colors/';
 
        $http({
             method: 'POST',

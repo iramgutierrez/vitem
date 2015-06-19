@@ -110,7 +110,7 @@ class DeliveryManager extends BaseManager {
 
             $store_id = $delivery->sale->store_id;
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['total'] , $store_id );
+            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['subtotal'] , $store_id );
 
             $response = [
                 'success' => true,
@@ -218,7 +218,7 @@ class DeliveryManager extends BaseManager {
 
         $this->delivery = \Delivery::find($deliveryData['id']);
 
-        $totalOld = $this->delivery->total;
+        $totalOld = $this->delivery->subtotal;
 
         $store_id = $this->delivery->sale->store_id;
 
@@ -239,7 +239,7 @@ class DeliveryManager extends BaseManager {
 
             \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $totalOld*(-1) , $store_old );
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['total'] , $store_id );
+            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['subtotal'] , $store_id );
 
             $response = [
                 'success' => true,
@@ -280,7 +280,7 @@ class DeliveryManager extends BaseManager {
 
         $store_id = $delivery->sale->store_id;
 
-        \Setting::checkSettingAndAddResidue('add_residue_new_delivery', ( ($delivery->total)*(-1)  ) , $store_id );
+        \Setting::checkSettingAndAddResidue('add_residue_new_delivery', ( ($delivery->subtotal)*(-1)  ) , $store_id );
 
         return $delivery->delete();
 
@@ -319,7 +319,7 @@ class DeliveryManager extends BaseManager {
 
         $deliveryData['commission_pay'] = number_format($commission_pay, 2, '.', '');
 
-        $deliveryData['total'] = number_format(($subtotal - $commission_pay), 2, '.', '');
+        $deliveryData['total'] = number_format(($subtotal + $commission_pay), 2, '.', '');
 
         return $deliveryData;
     }

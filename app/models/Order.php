@@ -8,7 +8,7 @@ class Order extends \Eloquent {
 
     protected $dates = ['deleted_at'];
 
-	protected $fillable = ['order_date' , 'supplier_id' , 'user_id' , 'total'];
+	protected $fillable = ['order_date' , 'status_pay','supplier_id' , 'user_id' , 'total'];
 
     protected $appends = ['url_show' , 'url_edit' ,  'url_delete' ];
 

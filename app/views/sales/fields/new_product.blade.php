@@ -74,7 +74,20 @@
 											</div>                               		     
 											<div class="form-group col-md-6 col-sm-12">
 
-										  @if(Auth::user()->role->level_id >= 3)
+											{{ Field::number(
+										          'stock', 
+										          
+										          1 , 
+										          
+										          [ 
+										            'min' => 1 ,
+                                'ng-model' => 'stock',
+                                'ng-init' => 'stock = 1'
+										          ]
+										        )
+										    }}
+
+										  {{--@if(Auth::user()->role->level_id >= 3)
 
 										    {{ Field::number(
 										          'stock', 
@@ -142,9 +155,12 @@
 										               )
 										    }}
 
-										  @endif
+										  @endif--}}
 
-										  </div> 
+										  </div>                              		     
+                      <div class="form-group col-md-6 col-sm-12">
+                        @include('products/fields/colors')
+                      </div>  
 
 											<div class="form-group col-md-6 col-sm-12">
 

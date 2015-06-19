@@ -51,9 +51,9 @@
 
       </thead>
 
-      <tbody>
+      <tbody ng-repeat="(k , product) in $root.productsSelected">
                                     
-      	<tr ng-repeat="(k , product) in $root.productsSelected" ng-class="{ quantity_null : product.quantity_null  }">
+      	<tr ng-class="{ quantity_null : product.quantity_null  }">
       
   	    	<td>
 
@@ -69,7 +69,7 @@
 
   		    <td> @{{product.model }}</td>
 
-  		    <td> @{{ product.stock_store }}</td>
+  		    <td> @{{ product.stock }}</td>
 
   		    <td> @{{product.price | currency }}</td>
 
@@ -83,7 +83,7 @@
                       
                         <div class="spinner-buttons input-group-btn btn-group-vertical">
                         
-                          <button ng-disabled="product.quantity_null" ng-click= "product.quantity = addQuantity(product.quantity , product.stock_store)" type="button" class="btn spinner-up btn-xs btn-default">
+                          <button ng-disabled="product.quantity_null" ng-click= "product.quantity = addQuantity(product.quantity , product.stock)" type="button" class="btn spinner-up btn-xs btn-default">
                             
                               <i class="fa fa-angle-up"></i>
 
@@ -100,6 +100,10 @@
                     </div>
                           
                   </div>
+
+                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showColors(product); " ng-show="!product.showColors" >Mostrar colores</button>
+
+                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showColors(product); " ng-show="product.showColors" >Ocultar colores</button>
         
         		</td>
 
@@ -116,6 +120,47 @@
   		    </td>
 
       	</tr>
+
+        <tr ng-if="product.showColors">
+          <td colspan="7" class="text-right">Cantidad sin asignar color</td>
+          <td>@{{ getProductsWithoutColors(product) }}</td> 
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr ng-if="product.showColors && product.colors.length">
+          <td colspan="5"></td>
+          <td>Color</td>
+          <td>Disponibles</td>
+          <td>Asignados</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr ng-if="product.showColors && !product.colors.length">
+          <td colspan="8" class="text-right">Este producto no tiene colores asignados</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr  ng-show="product.showColors && product.colors.length" ng-repeat="(c , color)  in product.colors">
+          <td colspan="5"></td>
+          <td>@{{ color.name }}</td>
+          <td>@{{ color.pivot.quantity }}</td>
+          <td>
+            <select class="form-control" ng-model="product.assignedColors[c]" name="ColorProductSale[@{{color.pivot.id}}][quantity]" ng-change="getProductsWithoutColors(product)" >
+              <option value="0">0</option>
+              <option ng-repeat="n in [] | range:getMaxProductColor(getProductsWithoutColors(product) , color.pivot.quantity , product.assignedColors[c])" value="@{{ n+1 }}">@{{ n+1 }}</option>
+            </select>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        
+
+      </tbody>
+
+      <tbody>
 
       	<tr ng-repeat="(k , pack) in packsSelected" >
       
@@ -194,6 +239,60 @@
         		</td>
 
       	</tr>
+
+        <tr>
+
+          <td colspan="6"></td>
+
+            <td colspan="2" class="text-right">
+
+              <b>Costo de la entrega</b>
+
+            </td>
+
+            <td colspan="2">
+
+              @{{ getDeliveryCost() | currency }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+          <td colspan="6"></td>
+
+            <td colspan="2" class="text-right">
+
+              <b>Comisión por foma de pago (@{{ percent_commission }}%)</b>
+
+            </td>
+
+            <td colspan="2">
+
+              @{{ getCommissionPay() | currency }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+          <td colspan="6"></td>
+
+            <td colspan="2" class="text-right">
+
+              <b>Total</b>
+
+            </td>
+
+            <td colspan="2">
+
+              @{{ getFinalPrice() | currency }}
+
+            </td>
+
+        </tr>
 
       </tbody>  
 

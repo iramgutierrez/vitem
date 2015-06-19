@@ -6,7 +6,7 @@ class Commission extends \Eloquent {
 
     use SoftDeletingTrait;
 
-	protected $fillable = ['total' , 'sale_id' , 'type' , 'employee_id' , 'user_id' , 'total_commission' , 'percent'];
+	protected $fillable = ['total' , 'sale_id' , 'type' , 'employee_id' , 'user_id' , 'total_commission' , 'percent' ,'status_pay'];
 
 	protected $appends = ['url_edit' ,  'url_delete' ];
 

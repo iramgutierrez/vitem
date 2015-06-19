@@ -243,7 +243,7 @@
 
     }])
 
-    .controller('FormController', [ '$scope' , 'SuppliersService'  , function ($scope , SuppliersService  ) {
+    .controller('FormController', [ '$scope' , 'SuppliersService'  , 'ColorService', 'ProductsService', function ($scope , SuppliersService , ColorService , ProductsService ) {
       
       $scope.status = 'No disponible';
       $scope.find = '';
@@ -414,6 +414,199 @@
           $scope.ProductStore[store_id].quantity_pre = quantity;
 
           $scope.ProductStore[store_id].quantity = quantity;
+
+        }
+
+        $scope.min = 0;
+
+        $scope.quantity_color = 0;
+
+        $scope.allColors = [];
+
+        $scope.initColors = function(product_id)
+        {
+
+          var product_id = product_id || false;
+
+          ColorService.API('all')
+            .then(function(colors){
+
+              $scope.allColors = colors;
+
+              if(product_id){
+                ProductsService.API('getColorProduct' , { id : product_id})
+                  .then(function (colorsP) {
+
+                    angular.forEach(colorsP , function(c , i) {
+
+                      if($scope.allColors){
+
+                        $scope.addColorI(c);
+                      }
+                      else
+                      {
+                        ColorService.API('all')
+                          .then(function(colors){
+
+                            $scope.allColors = colors;
+
+                            $scope.addColorI(c);
+
+                          })
+                      }
+
+                    });
+
+
+                  })
+              }
+
+            })
+        }
+
+        $scope.addColorI = function(colorI)
+        {
+          var color = false;
+
+          angular.forEach($scope.allColors , function(c , i){ 
+            
+            if(c.id == colorI.id)
+            {
+              color = c;
+
+              color.color_id = i;
+            }
+
+          });
+
+          if(color)
+          { 
+
+            color.quantity = colorI.pivot.quantity;
+
+            $scope.colors.push(color);
+
+            $scope.allColors.splice( color.color_id , 1);
+
+            $scope.selectColors = false;
+
+            $scope.quantity_color = 0;
+            
+          }
+        }
+
+        $scope.calculateMin = function()
+        {
+
+          var min = 0;
+
+          if($scope.stock < 1){
+            min = 0;
+          }
+
+          $scope.min = min;
+
+        }
+
+        $scope.colors = [];
+
+        $scope.addColor = function()
+        {
+          var color = false;
+
+          angular.forEach($scope.allColors , function(c , i){ 
+            
+            if(c.id == $scope.selectColors)
+            {
+              color = c;
+
+              color.color_id = i;
+            }
+
+          })
+
+          if(color)
+          { 
+
+            color.quantity = $scope.quantity_color;
+
+            $scope.colors.push(color);
+
+            $scope.allColors.splice( color.color_id , 1);
+
+            $scope.selectColors = false;
+
+            $scope.quantity_color = 0;
+            
+          }
+        }
+
+        $scope.validAddColor = function()
+        {
+
+          return !($scope.stock && $scope.selectColors && $scope.quantity_color >= 0) ? true : false ;
+        }
+
+        $scope.stock = 0;
+
+        $scope.calculateMax = function()
+        {
+
+          var max = $scope.stock; 
+
+          angular.forEach($scope.colors , function (color , i) {
+            max -= color.quantity;
+            if(max < 0)
+              max = 0;
+          }) 
+
+          return max;
+
+        }
+
+        $scope.removeColor = function(color)
+        {
+          var color_key = false;
+
+          angular.forEach($scope.colors , function(c , i ){
+            if(c.id == color.id)
+              color_key = i
+          })
+
+
+          if(color_key >= 0)
+          {
+
+            $scope.allColors.push(color);
+
+            $scope.colors.splice(color_key , 1);
+
+          }
+
+
+        }
+
+        $scope.updateColor = function(color)
+        {
+          
+          var color_key = false;
+
+          angular.forEach($scope.colors , function(c , i ){
+            if(c.id == color.id)
+              color_key = i
+          })
+
+
+          if(color_key >= 0)
+          {
+            $scope.allColors.push(color);
+
+            $scope.selectColors = color.id;
+
+            $scope.quantity_color = color.quantity;
+
+            $scope.colors.splice(color_key , 1);
+          }
 
         }
 

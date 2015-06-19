@@ -13,7 +13,7 @@ class ProductWebServices extends BaseWebServices {
 	static function all()
 	{
 
-		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Stores' ])->get());
+		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Colors' ])->limit(10)->orderBy('id','desc')->get());
 		
 	}
 	static function findById()
@@ -145,6 +145,15 @@ class ProductWebServices extends BaseWebServices {
 			return "true";
 		}
 
+	}
+
+	static function getColorProduct()
+	{
+		$id = (\Input::has('id')) ? \Input::get('id') : false;
+
+		$product = \Product::with(['colors'])->where('id' , $id)->first();
+
+		return $product->colors;
 	}
 
 }

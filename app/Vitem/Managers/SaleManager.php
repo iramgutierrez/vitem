@@ -70,6 +70,16 @@ class SaleManager extends BaseManager {
             
             $sale->save();
 
+            foreach($saleData['ColorProductSale'] as $k => $c)
+            {
+              
+              $ColorProduct = \ColorProduct::find($k);
+
+              $ColorProduct->quantity -= $c['quantity'];
+
+              $ColorProduct->save();
+            }
+
             if($saleData['delivery_type'] == 1 && isset($saleData['delivery']) && is_array($saleData['delivery']) && $canCreateDelivery) {
 
 
@@ -82,9 +92,11 @@ class SaleManager extends BaseManager {
             if($saleData['sale_type'] == 'contado')
             {
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] , $saleData['store_id']);
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id']);
 
             }
+            
+            $sale->colors_products()->sync($saleData['ColorProductSale']);
 
             $sale->packs()->sync($saleData['PackSale']);
 
@@ -123,7 +135,7 @@ class SaleManager extends BaseManager {
                         
                     $addStockProduct = new ProductManager( $product );
 
-                    $addStockProduct->addStock( ($p['quantity']) * (-1) , $saleData['store_id'] );
+                    $addStockProduct->addStock( ($p['quantity']) * (-1) /*, $saleData['store_id']*/ );
 
                 }
 
@@ -223,12 +235,12 @@ class SaleManager extends BaseManager {
         $this->sale = \Sale::with('products')
                      ->with('packs')
                      ->with('client')
-                     ->with(['employee' , 'employee.user' , 'sale_payments'])
+                     ->with(['employee' , 'employee.user' , 'sale_payments', 'colors_products'])
                      ->find($saleData['id']);
 
         $saleTypeOld = $this->sale->sale_type;
 
-        $totalOld = $this->sale->total;
+        $totalOld = $this->sale->subtotal;
 
         $SaleValidator = new SaleValidator($this->sale);
 
@@ -280,11 +292,52 @@ class SaleManager extends BaseManager {
         if( $saleValid && $deliveryValid && $destinationValid)
         {
 
+
             $sale = $this->sale;
 
             $saleOld = $this->sale;
             
             $sale->update($saleData);
+
+            //echo "<pre>";
+
+            /*print_r($saleData['ColorProductSale']);
+
+            print_r($saleOld->colors_products->toArray());*/
+
+            
+            foreach($saleData['ColorProductSale'] as $k => $c)
+            {
+              
+              $ColorProduct = \ColorProduct::find($k);
+
+              $ColorProduct->quantity -= $c['quantity'];
+
+              /*echo "Nueva cantidad de $k = ".$ColorProduct->quantity;
+
+              echo "<br>";*/
+
+              $ColorProduct->save();
+            } 
+           
+           foreach($saleOld->colors_products->toArray() as $k => $c)
+           {
+             
+             $ColorProduct = \ColorProduct::find($c['id']);
+
+             $ColorProduct->quantity += $c['pivot']['quantity'];
+
+             /*echo "Nueva cantidad de ".$c['id']." = ".$ColorProduct->quantity;
+
+             echo "<br>";*/
+
+             $ColorProduct->save();
+           }  
+           
+           $sale->colors_products()->sync($saleData['ColorProductSale']);
+            
+
+            //exit();
 
             if($saleData['delivery_type'] == 1 && isset($saleData['delivery']) && is_array($saleData['delivery']) && $canCreateDelivery )
             {
@@ -369,7 +422,7 @@ class SaleManager extends BaseManager {
 
                 \Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1) , $saleOld->store_id );
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] , $saleData['store_id'] );
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id'] );
 
             }elseif($saleTypeOld == 'apartado' && $sale->sale_type == 'contado'){
 
@@ -387,7 +440,7 @@ class SaleManager extends BaseManager {
                     $deleteSalePayment->delete();
                 }
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['total'] , $saleData['store_id'] );
+                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id'] );
 
             }
 
@@ -410,7 +463,7 @@ class SaleManager extends BaseManager {
                         
                     $addStockProduct = new ProductManager( $product );
 
-                    $addStockProduct->addStock( $p->pivot->quantity , $this->sale->store_id);
+                    $addStockProduct->addStock( $p->pivot->quantity /*, $this->sale->store_id*/);
 
                 }
 
@@ -449,7 +502,7 @@ class SaleManager extends BaseManager {
                         
                     $addStockProduct = new ProductManager( $product );
 
-                    $addStockProduct->addStock( ($p['quantity']) * (-1) , $saleData['store_id']);
+                    $addStockProduct->addStock( ($p['quantity']) * (-1) /*, $saleData['store_id']*/ );
 
                 }
 
@@ -571,7 +624,7 @@ class SaleManager extends BaseManager {
                         
                         $addStockProduct = new ProductManager( $product );
 
-                        $addStockProduct->addStock($p->pivot->quantity , $this->sale->store_id);
+                        $addStockProduct->addStock($p->pivot->quantity /*, $this->sale->store_id*/);
 
                     }
 
@@ -678,7 +731,7 @@ class SaleManager extends BaseManager {
 
         $saleData['commission_pay'] = number_format($commission_pay, 2, '.', '');
 
-        $saleData['total'] = number_format(($subtotal - $commission_pay), 2, '.', '');
+        $saleData['total'] = number_format(($subtotal + $commission_pay), 2, '.', '');
 
         return $saleData;
     }

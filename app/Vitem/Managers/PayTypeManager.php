@@ -123,69 +123,7 @@ class PayTypeManager extends BaseManager {
     public function delete()
     {
 
-        $saleData = $this->data; 
-
-        $this->sale = \Sale::with('products')
-                           ->with('packs')
-                           ->with('client')
-                           ->with('employee')
-                           ->find($saleData['id']);
-
-                           echo "<pre>";
-        if($this->sale)
-        { 
-
-            if($saleData['add_stock'])
-            {
-                if(count($this->sale->products))
-                {
-
-                    foreach($this->sale->products as $kp => $p)
-                    {
-                        $product = [
-
-                            'id' => $p->id
-
-                        ];
-                        
-                        $addStockProduct = new ProductManager( $product );
-
-                        $addStockProduct->addStock($p->pivot->quantity);
-
-                    }
-
-                }
-
-                if(count($this->sale->packs))
-                {
-
-                    foreach($this->sale->packs as $kp => $p)
-                    {
-                        $pack = [
-
-                            'id' => $p->id
-
-                        ];
-                        
-                        $addStockPack = new PackManager( $pack );
-
-                        $addStockPack->addStock($p->pivot->quantity);
-
-                    }
-
-                }
-            }
-
-        }
-
-        $sale = $this->sale;
-
-        $sale->products()->detach();
-
-        $sale->packs()->detach();
-
-        return $sale->delete();
-
+        
     }
 
     public function prepareData($payTypeData)

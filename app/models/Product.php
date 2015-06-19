@@ -35,6 +35,11 @@ class Product extends \Eloquent {
 		return $this->belongsToMany('Store', 'product_store')->withPivot('quantity');
 	}
 
+	public function colors()
+	{
+		return $this->belongsToMany('Color', 'color_product')->withPivot('quantity' , 'id');
+	}
+
     public function getUrlShowAttribute()
 	{
 	    return URL::route('products.show', [$this->id]);

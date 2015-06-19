@@ -458,6 +458,8 @@
 
             percent : $scope.percent,
 
+            status_pay : $scope.status_pay,
+
             total_commission : $scope.total_commission,
 
             total : $scope.total,
@@ -831,6 +833,24 @@
       {
 
         $scope.commissions.splice(id, 1);
+
+      }
+
+      $scope.checkValuePreOrOld = function (pre , old , def)
+      {
+          if(!def)
+              def = '';
+
+          var value = def;
+
+          if(pre)
+              value = pre;
+
+          if(old)
+              value = old;
+
+          return value;
+
 
       }
 

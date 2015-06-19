@@ -71,6 +71,9 @@
 					</div>
 					@endif
 					<div class="col-sm-6">
+						<span class="col-sm-6">Stock</span><p class="col-sm-6"> <?php echo  '{{ '.$product['stock']. ' }}' ?></p>
+					</div>
+					<div class="col-sm-6">
 						<span class="col-sm-6">Precio</span><p class="col-sm-6"> <?php echo  '{{ '.$product['price']. '| currency }}' ?></p>
 					</div>
 					<div class="col-sm-6">
@@ -115,6 +118,7 @@
 				'library/js/ng/products.services.js',
 				'library/js/ng/sales.services.js',
 				'library/js/ng/suppliers.services.js',
+				'library/js/ng/colors.services.js',
               	'library/js/ng/ng-date.js',
         'library/js/ng/directives.js',
               	'library/js/jquery-ui-1.9.2.custom.min.js' ,

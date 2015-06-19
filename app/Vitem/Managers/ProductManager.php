@@ -43,7 +43,7 @@ class ProductManager extends BaseManager {
 
             $this->product = new \Product( $data );
 
-            $stores = \Store::all();
+            /*$stores = \Store::all();
 
             $ProductStore = [];
 
@@ -52,13 +52,15 @@ class ProductManager extends BaseManager {
                 $ProductStore[$store->id]['quantity'] = 0; 
             }
 
-            $data['ProductStore'] = ( !empty($data['ProductStore']) ? $data['ProductStore'] : [] ) + $ProductStore ;
+            $data['ProductStore'] = ( !empty($data['ProductStore']) ? $data['ProductStore'] : [] ) + $ProductStore ;*/
 
             $this->product->save();
 
-            $this->product->stores()->sync($data['ProductStore']);
+            //$this->product->stores()->sync($data['ProductStore']);
 
-            $product_return = \Product::with(['stores' ,  'user' , 'supplier'])->where('id' , $this->product->id)->first();
+            $this->product->colors()->sync($data['ColorProduct']);
+
+            $product_return = \Product::with([ 'user' , 'supplier'])->where('id' , $this->product->id)->first();
 
             $response = [
                 'success' => true,
@@ -110,7 +112,7 @@ class ProductManager extends BaseManager {
 
             $this->product = new \Product( $data );
 
-            $stores = \Store::all();
+            /*$stores = \Store::all();
 
             $ProductStore = [];
 
@@ -119,11 +121,13 @@ class ProductManager extends BaseManager {
                 $ProductStore[$store->id]['quantity'] = 0; 
             }
 
-            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;*/
 
             $this->product->save();
 
-            $this->product->stores()->sync($data['ProductStore']);
+            $this->product->colors()->sync($data['ColorProduct']);
+
+            //$this->product->stores()->sync($data['ProductStore']);
 
             $responseProduct = [
                 'success' => true,
@@ -243,19 +247,20 @@ class ProductManager extends BaseManager {
             $product->supplier_id = $data['supplier_id'];
 
             $product->user_id = $data['user_id'];
-
-            $ProductStore = [];
+            /*$ProductStore = [];
 
             foreach($product->stores as $k => $store)
             {
                 $ProductStore[$store->id]['quantity'] = $store->pivot->quantity; 
             }
 
-            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;*/
 
             $this->product->save();
 
-            $this->product->stores()->sync($data['ProductStore']);
+            $this->product->colors()->sync($data['ColorProduct']);
+
+            //$this->product->stores()->sync($data['ProductStore']);
 
             $response = [
                 'success' => true
@@ -333,18 +338,20 @@ class ProductManager extends BaseManager {
 
             $userData = $this->data;          
 
-            $ProductStore = [];
+            /*$ProductStore = [];
 
             foreach($product->stores as $k => $store)
             {
                 $ProductStore[$store->id]['quantity'] = $store->pivot->quantity; 
             }
 
-            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;
+            $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;*/
 
             $this->product->save();
 
-            $this->product->stores()->sync($data['ProductStore']);
+            $this->product->colors()->sync($data['ColorProduct']);
+
+            //$this->product->stores()->sync($data['ProductStore']);
 
             $responseProduct = [
                 'success' => true
@@ -498,7 +505,14 @@ class ProductManager extends BaseManager {
             }
         }
 
+        if(!isset($data['ColorProduct']))
+        {
+            $data['ColorProduct'] = [];
+        }
+
         return $data;
+
+
     }
 
     public function addStock($quantity = 0 , $store_id = false)
@@ -539,8 +553,6 @@ class ProductManager extends BaseManager {
 
 
         }
-        
-
     }
 
 } 

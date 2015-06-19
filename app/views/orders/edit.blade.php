@@ -39,6 +39,12 @@
 
                 </div>
 
+                <div class="form-group col-md-6 col-sm-6" >
+
+                    @include('orders/fields/status_pay')
+
+                </div>
+
                 <div class="form-group col-md-12 col-sm-12 " >
 
                     @include('orders/fields/supplier_id')

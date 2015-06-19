@@ -188,6 +188,7 @@
                           <li data-entities="pay_type" data-actions="read" data-permissions ><a  href="{{ route('pay_types.index') }}">Terminales de pago</a></li>
                           <li data-entities="expense_type" data-actions="read" data-permissions ><a  href="{{ route('expense_types.index') }}">Tipos de gastos</a></li>
                           <li data-entities="client_type" data-actions="read" data-permissions ><a  href="{{ route('client_types.index') }}">Tipos de clientes</a></li>
+                          <li data-entities="color" data-actions="read" data-permissions ><a  href="{{ route('colors.index') }}">Colores</a></li>
                       </ul>
                   </li>
 

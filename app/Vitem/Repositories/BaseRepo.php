@@ -57,7 +57,7 @@ abstract class BaseRepo {
 
 
     static function with($entities )
-    {
+    { 
 
         $with = [];
 
@@ -96,6 +96,12 @@ abstract class BaseRepo {
                 {
 
                     $entityClass = 'Expense';
+
+                }
+                else if($entityClass == 'ColorsProduct')
+                {
+
+                    $entityClass = 'Color';
 
                 }
 

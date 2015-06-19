@@ -50,6 +50,8 @@ return array(
 
 	'update' => 'actualizar' ,
 
-	'delete' => 'eliminar'
+	'delete' => 'eliminar',
+
+	'color' => 'colores'
 
 );

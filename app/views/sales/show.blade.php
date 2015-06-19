@@ -255,12 +255,13 @@
 
 		                      		@if(!empty($sale->commissions))
 		                      			<tr>
-		                      				<th class="col-sm-2 col-md-2" >Total sobre el que se aplico la comisión</th>
+		                      				<th class="col-sm-2 col-md-1" >Total sobre el que se aplico la comisión</th>
 		                      				<th class="col-sm-1 col-md-1"  class="col-sm-2 col-md-2" >Porcentaje</th>
 		                      				<th class="col-sm-1 col-md-1" >Comisión</th>
 		                      				<th class="col-sm-2 col-md-2" >Empleado que recibio la comisión</th>
 		                      				<th class="col-sm-2 col-md-2" >Tipo</th>
 		                      				<th class="col-sm-2 col-md-2" >Fecha</th>
+		                      				<th class="col-sm-2 col-md-1" >Estatus de pago</th>
 		                      				<th class="col-sm-2 col-md-2" ></th>
 		                      			</tr>
 		                      			@foreach($sale->commissions as $commission )
@@ -271,6 +272,7 @@
 		                      				<td>{{ $commission->employee->user->name }}</td>
 		                      				<td>{{ '<?php echo $commission->type ?>' | commission_types }}</td>
 		                      				<td>{{ $commission->created_at }}</td>
+		                      				<td>{{ $commission->status_pay }}</td>
 		                      				<td>		                      					
 												<a href="{{ $commission->url_edit }}" >
 													<button  type="button" class="col-sm-5 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>

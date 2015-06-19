@@ -176,7 +176,7 @@
       $scope.getSellersByStore = function()
       {
 
-        var store_id = $scope.store_id || false;
+        var store_id = $scope.store_id || false; console.log
 
         UsersService.API('getSellers' , { store_id : store_id }).then(function (data) {
 
@@ -206,6 +206,8 @@
       $scope.autocompleteProduct = false;      
 
       $scope.products = {};
+
+      $scope.productsAll = false;
 
       ProductsService.all().then(function (data) {
 
@@ -395,17 +397,17 @@
 
             if(!quantity)
             {
-              quantity = 1;
+              quantity = 0;
             }
             product.quantity = quantity;
 
-            product.stock_store = $scope.getStockPerStore(product , $scope.store_id);
+            //product.stock_store = $scope.getStockPerStore(product , $scope.store_id);
 
-            console.log(product.stock_store);
+            //console.log(product.stock_store);
 
             product.quantity_null = false;
 
-            if(!product.stock_store)
+            if(product.stock <= 0)
             {
               product.quantity_null = true;
 
@@ -431,6 +433,8 @@
 
 
             }
+
+            console.log(product);
 
             if(!inProductsSelected)
             {
@@ -518,9 +522,7 @@
           stock = (isNaN(parseInt(stock))) ? false : parseInt(stock);
 
           stock = parseInt(stock) + parseInt(init);
-
-          console.log(stock);
-
+          
           if(stock)
           {
             if( (quantity + 1) <= stock)
@@ -828,19 +830,15 @@
       $scope.getFinalPrice = function()
       {
 
-          var total = $scope.getTotalPrice();
+          var total = 0;
 
-          if($scope.delivery_tab == 1)
-          {
+          var totalSale = $scope.getTotalPrice();
 
-              if($scope.destination.hasOwnProperty('cost'))
-              {
-                  total += $scope.destination.cost;
+          var totalCommission = $scope.getCommissionPay();
 
+          var totalDelivery = $scope.getDeliveryCost();
 
-              }
-
-          }
+          total = parseFloat(totalSale) + parseFloat(totalCommission) + parseFloat(totalDelivery);
 
           return total;
 
@@ -902,6 +900,202 @@
           return value;
 
 
+      }
+
+      $scope.percent_commission = 0;
+
+      $scope.getCommissionPay = function()
+      {
+
+        var payType = false;
+
+        angular.forEach($scope.pay_types , function(pay_type) 
+        {
+          if (pay_type.id == $scope.pay_type_id )
+            payType = pay_type
+
+
+        })
+
+        var commissionPay = 0;
+
+        if(payType)
+        {
+
+          $scope.percent_commission = payType.percent_commission;
+
+          var priceSale = $scope.getTotalPrice();
+
+          var deliveryCost = $scope.getDeliveryCost();
+
+          var subtotal = parseFloat(priceSale) + parseFloat(deliveryCost);
+
+          commissionPay = (subtotal * payType.percent_commission) / 100;
+        }
+
+        return commissionPay;
+
+      }
+
+      $scope.getDeliveryCost = function ()
+      {
+
+        var cost = 0;
+
+        if($scope.delivery_tab == 1)
+        {
+
+          if($scope.destination.hasOwnProperty('cost'))
+          {
+              cost = $scope.destination.cost;
+
+
+          }
+
+        }
+
+        return cost;
+
+      }
+
+      $scope.getProductsWithoutColors = function(product)
+      { 
+         var quantity =  product.quantity;
+
+         if(product.hasOwnProperty('assignedColors'))
+         { 
+
+           var tempQ = quantity;
+         
+           angular.forEach(product.assignedColors , function(color ,c) {
+
+             tempQ = quantity
+
+             tempQ -= color
+
+             if(tempQ < 0)
+             {
+               var dismuss = tempQ * (-1);
+
+               if(color < dismuss)
+               {
+                 dismuss = color;
+               }
+
+               color -= dismuss; 
+
+               product.assignedColors[c] = color;
+               
+               tempQ = quantity;
+
+               tempQ -= color;
+             }
+
+             quantity = tempQ;
+              
+           })
+           
+         }
+
+         return quantity;
+      }
+
+      $scope.getMaxProductColor = function(product_quantity , color_quantity , current , product , color_id)
+      { 
+
+        var product = product || false;
+
+        if(product)
+        {
+
+          if(product.hasOwnProperty('colors_sale'))
+          {
+            if(product.colors_sale.length)
+            {
+              angular.forEach(product.colors_sale , function(color , k){
+
+                if(color.id == color_id)
+                {
+                  if(!product.hasOwnProperty('assigned_colors'))
+                  {
+                    product.assigned_colors = [];
+                  }
+                  
+                  product.assigned_colors[color.id] = color.pivot.quantity;
+
+                  current = product.assigned_colors[color.id];
+                  
+                  if(!product.hasOwnProperty('assignedColors'))
+                  {
+                    product.assignedColors = [];
+                  }
+                  
+                  product.assignedColors[color.id] = color.pivot.quantity;
+
+                  current = product.assignedColors[color.id];
+                  
+                  product.colors_sale.splice(k , 1);
+                }
+                
+              })
+            }
+          }
+
+        }
+
+        console.log(current);
+        
+        var current = current || false;
+
+        var color_id = color_id || false;
+        
+        var max = color_quantity;
+
+        if(product_quantity < color_quantity)
+        {
+          max = product_quantity;
+        }
+
+        if(current && (max < current))
+        {
+          max = current
+        }
+
+        if( current && ( (parseInt(product_quantity) + parseInt(current) ) <= color_quantity ) )
+        {
+          max = parseInt(product_quantity) + parseInt(current)
+        }
+
+        if(product)
+        {
+          if(product.hasOwnProperty('assignedColors'))
+          {
+
+            if(max < product.assignedColors[color_id])
+            {
+              max = product.assignedColors[color_id]
+            } 
+            
+          }
+          
+        }
+
+        //debugger
+
+        return max;
+        
+      }
+
+      $scope.showColors = function(product)
+      { console.log(product.assignedColors);
+        if(product.hasOwnProperty('showColors'))
+        {
+          product.showColors = !product.showColors;
+        }
+        else 
+        {
+          product.showColors = true;
+        }
       }
 
     }])
@@ -1028,7 +1222,7 @@
 
       }])
 
-    .controller('AddProductController', ['$rootScope' , '$scope' , 'SuppliersService'  , function ($rootScope , $scope , SuppliersService  ) {
+    .controller('AddProductController', ['$rootScope' , '$scope' , 'SuppliersService' , 'ColorService'  , function ($rootScope , $scope , SuppliersService  , ColorService) {
       
       $scope.status = 'No disponible';
       $scope.find = '';
@@ -1265,13 +1459,11 @@
 
                       data.product.quantity = 1;
 
-                      console.log(data.product);
-
-                      data.product.stock_store = $scope.getStockPerStore(data.product , $rootScope.store_id);
+                      //data.product.stock_store = $scope.getStockPerStore(data.product , $rootScope.store_id);
 
                       data.product.quantity_null = false;
 
-                      if(!data.product.stock_store)
+                      if(data.product.stock <= 0)
                       {
                         data.product.quantity_null = true;
 
@@ -1380,6 +1572,202 @@
           return quantity; 
 
         }
+
+        $scope.commission_pay = 0;
+
+        $scope.min = 0;
+
+        $scope.quantity_color = 0;
+
+        $scope.allColors = [];
+
+        $scope.initColors = function(product_id)
+        {
+
+          var product_id = product_id || false;
+
+          ColorService.API('all')
+            .then(function(colors){
+
+              $scope.allColors = colors;
+
+              if(product_id){
+                ProductsService.API('getColorProduct' , { id : product_id})
+                  .then(function (colorsP) {
+
+                    angular.forEach(colorsP , function(c , i) {
+
+                      if($scope.allColors){
+
+                        $scope.addColorI(c);
+                      }
+                      else
+                      {
+                        ColorService.API('all')
+                          .then(function(colors){
+
+                            $scope.allColors = colors;
+
+                            $scope.addColorI(c);
+
+                          })
+                      }
+
+                    });
+
+
+                  })
+              }
+
+            })
+        }
+
+        $scope.addColorI = function(colorI)
+        {
+          var color = false;
+
+          angular.forEach($scope.allColors , function(c , i){ 
+            
+            if(c.id == colorI.id)
+            {
+              color = c;
+
+              color.color_id = i;
+            }
+
+          });
+
+          if(color)
+          { 
+
+            color.quantity = colorI.pivot.quantity;
+
+            $scope.colors.push(color);
+
+            $scope.allColors.splice( color.color_id , 1);
+
+            $scope.selectColors = false;
+
+            $scope.quantity_color = 0;
+            
+          }
+        }
+
+        $scope.calculateMin = function()
+        {
+
+          var min = 1;
+
+          if($scope.stock < 1){
+            min = 0;
+          }
+
+          $scope.min = min;
+
+        }
+
+        $scope.colors = [];
+
+        $scope.addColor = function()
+        {
+          var color = false;
+
+          angular.forEach($scope.allColors , function(c , i){ 
+            
+            if(c.id == $scope.selectColors)
+            {
+              color = c;
+
+              color.color_id = i;
+            }
+
+          })
+
+          if(color)
+          { 
+
+            color.quantity = $scope.quantity_color;
+
+            $scope.colors.push(color);
+
+            $scope.allColors.splice( color.color_id , 1);
+
+            $scope.selectColors = false;
+
+            $scope.quantity_color = 0;
+            
+          }
+        }
+
+        $scope.validAddColor = function()
+        {
+
+          return !($scope.stock && $scope.selectColors && $scope.quantity_color) ? true : false ;
+        }
+
+        $scope.stock = 0;
+
+        $scope.calculateMax = function()
+        {
+
+          var max = $scope.stock; 
+
+          angular.forEach($scope.colors , function (color , i) {
+            max -= color.quantity;
+            if(max < 0)
+              max = 0;
+          }) 
+
+          return max;
+
+        }
+
+        $scope.removeColor = function(color)
+        {
+          var color_key = false;
+
+          angular.forEach($scope.colors , function(c , i ){
+            if(c.id == color.id)
+              color_key = i
+          })
+
+
+          if(color_key >= 0)
+          {
+
+            $scope.allColors.push(color);
+
+            $scope.colors.splice(color_key , 1);
+
+          }
+
+
+        }
+
+        $scope.updateColor = function(color)
+        {
+          
+          var color_key = false;
+
+          angular.forEach($scope.colors , function(c , i ){
+            if(c.id == color.id)
+              color_key = i
+          })
+
+
+          if(color_key >= 0)
+          {
+            $scope.allColors.push(color);
+
+            $scope.selectColors = color.id;
+
+            $scope.quantity_color = color.quantity;
+
+            $scope.colors.splice(color_key , 1);
+          }
+
+        }
+
 
 
     }])
@@ -1504,7 +1892,7 @@
       });
 
       $scope.searchSeller = function ()
-      { 
+      { console.log($scope.find_seller);
           
             if($scope.find_seller.length != '')
             {

@@ -33,24 +33,53 @@ class SaleRepo extends BaseRepo {
 		if(!$canReadProducts)
 			return [];
 
-		$sale = self::with(['products.stores']); 
+
+		/*$sale = \Sale::with(['colors_products'])->where('id' , $saleId)->first();
+
+		dd($sale);*/
+
+		$sale = self::with(['products.colors' ,'colors_products']); 
 
 		$sale = $sale->where('id' , $saleId);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
-        if(count($whereUserId))
-            $sale = $sale->whereIn( 'employee_id' , $whereUserId);
+    if(count($whereUserId))
+        $sale = $sale->whereIn( 'employee_id' , $whereUserId);
 
-        $whereStoreId = \ACLFilter::generateStoreCondition();
+    $whereStoreId = \ACLFilter::generateStoreCondition();
 
-        if(count($whereStoreId))
-            $sale = $sale->whereIn( 'store_id' , $whereStoreId);
+    if(count($whereStoreId))
+        $sale = $sale->whereIn( 'store_id' , $whereStoreId);
 
-        $sale = $sale->first();
+    $sale = $sale->first();
 
-        if(isset($sale->products))        	
-			return $sale->products;
+		$sale = $sale->toArray();
+
+		$colors = [];
+
+		if(!empty($sale['colors_products']) && !empty($sale['products']))
+		{
+			foreach($sale['products'] as $p => $product)
+			{
+				$colors = [];
+				
+				foreach($sale['colors_products'] as $c => $color)
+				{
+					
+					if($color['product_id'] == $product['id'])
+					{
+						$colors[] = $color;
+						
+					}
+					
+				}
+				$sale['products'][$p]['colors_sale'] = $colors;
+			}
+		}
+
+    if(isset($sale['products']))        	
+			return $sale['products'];
 
 		return [];
 	}
