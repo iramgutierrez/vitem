@@ -4,18 +4,18 @@
 
 		(
 
-			'quantity', 
+			'total',
 
 			null ,
 
 			[
-	
-				'addon-first' => '$' , 
+
+				'addon-first' => '$' ,
 
 			]
 
-		) 
+		)
 
-	}}   
+	}}
 
 </div>

@@ -1,4 +1,4 @@
-<h4>Vendedor</h4>  
+<h4>Vendedor</h4>
 
 <div class="col-sm-12">
 
@@ -29,15 +29,15 @@
 
 		(
 
-			'employee_name', 
+			'employee_name',
 
 			null ,
 
-			[ 
+			[
 
-				'class' => 'col-md-10' , 
+				'class' => 'col-md-10' ,
 
-				'addon-first' => '<i class="fa fa-search"></i>' , 
+				'addon-first' => '<i class="fa fa-search"></i>' ,
 
 				'placeholder' => 'Busca por id, nombre, correo electrónico o nombre de usuario.',
 
@@ -47,15 +47,17 @@
 
 				'ng-focus' => 'searchSeller()',
 
-				'ng-blur' => 'hideItems()'
+				'ng-blur' => 'hideItems()',
+
+				'autocomplete' => 'off'
 
 			]
 
-		) 
+		)
 
 	}}
 
-	   
+
 
 </div>
 

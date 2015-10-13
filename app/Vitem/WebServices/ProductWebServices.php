@@ -14,7 +14,7 @@ class ProductWebServices extends BaseWebServices {
 	{
 
 		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Colors' ])->limit(10)->orderBy('id','desc')->get());
-		
+
 	}
 	static function findById()
 	{
@@ -24,25 +24,25 @@ class ProductWebServices extends BaseWebServices {
 			return false;
 
 
-		$product = ProductRepo::with(['stores'])->where('id' , $id)->first();
+		$product = ProductRepo::with(['stores' , 'colors'])->where('id' , $id)->first();
 
 		return \Response::json($product);
 
-	}	
+	}
 
 	static function find()
 	{
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
 		$find = (!empty($_GET['find'])) ? $_GET['find'] : '';
 
-		$status = (isset($_GET['status'])) ? $_GET['status'] : ''; 
+		$status = (isset($_GET['status'])) ? $_GET['status'] : '';
 
 		$products = [
-		
+
 			'data' => ProductRepo::findByPage($page , $perPage , $find , $status),
 			'total' => ProductRepo::countFind($find , $status)
 		];
@@ -53,7 +53,7 @@ class ProductWebServices extends BaseWebServices {
 	static function getBySupplier()
 	{
 
-		$supplier_id = (!empty($_GET['supplier_id'])) ? $_GET['supplier_id'] : false; 
+		$supplier_id = (!empty($_GET['supplier_id'])) ? $_GET['supplier_id'] : false;
 
 		if(!$supplier_id)
 		{
@@ -63,24 +63,24 @@ class ProductWebServices extends BaseWebServices {
 		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Store' ])
 								->where('supplier_id' , $supplier_id)
 								->get());
-		
+
 	}
 
 	static function findBySupplier()
 	{
 
-		$supplier_id = (!empty($_GET['supplier_id'])) ? $_GET['supplier_id'] : false; 
+		$supplier_id = (!empty($_GET['supplier_id'])) ? $_GET['supplier_id'] : false;
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
 		$find = (!empty($_GET['find'])) ? $_GET['find'] : '';
 
-		$status = (isset($_GET['status'])) ? $_GET['status'] : ''; 
+		$status = (isset($_GET['status'])) ? $_GET['status'] : '';
 
 		$products = [
-		
+
 			'data' => ProductRepo::findByPage($page , $perPage , $find , $status , $supplier_id),
 			'total' => ProductRepo::countFind($find , $status , $supplier_id)
 		];
@@ -91,9 +91,9 @@ class ProductWebServices extends BaseWebServices {
 	static function getFinishedComing()
 	{
 
-		$limitStock = (!empty($_GET['limitStock'])) ? $_GET['limitStock'] : 5; 
+		$limitStock = (!empty($_GET['limitStock'])) ? $_GET['limitStock'] : 5;
 
-		$store_id = (!empty($_GET['store_id']) && $_GET['store_id'] > 0) ? $_GET['store_id'] : false; 
+		$store_id = (!empty($_GET['store_id']) && $_GET['store_id'] > 0) ? $_GET['store_id'] : false;
 
 		if($store_id)
 		{
@@ -102,13 +102,13 @@ class ProductWebServices extends BaseWebServices {
 			{
 			    $query->orderBy('quantity' ,'asc')
 			    	  ->where('store_id', $store_id)
-			    	  ->where('quantity', '<=' , $limitStock); 
+			    	  ->where('quantity', '<=' , $limitStock);
 
 			}))->whereHas( 'stores' , function($query) use ($store_id , $limitStock)
 			{
 			    $query->orderBy('quantity' ,'asc')
 			    	  ->where('store_id', $store_id)
-			    	  ->where('quantity', '<=' , $limitStock); 
+			    	  ->where('quantity', '<=' , $limitStock);
 
 			})->get();
 
@@ -121,7 +121,7 @@ class ProductWebServices extends BaseWebServices {
 							->where('stock' , '<=' , $limitStock)
 							->get();
 
-		}		
+		}
 
 		return \Response::json($products);
 	}

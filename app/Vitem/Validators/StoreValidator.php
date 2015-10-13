@@ -1,9 +1,10 @@
 <?php namespace Vitem\Validators;
 
 class StoreValidator extends BaseValidator {
-    
+
     protected $rules = array(
         'name'     => 'required',
+        'key'     => 'required|unique:stores,key',
         'email'     => 'required|email|unique:stores,email',
         'address'     => 'required',
         'phone'     => 'required',
@@ -22,10 +23,10 @@ class StoreValidator extends BaseValidator {
         }
 
         $this->rules = $rules;
-        
+
         return $rules;
     }
-    
+
     public function getCreateRules()
     {
     	$rules = $this->getRules();
@@ -33,6 +34,6 @@ class StoreValidator extends BaseValidator {
         return $rules;
     }
 
-    
-    
+
+
 }

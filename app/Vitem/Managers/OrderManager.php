@@ -8,7 +8,7 @@ class OrderManager extends BaseManager {
 
     protected $order;
 
-    
+
     public function save()
     {
         $OrderValidator = new OrderValidator(new \Order);
@@ -21,12 +21,24 @@ class OrderManager extends BaseManager {
 
         if( $orderValid )
         {
-                 
+            //dd($orderData);
             $order = new \Order( $orderData );
-            
+
             $order->save();
 
-            //\Setting::checkSettingAndAddResidue('add_residue_new_order', $orderData['total']*(-1) );
+            if($orderData['status_pay'] == 'pagado')
+            {
+
+                \Movement::create([
+                    'user_id' => \Auth::user()->id,
+                    'entity' => 'Order',
+                    'type' => 'create',
+                    'entity_id' => $order->id,
+                    'amount_in' => 0,
+                    'amount_out' => $order->total,
+                    'date' => $order->order_date
+                ]);
+            }
 
             $order->products()->sync($orderData['ProductOrder']);
 
@@ -43,12 +55,12 @@ class OrderManager extends BaseManager {
                             'id' => $kp
 
                         ];
-                            
+
                         $addStockProduct = new ProductManager( $product );
 
                         $addStockProduct->addStock( ($p['quantity']) );
 
-                    } 
+                    }
 
                 }
 
@@ -57,12 +69,12 @@ class OrderManager extends BaseManager {
             $response = [
                 'success' => true,
                 'return_id' => $order->id
-            ];            
+            ];
 
         }
         else
         {
-            
+
             $orderErrors = [];
 
             if($OrderValidator->getErrors())
@@ -83,7 +95,7 @@ class OrderManager extends BaseManager {
     public function update()
     {
 
-        $orderData = $this->data; 
+        $orderData = $this->data;
 
         $this->order = \Order::with(['products' , 'supplier' , 'user'])
                      ->find($orderData['id']);
@@ -99,7 +111,13 @@ class OrderManager extends BaseManager {
 
             $order = $this->order;
 
-            $orderOld = $this->order; 
+            $orderOld = $this->order;
+
+            $orderOldStatusPay = $orderOld->status_pay;
+
+            $orderOldTotal = $orderOld->total;
+
+            $orderOldDate = $orderOld->order_date;
 
             $orderProductsOld = [];
 
@@ -109,11 +127,77 @@ class OrderManager extends BaseManager {
                 $orderProductsOld[$p->pivot->product_id] = $p;
             }
 
-            //\Setting::checkSettingAndAddResidue('add_residue_new_order', ( ($orderOld->total)*(-1)  ) );
-
-            //\Setting::checkSettingAndAddResidue('add_residue_new_order',  $orderData['total']  );         
-
             $order->update($orderData);
+
+            if($orderData['status_pay'] == 'pagado' || $orderOldStatusPay == 'pagado')
+            {
+
+                if($orderData['status_pay'] == 'pagado' && $orderOldStatusPay == 'pagado')
+                {
+                    if($orderOldDate == $orderData['order_date'])
+                    {
+                        \Movement::create([
+                            'user_id' => \Auth::user()->id,
+                            'entity' => 'Order',
+                            'type' => 'update',
+                            'entity_id' => $order->id,
+                            'amount_in' => $orderOldTotal,
+                            'amount_out' => $order->total,
+                            'date' => $orderData['order_date']
+                        ]);
+                    }
+                    else
+                    {
+                        \Movement::create([
+                            'user_id' => \Auth::user()->id,
+                            'entity' => 'Order',
+                            'type' => 'update',
+                            'entity_id' => $order->id,
+                            'amount_in' => $orderOldTotal,
+                            'amount_out' => 0,
+                            'date' => $orderOldDate
+                        ]);
+
+                        \Movement::create([
+                            'user_id' => \Auth::user()->id,
+                            'entity' => 'Order',
+                            'type' => 'update',
+                            'entity_id' => $order->id,
+                            'amount_in' => 0,
+                            'amount_out' => $order->total,
+                            'date' => $orderData['order_date']
+                        ]);
+
+
+                    }
+
+                }
+                else if($orderData['status_pay'] == 'pagado')
+                {
+                    \Movement::create([
+                        'user_id' => \Auth::user()->id,
+                        'entity' => 'Order',
+                        'type' => 'update',
+                        'entity_id' => $order->id,
+                        'amount_in' => 0,
+                        'amount_out' => $order->total,
+                        'date' => $orderData['order_date']
+                    ]);
+                }
+                else if($orderOldStatusPay == 'pagado')
+                {
+                    \Movement::create([
+                        'user_id' => \Auth::user()->id,
+                        'entity' => 'Order',
+                        'type' => 'update',
+                        'entity_id' => $order->id,
+                        'amount_in' => $orderOldTotal,
+                        'amount_out' => 0,
+                        'date' => $orderOldDate
+                    ]);
+                }
+
+            }
 
             $order->products()->sync($orderData['ProductOrder']);
 
@@ -122,11 +206,11 @@ class OrderManager extends BaseManager {
                 foreach($orderData['ProductOrder'] as $kp => $p)
                 {
                     if( !empty($orderProductsOld[$kp]) && !empty($orderData['ProductOrder'][$kp]))
-                    { 
+                    {
 
                         if($orderProductsOld[$kp]->pivot->status != $orderData['ProductOrder'][$kp]['status'])
-                        {   
-                            
+                        {
+
 
                             $status = 1;
 
@@ -134,7 +218,7 @@ class OrderManager extends BaseManager {
                             {
                                 $status = -1;
                             }
-                            
+
                             $product = [
 
                                 'id' => $kp
@@ -147,13 +231,13 @@ class OrderManager extends BaseManager {
 
 
                         } else if( $orderProductsOld[$kp]->pivot->status == 2 && $orderData['ProductOrder'][$kp]['status'] == 2 && $orderProductsOld[$kp]->pivot->quantity != $orderData['ProductOrder'][$kp]['quantity'])
-                        {                               
-                            
+                        {
+
                             $product = [
 
                                 'id' => $kp
 
-                            ];                         
+                            ];
 
                             $addStockProduct = new ProductManager( $product );
 
@@ -182,17 +266,17 @@ class OrderManager extends BaseManager {
 
                         }
                     }
-                    
+
 
                 }
 
             }
 
             if(count( $orderProductsOld))
-            { 
+            {
 
                 foreach( $orderProductsOld as $kp => $p)
-                { 
+                {
                     if($p->pivot->status == 2)
                     {
                         $product = [
@@ -200,7 +284,7 @@ class OrderManager extends BaseManager {
                             'id' => $kp
 
                         ];
-                            
+
                         $addStockProduct = new ProductManager( $product );
 
                         $addStockProduct->addStock( ($p->pivot->quantity) * (-1) );
@@ -214,18 +298,18 @@ class OrderManager extends BaseManager {
             $response = [
                 'success' => true,
                 'return_id' => $order->id
-            ];            
+            ];
 
         }
         else
         {
-            
+
             $orderErrors = [];
 
             if($OrderValidator->getErrors())
-                $orderErrors = $OrderValidator->getErrors()->toArray();            
+                $orderErrors = $OrderValidator->getErrors()->toArray();
 
-            $errors =  $orderErrors;            
+            $errors =  $orderErrors;
 
              $response = [
                 'success' => false,
@@ -246,14 +330,14 @@ class OrderManager extends BaseManager {
                            ->with('user')
                            ->with('supplier')
                            ->find($orderData['id']);
-        
+
         $order = $this->order;
 
         if(count( $order->products))
-        { 
+        {
 
             foreach( $order->products as $kp => $p)
-            { 
+            {
                 if($p->pivot->status == 2)
                 {
                     $product = [
@@ -261,7 +345,7 @@ class OrderManager extends BaseManager {
                         'id' => $p->id
 
                     ];
-                            
+
                     $addStockProduct = new ProductManager( $product );
 
                     $addStockProduct->addStock( ($p->pivot->quantity) * (-1) );
@@ -274,13 +358,27 @@ class OrderManager extends BaseManager {
 
         $order->products()->detach();
 
+        if($order->status_pay == 'pagado')
+        {
+            \Movement::create([
+                'user_id' => \Auth::user()->id,
+                'entity' => 'Order',
+                'type' => 'delete',
+                'entity_id' => $order->id,
+                'amount_in' => $order->total,
+                'amount_out' => 0,
+                'date' => $order->order_date
+            ]);
+
+        }
+
         return $order->delete();
 
     }
 
     public function prepareData($orderData)
     {
-        
+
         $orderData['user_id'] = \Auth::user()->id;
 
         $total = 0;
@@ -303,5 +401,5 @@ class OrderManager extends BaseManager {
         return $orderData;
     }
 
-} 
+}
 

@@ -13,12 +13,12 @@ class CommissionWebServices extends BaseWebServices {
 	static function all()
 	{
 
-		$commissions = CommissionRepo::all();
+		$commissions = CommissionRepo::with(['employee.user' , 'sale'])->get();
 
 		return \Response::json($commissions);
-		
+
 	}
-	
+
 	static function findById()
 	{
 		$id = (isset($_GET['id'])) ? $_GET['id'] : false;

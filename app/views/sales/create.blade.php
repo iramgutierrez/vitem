@@ -33,11 +33,11 @@
 
   	  	<div class="panel-body" >
 
-          <div class="form-group col-md-3 col-sm-3 pull-right " >
+          <div class="form-group col-md-3 col-sm-3 pull-right " ng-init="getNextSheet()">
 
             @include('sales/fields/sheet')
 
-          </div> 
+          </div>
 
           <div class="clearfix"></div>
 
@@ -45,19 +45,19 @@
 
             @include('sales/fields/sale_date')
 
-          </div> 
+          </div>
 
           <div class="form-group col-md-4 col-sm-4" >
 
             @include('sales/fields/pay_type')
 
-          </div> 
+          </div>
 
           <div class="form-group col-md-4 col-sm-4" >
 
             @include('sales/fields/sale_type')
 
-          </div> 
+          </div>
           <div class="form-group col-md-offset-4 col-sm-offset-4 col-md-4 col-sm-4" ng-show="sale_type == 'apartado' ">
 
             @include('sales/fields/liquidation_date')
@@ -68,7 +68,7 @@
 
             @include('sales/fields/down_payment')
 
-          </div> 
+          </div>
 
           @if(Auth::user()->role->level_id >= 3)
 
@@ -107,49 +107,49 @@
 
   	  			@include('sales/fields/client_id')
 
-  	    	</div>   
+  	    	</div>
 
 
 
           @if($errors->first('PacksProductsSale'))
 
             <div class="form-group col-md-12 col-sm-12 " >
-              
+
               <p class="error_message">{{ $errors->first('PacksProductsSale') }}</p>
-            
+
             </div>
 
-            
+
 
           @endif
 
           <div class="col-md-8 col-sm-8 " >
 
             <ul class="nav nav-tabs">
-              
+
               <li class="active">
-                
+
                 <a data-toggle="tab" href="#" ng-click="tab = 'pack'">Agregar paquetes</a>
-                
+
               </li>
 
               <li class="">
-              
+
                 <a data-toggle="tab" href="#" ng-click="tab = 'product'" >Agregar productos existente</a>
-                
+
               </li>
-              
+
             </ul>
 
-          </div>      
-          
+          </div>
+
           <div class="col-sm-4 col-md-4 text-right" ng-if="$root.auth_permissions.create.product">
 
             <a data-toggle="modal" href="#addProduct" >
 
               <button type="button" class="col-sm-6 col-sm-offset-6 btn btn-danger" >Crear nuevo producto <br>y agregarlo a la venta</button>
-            
-            </a>  
+
+            </a>
 
           </div>
 
@@ -157,7 +157,7 @@
 
   	  			@include('sales/fields/products_sale')
 
-  	    	</div> 
+  	    	</div>
 
           <div class="form-group col-md-12 col-sm-12 " ng-show="tab == 'pack'" >
 
@@ -221,16 +221,16 @@
 
             </div>
 
-          <div class="form-group col-md-12 ">                              
-      
+          <div class="form-group col-md-12 ">
+
             <button type="submit" class="btn btn-success pull-right">Registrar</button>
-    
+
           </div>
 
 
   		</div>
 
-  	</div> 
+  	</div>
 
   {{ Form::close() }}
 

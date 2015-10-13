@@ -3,8 +3,8 @@
   angular.module('sales.controllers', [])
 
     .controller('SalesController', ['$scope', '$filter' , 'SalesService' , function ($scope ,  $filter , SalesService ) {
-        
-        $scope.find = '';   
+
+        $scope.find = '';
         $scope.sale_type = '';
         $scope.pay_type = '';
         $scope.sort = 'id';
@@ -30,22 +30,22 @@
             dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
         };
 
-        $scope.init = function() 
-        { 
-          
+        $scope.init = function()
+        {
+
           SalesService.API(
 
             'find',
-            {              
+            {
               page : $scope.page ,
-              perPage : $scope.perPage , 
-              find : $scope.find , 
-              sale_type : $scope.sale_type , 
-              pay_type : $scope.pay_type, 
-              operatorSaleDate : $scope.operatorSaleDate , 
+              perPage : $scope.perPage ,
+              find : $scope.find ,
+              sale_type : $scope.sale_type ,
+              pay_type : $scope.pay_type,
+              operatorSaleDate : $scope.operatorSaleDate ,
               saleDate : $scope.saleDate
 
-            }).then(function (data) {              
+            }).then(function (data) {
 
                 $scope.salesP = data.data;
 
@@ -53,7 +53,7 @@
 
                 $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
-            });  
+            });
 
         }
 
@@ -67,28 +67,28 @@
 
           $scope.search(true);
 
-          $scope.paginate();     
+          $scope.paginate();
 
         });
 
         $scope.paginate = function( p )
         {
           if($scope.pagination)
-          {            
+          {
 
             if(p)
-              $scope.page = parseInt(p);   
+              $scope.page = parseInt(p);
 
             if(!$scope.salesAll)
             {
-            
+
               $scope.init();
 
             }
             else
             {
 
-              $scope.total = $scope.sales.length;          
+              $scope.total = $scope.sales.length;
 
               $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
@@ -106,20 +106,20 @@
 
 
         $scope.search = function ( init )
-        { 
+        {
 
           if(!$scope.salesAll)
           {
-          
+
             $scope.init();
 
           }
           else
           {
-            
+
           	$scope.sales = SalesService.search($scope.find , $scope.salesAll , $scope.sale_type , $scope.pay_type, $scope.operatorSaleDate , $scope.saleDate);
 
-            
+
           }
 
           if(!init){
@@ -130,9 +130,9 @@
 
         }
 
-        $scope.clear = function () 
+        $scope.clear = function ()
         {
-        	$scope.find = '';   
+        	$scope.find = '';
           $scope.sale_type = '';
           $scope.pay_type = '';
           $scope.operatorSaleDate = '';
@@ -148,7 +148,7 @@
 
     }])
 
-    .controller('FormController', [ '$rootScope' , '$scope', '$filter' , 'SalesService' , 'UsersService' , 'ClientsService' , 'ProductsService' , 'PackagesService' , 'DestinationsService' , function ($rootScope , $scope , $filter , SalesService,  UsersService , ClientsService , ProductsService , PackagesService , DestinationsService) {
+    .controller('FormController', [ '$rootScope' , '$scope', '$filter' , 'SalesService' , 'UsersService' , 'ClientsService' , 'ProductsService' , 'PackagesService' , 'DestinationsService' , "$q", function ($rootScope , $scope , $filter , SalesService,  UsersService , ClientsService , ProductsService , PackagesService , DestinationsService ,$q) {
 
 
       $scope.pay_types = {};
@@ -172,6 +172,21 @@
           $scope.sellersAll = data;
 
       });
+
+      $scope.sheet = false;
+
+      SalesService
+          .API('getNextSheet')
+          .then(function(sheet){
+
+            if(!$scope.sheet)
+            {
+
+              $scope.sheet = sheet;
+
+            }
+
+          })
 
       $scope.getSellersByStore = function()
       {
@@ -203,7 +218,7 @@
 
       $scope.find_product = '';
 
-      $scope.autocompleteProduct = false;      
+      $scope.autocompleteProduct = false;
 
       $scope.products = {};
 
@@ -235,8 +250,8 @@
 
 
         $scope.searchSeller = function ()
-        { 
-          
+        {
+
             if($scope.find_seller.length != '')
             {
                 $scope.sellers = UsersService.search($scope.find_seller , $scope.sellersAll , false , 1 , false , false , false , false );
@@ -250,14 +265,14 @@
                 $scope.autocompleteSeller = false;
 
             }
-            
 
-        }        
+
+        }
 
         $scope.addSeller = function(seller)
-        { 
+        {
 
-      
+
             $scope.employee_id = seller.employee.id;
 
             $scope.find_seller = seller.name;
@@ -353,7 +368,7 @@
 
         $scope.searchClient = function ()
         {
-          
+
             if($rootScope.find_client.length != '')
             {
                 $scope.clients = ClientsService.search($rootScope.find_client , $scope.clientsAll , false , 1 , false , false );
@@ -367,13 +382,13 @@
                 $rootScope.autocompleteClient = false;
 
             }
-            
+
 
         }
 
         $scope.searchProduct = function ()
         {
-          
+
             if($scope.find_product.length != '')
             {
 
@@ -388,12 +403,12 @@
                 $scope.autocompleteProduct = false;
 
             }
-            
+
 
         }
 
         $scope.addProduct = function(product , quantity )
-        { 
+        {
 
             if(!quantity)
             {
@@ -413,6 +428,34 @@
 
               product.quantity = 0;
             }
+
+            product.notColor = false;
+
+            angular.forEach(product.colors , function(color , i) {
+
+              if(color.slug == 'not-assigned')
+              {
+                product.notColor = color;
+
+                product.colors.splice(i , 1);
+
+                if(product.hasOwnProperty('colors_sale'))
+                {
+                  if(product.colors_sale.length)
+                  {
+                    angular.forEach(product.colors_sale , function(c , k){
+
+                      if(color.id == c.color_id)
+                      {
+                        product.notColor.assigned = c.pivot.quantity;
+                      }
+
+                    })
+                  }
+                }
+              }
+
+            })
 
             product.quantity_init = $scope.quantityInit(product);
 
@@ -460,11 +503,11 @@
         }
 
         $scope.searchPack = function ()
-        { 
-          
+        {
+
             if($scope.find_pack.length != '')
             {
-                $scope.packs = PackagesService.search($scope.find_pack , $scope.packsAll , 1 , $scope.packsSelected);                
+                $scope.packs = PackagesService.search($scope.find_pack , $scope.packsAll , 1 , $scope.packsSelected);
 
                 $scope.autocompletePack = true;
 
@@ -475,18 +518,18 @@
                 $scope.autocompletePack = false;
 
             }
-            
+
 
         }
 
         $scope.addPack = function(pack)
-        { 
+        {
 
           angular.forEach(pack.products, function(product, key) {
 
 
               $scope.addProduct(product , product.pivot.quantity);
-            
+
 
           });
 
@@ -512,7 +555,7 @@
         }
 
         $scope.addQuantity = function (quantity , stock , init)
-        { 
+        {
 
           if(!init)
             init = 0;
@@ -522,7 +565,7 @@
           stock = (isNaN(parseInt(stock))) ? false : parseInt(stock);
 
           stock = parseInt(stock) + parseInt(init);
-          
+
           if(stock)
           {
             if( (quantity + 1) <= stock)
@@ -540,7 +583,7 @@
 
           }
 
-          return quantity + 1;          
+          return quantity + 1;
 
         }
 
@@ -551,7 +594,7 @@
 
           if(quantity > 1)
           {
-            
+
             return quantity - 1;
 
           }
@@ -583,14 +626,14 @@
           angular.forEach($rootScope.productsSelected, function(value, key) {
 
               price += $scope.pricePerQuantity(value.price , value.quantity);
-            
+
 
           });
 
           angular.forEach($scope.packsSelected, function(value, key) {
 
               price += $scope.pricePerQuantity(value.price , value.quantity);
-            
+
 
           });
 
@@ -598,20 +641,20 @@
 
         }
 
-        $scope.hideItems = function () 
+        $scope.hideItems = function ()
         {
             window.setTimeout(function() {
 
                 $scope.$apply(function() {
-                
+
                     $scope.autocompleteSeller = false;
-                
+
                     $rootScope.autocompleteClient = false;
 
                 });
 
             }, 300);
-            
+
         }
 
 
@@ -679,9 +722,9 @@
 
           if(item.hasOwnProperty('pivot'))
           {
-            
+
             if(item.pivot.hasOwnProperty('quantity'))
-            
+
             {
 
               quantity = item.pivot.quantity;
@@ -690,7 +733,7 @@
 
           }
 
-          return quantity; 
+          return quantity;
 
         }
 
@@ -698,7 +741,7 @@
         {
 
           angular.forEach($scope.productsOld, function(value, key) {
-            
+
               ProductsService.findById(value.product_id).then(function (data) {
 
                 data.quantity = value.quantity;
@@ -748,7 +791,7 @@
       });
 
       $scope.searchDriver = function ()
-      {           
+      {
             if($scope.find_driver.length != '')
             {
                 $scope.drivers = UsersService.search($scope.find_driver , $scope.driversAll , false , 1 , false , false , false , false );
@@ -762,14 +805,14 @@
                 $scope.autocompleteDriver = false;
 
             }
-            
 
-      }        
+
+      }
 
       $scope.addDriver = function(driver)
-      { 
+      {
 
-      
+
             $scope.delivery_employee_id = driver.employee.id;
 
             $scope.find_driver = driver.name;
@@ -794,7 +837,7 @@
       });
 
       $scope.searchDestination = function ()
-      {           
+      {
             if($scope.find_destination.length != '')
             {
                 $scope.destinations = DestinationsService.search($scope.find_destination , $scope.destinationsAll );
@@ -810,14 +853,14 @@
                 $scope.autocompleteDestination = false;
 
             }
-            
 
-      }        
+
+      }
 
       $scope.addDestination = function(destination)
-      { 
+      {
             $scope.destination = destination;
-      
+
             $scope.destination_id = destination.id;
 
             $scope.find_destination = $filter('destination_types')(destination.type) + ': ' + destination.value_type;
@@ -845,7 +888,7 @@
       }
 
       $scope.getStockPerStore = function (product , store_id)
-      { 
+      {
 
         var quantity = 0;
 
@@ -873,12 +916,12 @@
           $scope.getSellersByStore();
 
           $scope.employee_id = '';
-          
+
           $scope.find_seller = '';
 
           $scope.autocompleteSeller = false;
 
-          $rootScope.productsSelected = [];
+          //$rootScope.productsSelected = [];
 
           $rootScope.store_id = $scope.store_id;
 
@@ -909,7 +952,7 @@
 
         var payType = false;
 
-        angular.forEach($scope.pay_types , function(pay_type) 
+        angular.forEach($scope.pay_types , function(pay_type)
         {
           if (pay_type.id == $scope.pay_type_id )
             payType = pay_type
@@ -959,14 +1002,14 @@
       }
 
       $scope.getProductsWithoutColors = function(product)
-      { 
+      {
          var quantity =  product.quantity;
 
          if(product.hasOwnProperty('assignedColors'))
-         { 
+         {
 
            var tempQ = quantity;
-         
+
            angular.forEach(product.assignedColors , function(color ,c) {
 
              tempQ = quantity
@@ -982,26 +1025,26 @@
                  dismuss = color;
                }
 
-               color -= dismuss; 
+               color -= dismuss;
 
                product.assignedColors[c] = color;
-               
+
                tempQ = quantity;
 
                tempQ -= color;
              }
 
              quantity = tempQ;
-              
+
            })
-           
+
          }
 
          return quantity;
       }
 
       $scope.getMaxProductColor = function(product_quantity , color_quantity , current , product , color_id)
-      { 
+      {
 
         var product = product || false;
 
@@ -1020,35 +1063,35 @@
                   {
                     product.assigned_colors = [];
                   }
-                  
+
                   product.assigned_colors[color.id] = color.pivot.quantity;
 
                   current = product.assigned_colors[color.id];
-                  
+
                   if(!product.hasOwnProperty('assignedColors'))
                   {
                     product.assignedColors = [];
                   }
-                  
+
                   product.assignedColors[color.id] = color.pivot.quantity;
 
                   current = product.assignedColors[color.id];
-                  
+
                   product.colors_sale.splice(k , 1);
                 }
-                
+
               })
             }
           }
 
         }
 
-        console.log(current);
-        
+        //console.log(current);
+
         var current = current || false;
 
         var color_id = color_id || false;
-        
+
         var max = color_quantity;
 
         if(product_quantity < color_quantity)
@@ -1074,25 +1117,25 @@
             if(max < product.assignedColors[color_id])
             {
               max = product.assignedColors[color_id]
-            } 
-            
+            }
+
           }
-          
+
         }
 
         //debugger
 
         return max;
-        
+
       }
 
       $scope.showColors = function(product)
-      { console.log(product.assignedColors);
+      {
         if(product.hasOwnProperty('showColors'))
         {
           product.showColors = !product.showColors;
         }
-        else 
+        else
         {
           product.showColors = true;
         }
@@ -1223,7 +1266,7 @@
       }])
 
     .controller('AddProductController', ['$rootScope' , '$scope' , 'SuppliersService' , 'ColorService'  , function ($rootScope , $scope , SuppliersService  , ColorService) {
-      
+
       $scope.status = 'No disponible';
       $scope.find = '';
       $scope.autocomplete = false;
@@ -1236,7 +1279,7 @@
         });
         $scope.search = function ()
         {
-          
+
             if($scope.find.length != '')
             {
                 $scope.suppliers = SuppliersService.search($scope.find , $scope.countriesAll , 1 );
@@ -1250,14 +1293,14 @@
                 $scope.autocomplete = false;
 
             }
-            
+
 
         }
 
         $scope.addAutocomplete = function(supplier)
         {
 
-      
+
             $scope.find = supplier.name;
 
             $scope.supplierSelected = supplier;
@@ -1267,40 +1310,40 @@
             return false;
         }
 
-        $scope.hideItems = function () 
+        $scope.hideItems = function ()
         {
             window.setTimeout(function() {
 
                 $scope.$apply(function() {
-                
+
                     $scope.autocomplete = false;
 
                 });
 
             }, 300);
-            
+
         }
 
         $scope.supplierSelectedInit = function (id)
         {
-          
+
           SuppliersService.findById(id).then(function (data) {
 
             $scope.supplierSelected = data;
-                
+
             $scope.newSupplier = false;
-                
+
             $scope.find = $scope.supplierSelected.name ;
 
           });
 
-          
 
-        }    
+
+        }
 
         $scope.cost = '';
 
-        $scope.percent_gain = ''; 
+        $scope.percent_gain = '';
 
         $scope.suggested_price = '';
 
@@ -1316,7 +1359,7 @@
           }
 
           $scope.assignSuggestedPrice();
-          
+
         }
 
         $scope.assignSuggestedPrice = function()
@@ -1451,7 +1494,7 @@
               },
               submitHandler : function(form)
               {
-                  
+
                   $.post($("#addproductForm").attr('action') , $("#addproductForm").serialize() , function(data) {
 
                     if(data.success)
@@ -1472,17 +1515,30 @@
 
                       data.product.quantity_init = $scope.quantityInit(data.product);
 
+                      angular.forEach(data.product.colors , function(color , i){
+
+                        if(color.slug == 'not-assigned')
+                        {
+
+                          data.product.colors.splice(i , 1);
+
+                        }
+
+                      });
+
                       $rootScope.productsSelected.push(data.product);
 
                       $scope.find = '';
-                      
+
                       $scope.autocomplete = false;
-                      
+
                       $scope.supplierSelected = {};
 
                       $scope.cost = '';
 
-                      $scope.percent_gain = ''; 
+                      $scope.colors = [];
+
+                      $scope.percent_gain = '';
 
                       $scope.suggested_price = '';
 
@@ -1499,7 +1555,7 @@
                       $("#addproductForm").trigger("reset");
 
                       $rootScope.$digest();
-                      
+
 
                     }
 
@@ -1524,12 +1580,12 @@
                 range: jQuery.validator.format("Please enter a value between {0} and {1}."),
                 max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
                 min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
-            });            
+            });
 
         }
 
         $scope.getStockPerStore = function (product , store_id)
-        { 
+        {
 
           var quantity = 0;
 
@@ -1558,9 +1614,9 @@
 
           if(item.hasOwnProperty('pivot'))
           {
-            
+
             if(item.pivot.hasOwnProperty('quantity'))
-            
+
             {
 
               quantity = item.pivot.quantity;
@@ -1569,7 +1625,7 @@
 
           }
 
-          return quantity; 
+          return quantity;
 
         }
 
@@ -1580,6 +1636,36 @@
         $scope.quantity_color = 0;
 
         $scope.allColors = [];
+
+        $scope.notColor = false;
+
+        ColorService.
+
+          API('getNotAssignedId')
+
+          .then(function(color) {
+
+            $scope.notColor = color;
+
+            $scope.notColor.quantity = $scope.stock;
+
+          })
+
+
+        $scope.calculateNotAssigned = function()
+        {
+
+          var max = $scope.stock;
+
+          angular.forEach($scope.colors , function (color , i) {
+            max -= color.quantity;
+            /*if(max < 0)
+              max = 0;*/
+          })
+
+          return max;
+
+        }
 
         $scope.initColors = function(product_id)
         {
@@ -1626,8 +1712,8 @@
         {
           var color = false;
 
-          angular.forEach($scope.allColors , function(c , i){ 
-            
+          angular.forEach($scope.allColors , function(c , i){
+
             if(c.id == colorI.id)
             {
               color = c;
@@ -1638,7 +1724,7 @@
           });
 
           if(color)
-          { 
+          {
 
             color.quantity = colorI.pivot.quantity;
 
@@ -1649,7 +1735,7 @@
             $scope.selectColors = false;
 
             $scope.quantity_color = 0;
-            
+
           }
         }
 
@@ -1672,8 +1758,8 @@
         {
           var color = false;
 
-          angular.forEach($scope.allColors , function(c , i){ 
-            
+          angular.forEach($scope.allColors , function(c , i){
+
             if(c.id == $scope.selectColors)
             {
               color = c;
@@ -1684,7 +1770,7 @@
           })
 
           if(color)
-          { 
+          {
 
             color.quantity = $scope.quantity_color;
 
@@ -1695,7 +1781,7 @@
             $scope.selectColors = false;
 
             $scope.quantity_color = 0;
-            
+
           }
         }
 
@@ -1710,13 +1796,13 @@
         $scope.calculateMax = function()
         {
 
-          var max = $scope.stock; 
+          var max = $scope.stock;
 
           angular.forEach($scope.colors , function (color , i) {
             max -= color.quantity;
             if(max < 0)
               max = 0;
-          }) 
+          })
 
           return max;
 
@@ -1746,7 +1832,7 @@
 
         $scope.updateColor = function(color)
         {
-          
+
           var color_key = false;
 
           angular.forEach($scope.colors , function(c , i ){
@@ -1772,11 +1858,17 @@
 
     }])
 
-    
+
 
     .controller('SalePaymentController', [ '$scope' , 'SalesService' , 'UsersService' , function ($scope , SalesService , UsersService) {
 
       $scope.pay_types = {};
+
+      $scope.subtotal = 0;
+
+      $scope.commission_pay = 0;
+
+      $scope.total = 0;
 
       SalesService
           .API('getPayTypes')
@@ -1784,7 +1876,35 @@
 
               $scope.pay_types = pay_types;
 
+              $scope.calculateTotal();
+
+
           })
+
+      $scope.calculateTotal = function()
+      {
+
+        var pay_type = false;
+
+        angular.forEach($scope.pay_types , function(type){
+
+            if(type.id == $scope.pay_type_id)
+            {
+              pay_type = type;
+
+            }
+        })
+
+        if(pay_type)
+        {
+          $scope.commission_pay = pay_type.percent_commission * ($scope.subtotal / 100);
+
+          $scope.total = parseFloat($scope.subtotal) + parseFloat($scope.commission_pay);
+
+
+        }
+
+      }
 
       $scope.sale_id = false;
 
@@ -1793,7 +1913,7 @@
       $scope.setSaleId = function(sale_id)
       {
 
-        $scope.sale_id = sale_id; 
+        $scope.sale_id = sale_id;
 
         if(sale_id)
           $scope.getSale();
@@ -1801,7 +1921,7 @@
       }
 
       $scope.getSale = function()
-      { 
+      {
 
         SalesService.API('findById' , {id : $scope.sale_id}).then(function (sale) {
 
@@ -1823,7 +1943,7 @@
         if(sheet != '')
         {
 
-          $scope.sheet = sheet; 
+          $scope.sheet = sheet;
 
           $scope.searchSaleBySheet();
 
@@ -1832,11 +1952,11 @@
       }
 
       $scope.searchSaleBySheet = function()
-      { 
+      {
 
         SalesService.API('findBySheet' , {sheet : $scope.sheet})
 
-        .then(function (sale) { 
+        .then(function (sale) {
 
             $scope.error = false;
 
@@ -1873,7 +1993,7 @@
 
             }
 
-            
+
 
         });
 
@@ -1892,8 +2012,8 @@
       });
 
       $scope.searchSeller = function ()
-      { console.log($scope.find_seller);
-          
+      {
+
             if($scope.find_seller.length != '')
             {
                 $scope.sellers = UsersService.search($scope.find_seller , $scope.sellersAll , false , false , false , false , false , false );
@@ -1907,14 +2027,14 @@
                 $scope.autocompleteSeller = false;
 
             }
-            
 
-      }        
+
+      }
 
       $scope.addSeller = function(seller)
-      { 
+      {
 
-      
+
             $scope.employee_id = seller.employee.id;
 
             $scope.find_seller = seller.name;
@@ -1923,9 +2043,11 @@
 
             return false;
       }
-      
-      $scope.checkValuePreOrOld = function (pre , old , def)
+
+      $scope.checkValuePreOrOld = function (pre , old , def ,date)
       {
+        var date = date || false;
+
           if(!def)
             def = '';
 
@@ -1937,12 +2059,17 @@
           if(old)
               value = old;
 
+          if(date)
+          {
+            value = new Date(value)
+          }
+
           return value;
 
 
       }
 
-    }]) 
+    }])
 
 
     .controller('ShowController', [ '$scope'  , function ($scope ) {

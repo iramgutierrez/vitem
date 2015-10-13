@@ -28,20 +28,20 @@
 				<header class="panel-heading col-sm-12">
 				<h1 class="col-sm-3">Sucursales</h1>
 					<a ng-if="$root.auth_permissions.create.store" href="{{ route('stores.create') }}"><button type="button" class="pull-right btn btn-success ">Agregar sucursal</button></a>
-				</header>    
+				</header>
 
 				{{ Field::text(
-				'', 
-				'' , 
-				[ 
-				'class' => 'col-md-10' , 
-				'addon-first' => '<i class="fa fa-search"></i>' , 
+				'',
+				'' ,
+				[
+				'class' => 'col-md-10' ,
+				'addon-first' => '<i class="fa fa-search"></i>' ,
 				'placeholder' => 'Busca por id, nombre, correo electrónico, dirección o teléfono.',
 				'ng-model' => 'find',
 				'ng-change' => 'search()'
 
 				]
-				) 
+				)
 			}}
 			<hr>
 			<div class="col-sm-12">
@@ -51,7 +51,7 @@
 			<div class="clearfix"></div>
 			<hr>
 			<div class="col-sm-12">
-				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> sucursales</p>        
+				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> sucursales</p>
 				<button type="button" ng-click="clear()" class="pull-right btn btn-info">Limpiar filtros</button>
 			</div>
 			<div class="clearfix"></div>
@@ -59,7 +59,7 @@
 			<table  class="display table table-bordered table-striped col-sm-12" id="dynamic-table" >
 				<thead>
 					<tr >
-						<th class="col-sm-2">                        
+						<th class="col-sm-1">
 							<a href="" ng-click="sort = 'id'; reverse=!reverse">Id
 								<span class="pull-right" >
 									<i class="fa fa-sort" ng-if="sort != 'id' "></i>
@@ -74,6 +74,15 @@
 									<i class="fa fa-sort" ng-if="sort != 'name' "></i>
 									<i class="fa fa-sort-alpha-asc" ng-if=" sort == 'name' && reverse == false "></i>
 									<i class="fa  fa-sort-alpha-desc" ng-if=" sort == 'name' && reverse == true "></i>
+								</span>
+							</a>
+						</th>
+						<th class="col-sm-1">
+							<a href="" ng-click="sort = 'key'; reverse=!reverse">Código
+								<span class="pull-right" >
+									<i class="fa fa-sort" ng-if="sort != 'key' "></i>
+									<i class="fa fa-sort-numeric-asc" ng-if=" sort == 'key' && reverse == false "></i>
+									<i class="fa  fa-sort-numeric-desc" ng-if=" sort == 'key' && reverse == true "></i>
 								</span>
 							</a>
 						</th>
@@ -111,18 +120,16 @@
 	<tr class="gradeX" ng-repeat="store in storesP | orderBy:sort:reverse">
 		<td>@{{ store.id }}</td>
 		<td>@{{ store.name }}</td>
+		<td>@{{ store.key }}</td>
 		<td>@{{ store.email }}</td>
 		<td>@{{ store.address }}</td>
 		<td>@{{ store.phone }}</td>
 		<td>
-			<a ng-if="$root.auth_permissions.read.store"  href="@{{ store.url_show }}" >
-				<button type="button" class="col-sm-3 btn btn-success"><i class="fa fa-eye"></i></button>
-			</a>
 			<a ng-if="$root.auth_permissions.update.store" href="@{{ store.url_edit }}" >
 				<button  type="button" class="col-sm-3 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
 			</a>
 			<a ng-if="$root.auth_permissions.delete.store" data-toggle="modal" href="#myModal@{{store.id}}" >
-				<button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+				<button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
 			</a>
 			<div ng-if="$root.auth_permissions.delete.store" class="modal fade" id="myModal@{{store.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
@@ -136,13 +143,13 @@
 							¿Deseas eliminar la sucursal  <strong>@{{store.name}}</strong>?
 
 						</div>
-						<div class="modal-footer">                                        
+						<div class="modal-footer">
 							<form class="btn " method="POST" action = "@{{ store.url_delete }}">
 								<input name="_method" type="hidden" value="DELETE">
 								{{  Form::token() }}
-								
-							<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>      
-								<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>    
+
+							<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>
+								<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>
 							</form>
 						</div>
 					</div>
@@ -150,11 +157,11 @@
 			</div>
 
 		</td>
-	</tr>              
+	</tr>
 </tbody>
-</table>      
+</table>
 </div>
-</div> 
+</div>
 
 <div class="panel" ng-if="storesP.length == 0">
 	<div class="panel-body">

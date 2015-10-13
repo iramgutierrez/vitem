@@ -11,15 +11,15 @@
 			<th>Tipo de venta</th>
 			<th>Cantidad pagado</th>
 			<th>Porcentaje pagado</th>
-			<th>Forma de pago</th>							
-			<th></th>>Total de venta</th>								
-			<th>Comisión a forma de pago</th>								
-			<th>Total en caja</th>	
-			<th>Productos</th>					
-			{{--<th>Paquetes</th>--}}				
-			<th>Comisiones</th>			
+			<th>Forma de pago</th>
+			<th>Total de venta</th>
+			<th>Comisión a forma de pago</th>
+			<th>Total en caja</th>
+			<th>Productos</th>
+			{{--<th>Paquetes</th>--}}
+			<th>Comisiones</th>
 			<th>Entrega</th>
-	  </tr>      
+	  </tr>
 	</thead>
 	<tbody>
 		@foreach($sales as $k => $sale)
@@ -34,8 +34,8 @@
 			<td>@if(!empty($sale->cleared_payment)) {{ number_format($sale->cleared_payment, 2) }} @endif </td>
 			<td>@if(!empty($sale->percent_cleared_payment)) {{ $sale->percent_cleared_payment }} @endif </td>
 			<td>@if(!empty($sale->pay_type->name)) {{ $sale->pay_type->name }} @endif </td>
-			<td>@if(!empty($sale->subtotal)) {{ number_format($sale->subtotal, 2) }} @endif </td>			
-			<td>@if(!empty($sale->commission_pay)) {{ number_format($sale->commission_pay, 2) }} @endif </td>			
+			<td>@if(!empty($sale->subtotal)) {{ number_format($sale->subtotal, 2) }} @endif </td>
+			<td>@if(!empty($sale->commission_pay)) {{ number_format($sale->commission_pay, 2) }} @endif </td>
 			<td>@if(!empty($sale->total)) {{ number_format($sale->total, 2) }} @endif </td>
 			<td>
 				@if(count($sale->products))
@@ -101,7 +101,7 @@
 				</table>
 				@endif
 			</td>
-		</tr>  
-		@endforeach            
+		</tr>
+		@endforeach
 	</tbody>
-</table> 
+</table>

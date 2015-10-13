@@ -28,32 +28,32 @@
         <div ng-show="new">
 
         	{{ Form::model( new Color,['route' => 'colors.store',  'name' => 'addcolorForm' , 'method' => 'POST', 'class' => 'form-inline' ,'role' => 'form', 'novalidate' , 'ng-submit' => 'addColor($event , addcolorForm.$valid)', 'enctype' =>  'multipart/form-data' ]) }}
-            
+
                 {{ Field::hidden(
-                            'id', 
-                            '' , 
-                            [ 
+                            'id',
+                            '' ,
+                            [
                                 'class' => 'col-md-10' ,
                                 'ng-model' => 'id',
                                 'ng-value' => 'id'
 
                             ]
-                        ) 
-                    }}  
+                        )
+                    }}
 
 	            <div class=" form-group col-sm-6">
 
 	            	{{ Field::text(
-			                'name', 
-			                '' , 
-			                [ 
+			                'name',
+			                '' ,
+			                [
 			                    'class' => 'col-md-10' ,
 			                    'ng-model' => 'name',
 			                    'required'
 
 			                ]
-			            ) 
-			        }}			        
+			            )
+			        }}
 
 		            <div ng-show="addcolorForm.submitted || addcolorForm.name.$touched">
 
@@ -65,31 +65,31 @@
 
 		            </div>
 
-	            </div> 
-
-	            <div class="form-group col-sm-3 col-sm-offset-9 text-right">       
-
-	            	<button type="button" class="btn btn-danger" ng-click="new = false">Cancelar</button>                           	 
-	            
-	            	<button type="submit" class="btn btn-success">@{{ button }}</button>
-	                
 	            </div>
-	            
-            {{ Form::close() }}            		
-                              		
-        	
+
+	            <div class="form-group col-sm-3 col-sm-offset-9 text-right">
+
+	            	<button type="button" class="btn btn-danger" ng-click="new = false">Cancelar</button>
+
+	            	<button type="submit" class="btn btn-success">@{{ button }}</button>
+
+	            </div>
+
+            {{ Form::close() }}
+
+
         </div>
 
         <div class="clearfix"></div>
         <div class="col-sm-12">
-            <p class="col-sm-2"><span class="badge bg-success">@{{colors.length}}</span> colores</p>      
+            <p class="col-sm-2"><span class="badge bg-success">@{{colors.length}}</span> colores</p>
         </div>
         <div class="clearfix"></div>
         <hr>
         <table  class="display table table-bordered table-striped col-sm-12" id="dynamic-table" >
             <thead>
                 <tr >
-                    <th class="col-sm-3">                        
+                    <th class="col-sm-3">
                         <a href="" ng-click="sort = 'id'; reverse=!reverse">Id
                             <span class="pull-right" >
                                 <i class="fa fa-sort" ng-if="sort != 'id' "></i>
@@ -118,7 +118,7 @@
                             <button  type="button" class="col-sm-3 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
                         </a>
                         <a data-toggle="modal" href="#myModal@{{color.id}}" ng-if="$root.auth_permissions.delete.color">
-                            <button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+                            <button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
                         </a>
                               <div ng-if="$root.auth_permissions.delete.color" class="modal fade" id="myModal@{{color.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                   <div class="modal-dialog">
@@ -133,11 +133,11 @@
 
                                           </div>
                                           <div class="modal-footer">
-                                              <button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>                                              
+                                              <button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>
                                                 <form class="btn " method="POST" action = "@{{ color.url_delete }}">
                                                     <input name="_method" type="hidden" value="DELETE">
                                                     {{  Form::token() }}
-                                                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>    
+                                                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>
                                                 </form>
                                       </div>
                                   </div>
@@ -145,11 +145,11 @@
                               </div>
 
                     </td>
-                </tr>              
+                </tr>
             </tbody>
-        </table>      
+        </table>
         </div>
-        </div> 
+        </div>
 
         <div class="panel" ng-if="destinationsP.length == 0">
         	<div class="panel-body">
@@ -160,7 +160,7 @@
     </div>
 </div>
 
-	
+
 @stop
 
 @section('sidebar_right')
@@ -175,7 +175,7 @@
                                 'library/js/ng/colors.js',
                                 'library/js/ng/colors.controllers.js',
                                 'library/js/ng/colors.services.js',
-                                'library/js/jquery-ui-1.9.2.custom.min.js' 
+                                'library/js/jquery-ui-1.9.2.custom.min.js'
     							]
     				   ]
     		)

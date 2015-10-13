@@ -54,6 +54,13 @@ Route::filter('auth.basic', function()
 	return Auth::basic();
 });
 
+Route::filter('cors', function()
+{
+	header('Access-Control-Allow-Origin: http://localhost:9000');
+
+	return true;
+});
+
 /*
 |--------------------------------------------------------------------------
 | Guest Filter
@@ -99,7 +106,7 @@ Route::filter('Admin', function()
 		{
 			return Redirect::to('/dashboard');
 		}
-	} 
+	}
 });
 
 

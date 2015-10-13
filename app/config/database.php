@@ -54,8 +54,9 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
+            'unix_socket'   => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
 			'host'      => 'localhost',
-			'database'  => 'vitem',
+			'database'  => 'sika',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',

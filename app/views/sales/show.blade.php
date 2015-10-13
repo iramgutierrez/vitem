@@ -33,17 +33,17 @@
 
 				<ul class="nav nav-pills nav-stacked" ng-init = "tab = 'venta' ">
 					<li><a ng-click="tab = 'venta'" href=""> <i class="fa fa-edit"></i> Detalle</a></li>
-					<li><a href="{{ route('sales.edit' , [ $sale->id ]) }}"> <i class="fa fa-edit"></i> Editar venta</a></li>	
-					@if($sale->sale_type == 'apartado' )					
-					<li ng-show="$root.auth_permissions.read.sale_payment" ><a ng-click="tab = 'abonos'" href="" > <i class="fa fa-edit"></i> Abonos</a></li>		
-					@endif					
-					<li ng-show="$root.auth_permissions.read.commission" ><a ng-click="tab = 'comisiones'" href="" > <i class="fa fa-edit"></i> Comisiones</a></li>				
+					<li><a href="{{ route('sales.edit' , [ $sale->id ]) }}"> <i class="fa fa-edit"></i> Editar venta</a></li>
+					@if($sale->sale_type == 'apartado' )
+					<li ng-show="$root.auth_permissions.read.sale_payment" ><a ng-click="tab = 'abonos'" href="" > <i class="fa fa-edit"></i> Abonos</a></li>
+					@endif
+					<li ng-show="$root.auth_permissions.read.commission" ><a ng-click="tab = 'comisiones'" href="" > <i class="fa fa-edit"></i> Comisiones</a></li>
 					<li ng-show="$root.auth_permissions.read.delivery"><a ng-click="tab = 'entregas'" href="" > <i class="fa fa-edit"></i> Entregas</a></li>
 					<!--<li><a ng-click="tab = 'abonos'"  href="{{ route('sale_payments.create.sale_id' , [ $sale->id ] ) }}"  > <i class="fa fa-edit"></i> Agregar abono</a></li>-->
 				</ul>
 
 			</section>
-		</aside> 
+		</aside>
 		<aside class="profile-info col-lg-9" ng-if="tab == 'venta' ">
 
 	                      <section class="panel" >
@@ -98,7 +98,7 @@
 	                      			@endif
 	                      		</div>
 	                      	</div>
-	                      </section> 
+	                      </section>
 	                      @if(!empty($sale->packs))
 		                      <section class="panel" >
 		                      	<div class="panel-heading">
@@ -161,13 +161,13 @@
 
 						<aside class="profile-info col-lg-9" ng-if="tab == 'abonos' ">
 
-	                      
+
 		                      <section class="panel" >
 		                      	<div class="panel-heading">
 		                      		<h3>Abonos. </h3>
 		                      		<a href="{{ route('sale_payments.create.sale_id' , [ $sale->id ] ) }}" ><button type="button" class="pull-right btn btn-success "> Agregar abono</button></a><br>
 		                      	</div>
-		                      	<div class="panel-body">	
+		                      	<div class="panel-body">
 		                      		<table class="table table-bordered table-striped table-condensed">
 
 		                      		@if(!empty($sale->sale_payments))
@@ -179,21 +179,21 @@
 		                      			</tr>
 		                      			@foreach($sale->sale_payments as $sale_payment )
 		                      			<tr>
-		                      				<td>{{ '<?php echo $sale_payment->subtotal; ?>' | currency }}</td>
+		                      				<td>{{ '<?php echo $sale_payment->total; ?>' | currency }}</td>
 		                      				<td>{{ $sale_payment->employee->user->name }}</td>
-		                      				<td>{{ $sale_payment->created_at }}</td>
-		                      				<td>		                      					
+		                      				<td>{{ $sale_payment->date }}</td>
+		                      				<td>
 												<a href="{{ $sale_payment->url_edit }}" >
 													<button  type="button" class="col-sm-3 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
 												</a>
 												<a data-toggle="modal" href="#myModal{{ $sale_payment->id }}" >
-													<button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+													<button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
 												</a>
 		                      				</td>
 		                      			</tr>
 
 		                      			@endforeach
-		                      					                      				                      		
+
 	                      			@endif
 		                      			<tr>
 		                      				<td colspan="3" class="text-right">Cantidad pagada</td>
@@ -208,7 +208,7 @@
 
 		                      		@if(!empty($sale->sale_payments))
 
-		                      			@foreach($sale->sale_payments as $sale_payment )	
+		                      			@foreach($sale->sale_payments as $sale_payment )
 
 		                      				<div class="modal fade" id="myModal{{ $sale_payment->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 												<div class="modal-dialog">
@@ -222,12 +222,12 @@
 															¿Deseas eliminar el abono  de <strong>{{ '<?php echo $sale_payment->quantity; ?>' | currency }}</strong>?
 
 														</div>
-														<div class="modal-footer">                                        
+														<div class="modal-footer">
 															<form class="btn " method="POST" action="{{ $sale_payment->url_delete }}" >
 																<input name="_method" type="hidden" value="DELETE" />
-																{{  Form::token() }}															
-																<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>      
-																<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>    
+																{{  Form::token() }}
+																<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>
+																<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>
 															</form>
 														</div>
 													</div>
@@ -235,7 +235,7 @@
 											</div>
 
 										@endforeach
-		                      				                      		
+
 	                      			@endif
 		                      	</div>
 
@@ -244,13 +244,13 @@
 
 	                  <aside class="profile-info col-lg-9" ng-show="tab == 'comisiones' " ng-if="$root.auth_permissions.read.commission">
 
-	                      
+
 		                      <section class="panel" >
 		                      	<div class="panel-heading">
 		                      		<h3>Comisiones. </h3>
 		                      		<a ng-if="$root.auth_permissions.create.commission" href="{{ route('commissions.create.sale_id' , [ $sale->id ] ) }}" ><button type="button" class="pull-right btn btn-success "> Agregar comisión</button></a><br>
 		                      	</div>
-		                      	<div class="panel-body">	
+		                      	<div class="panel-body">
 		                      		<table class="table table-bordered table-striped table-condensed">
 
 		                      		@if(!empty($sale->commissions))
@@ -271,25 +271,25 @@
 		                      				<td>{{ '<?php echo $commission->total; ?>' | currency }}</td>
 		                      				<td>{{ $commission->employee->user->name }}</td>
 		                      				<td>{{ '<?php echo $commission->type ?>' | commission_types }}</td>
-		                      				<td>{{ $commission->created_at }}</td>
+		                      				<td>{{ $commission->date }}</td>
 		                      				<td>{{ $commission->status_pay }}</td>
-		                      				<td>		                      					
+		                      				<td>
 												<a href="{{ $commission->url_edit }}" >
 													<button  type="button" class="col-sm-5 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
 												</a>
 												<a data-toggle="modal" href="#myModal{{ $commission->id }}" >
-													<button type="button" class="col-sm-5 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+													<button type="button" class="col-sm-5 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
 												</a>
 		                      				</td>
 		                      			</tr>
 
-		                      			
+
 
 		                      			@endforeach
-		                      				                      		
-	                      			@endif		                      			
 
-		                      		</table>	
+	                      			@endif
+
+		                      		</table>
 
 		                      		@if(!empty($sale->commissions))
 
@@ -307,12 +307,12 @@
 															¿Deseas eliminar esta comisión?
 
 														</div>
-														<div class="modal-footer">                                        
+														<div class="modal-footer">
 															<form class="btn " method="POST"  action="{{ $commission->url_delete }}">
 																<input name="_method" type="hidden" value="DELETE" />
-																{{  Form::token() }}															
-																<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>      
-																<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>    
+																{{  Form::token() }}
+																<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>
+																<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>
 															</form>
 														</div>
 													</div>
@@ -320,7 +320,7 @@
 											</div>
 
 		                      			@endforeach
-		                      				                      		
+
 	                      			@endif
 
 		                      	</div>
@@ -330,8 +330,8 @@
 
 	                  <aside class="profile-info col-lg-9" ng-if="tab == 'entregas' ">
 
-	                  		@include('sales/show/delivery')	                      
-		                      
+	                  		@include('sales/show/delivery')
+
 	                  </aside>
 	              </div>
 	            </div>
@@ -369,6 +369,7 @@
             'library/js/ng/products.filters.js',
             'library/js/ng/products.services.js',
             'library/js/ng/suppliers.services.js',
+            'library/js/ng/colors.services.js',
             'library/assets/dropzone/dropzone.js',
             'library/js/jquery.validate.min.js'
 

@@ -14,7 +14,7 @@ class SaleManager extends BaseManager {
 
     protected $sale;
 
-    
+
     public function save()
     {
         $SaleValidator = new SaleValidator(new \Sale);
@@ -65,19 +65,25 @@ class SaleManager extends BaseManager {
 
         if( $saleValid && $deliveryValid && $destinationValid)
         {
-                 
+
             $sale = new \Sale( $saleData );
-            
+
             $sale->save();
 
             foreach($saleData['ColorProductSale'] as $k => $c)
             {
-              
+
               $ColorProduct = \ColorProduct::find($k);
 
-              $ColorProduct->quantity -= $c['quantity'];
+              if($ColorProduct)
+              {
 
-              $ColorProduct->save();
+                  $ColorProduct->quantity -= $c['quantity'];
+
+                  $ColorProduct->save();
+
+              }
+
             }
 
             if($saleData['delivery_type'] == 1 && isset($saleData['delivery']) && is_array($saleData['delivery']) && $canCreateDelivery) {
@@ -92,10 +98,21 @@ class SaleManager extends BaseManager {
             if($saleData['sale_type'] == 'contado')
             {
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id']);
+                \Movement::create([
+                    'user_id' => \Auth::user()->id,
+                    'store_id' => $sale->store_id,
+                    'type' => 'create',
+                    'entity' => 'Sale',
+                    'entity_id' => $sale->id,
+                    'amount_in' => $sale->subtotal,
+                    'amount_out' => 0,
+                    'date' => $sale->sale_date
+                ]);
+
+                //\Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id']);
 
             }
-            
+
             $sale->colors_products()->sync($saleData['ColorProductSale']);
 
             $sale->packs()->sync($saleData['PackSale']);
@@ -132,7 +149,7 @@ class SaleManager extends BaseManager {
                         'id' => $kp
 
                     ];
-                        
+
                     $addStockProduct = new ProductManager( $product );
 
                     $addStockProduct->addStock( ($p['quantity']) * (-1) /*, $saleData['store_id']*/ );
@@ -146,13 +163,13 @@ class SaleManager extends BaseManager {
 
                 foreach( $saleData['PackSale'] as $kp => $p)
                 {
-                
+
                     $pack = [
 
                         'id' => $kp
 
                     ];
-                            
+
                     $addStockPack = new PackManager( $pack );
 
                     $addStockPack->addStock( ($p['quantity']) * (-1) );
@@ -165,12 +182,12 @@ class SaleManager extends BaseManager {
             $response = [
                 'success' => true,
                 'return_id' => $sale->id
-            ];            
+            ];
 
         }
         else
         {
-            
+
             $saleErrors = [];
 
             if($SaleValidator->getErrors())
@@ -230,7 +247,7 @@ class SaleManager extends BaseManager {
     public function update()
     {
 
-        $saleData = $this->data; 
+        $saleData = $this->data;
 
         $this->sale = \Sale::with('products')
                      ->with('packs')
@@ -241,6 +258,10 @@ class SaleManager extends BaseManager {
         $saleTypeOld = $this->sale->sale_type;
 
         $totalOld = $this->sale->subtotal;
+
+        $storeOld = $this->sale->store_id;
+
+        $saleDateOld = $this->sale->sale_date;
 
         $SaleValidator = new SaleValidator($this->sale);
 
@@ -296,48 +317,34 @@ class SaleManager extends BaseManager {
             $sale = $this->sale;
 
             $saleOld = $this->sale;
-            
+
             $sale->update($saleData);
 
-            //echo "<pre>";
 
-            /*print_r($saleData['ColorProductSale']);
-
-            print_r($saleOld->colors_products->toArray());*/
-
-            
             foreach($saleData['ColorProductSale'] as $k => $c)
             {
-              
+
               $ColorProduct = \ColorProduct::find($k);
 
               $ColorProduct->quantity -= $c['quantity'];
 
-              /*echo "Nueva cantidad de $k = ".$ColorProduct->quantity;
-
-              echo "<br>";*/
-
               $ColorProduct->save();
-            } 
-           
+            }
+
            foreach($saleOld->colors_products->toArray() as $k => $c)
            {
-             
+
              $ColorProduct = \ColorProduct::find($c['id']);
 
              $ColorProduct->quantity += $c['pivot']['quantity'];
 
-             /*echo "Nueva cantidad de ".$c['id']." = ".$ColorProduct->quantity;
-
-             echo "<br>";*/
-
              $ColorProduct->save();
-           }  
-           
-           $sale->colors_products()->sync($saleData['ColorProductSale']);
-            
+           }
 
-            //exit();
+           $sale->colors_products()->sync($saleData['ColorProductSale']);
+
+
+
 
             if($saleData['delivery_type'] == 1 && isset($saleData['delivery']) && is_array($saleData['delivery']) && $canCreateDelivery )
             {
@@ -416,19 +423,70 @@ class SaleManager extends BaseManager {
             if($saleTypeOld == 'contado' && $sale->sale_type == 'apartado')
             {
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1) , $saleOld->store_id );
+                \Movement::create([
+                    'user_id' => \Auth::user()->id,
+                    'store_id' => $sale->store_id,
+                    'type' => 'update',
+                    'entity' => 'Sale',
+                    'entity_id' => $sale->id,
+                    'amount_in' => 0,
+                    'amount_out' => $totalOld,
+                    'date' => $sale->sale_date
+                ]);
+
+                //\Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1) , $saleOld->store_id );
 
             }elseif($saleTypeOld == 'contado' && $sale->sale_type == 'contado'){
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1) , $saleOld->store_id );
+                if($saleDateOld == $sale->sale_date && $storeOld == $sale->store_id)
+                {
+                    \Movement::create([
+                        'user_id' => \Auth::user()->id,
+                        'store_id' => $sale->store_id,
+                        'type' => 'update',
+                        'entity' => 'Sale',
+                        'entity_id' => $sale->id,
+                        'amount_in' => $saleData['subtotal'],
+                        'amount_out' => $totalOld,
+                        'date' => $sale->sale_date
+                    ]);
+                }
+                else
+                {
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id'] );
+                    \Movement::create([
+                        'user_id' => \Auth::user()->id,
+                        'store_id' => $storeOld,
+                        'type' => 'update',
+                        'entity' => 'Sale',
+                        'entity_id' => $sale->id,
+                        'amount_in' => 0,
+                        'amount_out' => $totalOld,
+                        'date' => $saleDateOld
+                    ]);
+
+                    \Movement::create([
+                        'user_id' => \Auth::user()->id,
+                        'store_id' => $sale->store_id,
+                        'type' => 'update',
+                        'entity' => 'Sale',
+                        'entity_id' => $sale->id,
+                        'amount_in' => $saleData['subtotal'],
+                        'amount_out' => 0,
+                        'date' => $sale->sale_date
+                    ]);
+                }
+
+
+                //\Setting::checkSettingAndAddResidue('add_residue_new_sale', ($totalOld)*(-1) , $saleOld->store_id );
+
+                //\Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id'] );
 
             }elseif($saleTypeOld == 'apartado' && $sale->sale_type == 'contado'){
 
 
                 foreach($sale->sale_payments as $sale_payment)
-                { 
+                {
                     $salePaymentData = [
 
                         'id' => $sale_payment->id
@@ -440,7 +498,18 @@ class SaleManager extends BaseManager {
                     $deleteSalePayment->delete();
                 }
 
-                \Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id'] );
+                \Movement::create([
+                    'user_id' => \Auth::user()->id,
+                    'store_id' => $sale->store_id,
+                    'type' => 'update',
+                    'entity' => 'Sale',
+                    'entity_id' => $sale->id,
+                    'amount_in' => $saleData['subtotal'],
+                    'amount_out' => 0,
+                    'date' => $sale->sale_date
+                ]);
+
+                //\Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id'] );
 
             }
 
@@ -460,7 +529,7 @@ class SaleManager extends BaseManager {
                         'id' => $p->id
 
                     ];
-                        
+
                     $addStockProduct = new ProductManager( $product );
 
                     $addStockProduct->addStock( $p->pivot->quantity /*, $this->sale->store_id*/);
@@ -474,13 +543,13 @@ class SaleManager extends BaseManager {
 
                 foreach($this->sale->packs as $kp => $p)
                 {
-                
+
                     $pack = [
 
                         'id' => $p->id
 
                     ];
-                            
+
                     $addStockPack = new PackManager( $pack );
 
                     $addStockPack->addStock( $p->pivot->quantity );
@@ -499,7 +568,7 @@ class SaleManager extends BaseManager {
                         'id' => $kp
 
                     ];
-                        
+
                     $addStockProduct = new ProductManager( $product );
 
                     $addStockProduct->addStock( ($p['quantity']) * (-1) /*, $saleData['store_id']*/ );
@@ -513,13 +582,13 @@ class SaleManager extends BaseManager {
 
                 foreach( $saleData['PackSale'] as $kp => $p)
                 {
-                
+
                     $pack = [
 
                         'id' => $kp
 
                     ];
-                            
+
                     $addStockPack = new PackManager( $pack );
 
                     $addStockPack->addStock( ($p['quantity']) * (-1) );
@@ -532,16 +601,16 @@ class SaleManager extends BaseManager {
             $response = [
                 'success' => true,
                 'return_id' => $sale->id
-            ];            
+            ];
 
         }
         else
         {
-            
+
             $saleErrors = [];
 
             if($SaleValidator->getErrors())
-                $saleErrors = $SaleValidator->getErrors()->toArray();            
+                $saleErrors = $SaleValidator->getErrors()->toArray();
 
             $errors =  $saleErrors;
 
@@ -584,7 +653,7 @@ class SaleManager extends BaseManager {
                 $errors =  $saleErrors + $deliveryErrors + $destinationErrors;
             }
 
-            
+
 
              $response = [
                 'success' => false,
@@ -599,7 +668,7 @@ class SaleManager extends BaseManager {
     public function delete()
     {
 
-        $saleData = $this->data; 
+        $saleData = $this->data;
 
         $this->sale = \Sale::with('products')
                            ->with('packs')
@@ -607,7 +676,7 @@ class SaleManager extends BaseManager {
                            ->with('employee')
                            ->find($saleData['id']);
         if($this->sale)
-        { 
+        {
 
             if($saleData['add_stock'])
             {
@@ -621,7 +690,7 @@ class SaleManager extends BaseManager {
                             'id' => $p->id
 
                         ];
-                        
+
                         $addStockProduct = new ProductManager( $product );
 
                         $addStockProduct->addStock($p->pivot->quantity /*, $this->sale->store_id*/);
@@ -640,7 +709,7 @@ class SaleManager extends BaseManager {
                             'id' => $p->id
 
                         ];
-                        
+
                         $addStockPack = new PackManager( $pack );
 
                         $addStockPack->addStock($p->pivot->quantity);
@@ -658,12 +727,30 @@ class SaleManager extends BaseManager {
 
         $sale->packs()->detach();
 
+        if($sale->sale_type == 'contado')
+        {
+
+            \Movement::create([
+                'user_id' => \Auth::user()->id,
+                'store_id' => $sale->store_id,
+                'type' => 'delete',
+                'entity' => 'Sale',
+                'entity_id' => $sale->id,
+                'amount_in' => 0,
+                'amount_out' => $sale->subtotal,
+                'date' => $sale->sale_date
+            ]);
+
+            //\Setting::checkSettingAndAddResidue('add_residue_new_sale', $saleData['subtotal'] , $saleData['store_id']);
+
+        }
+
         return $sale->delete();
 
     }
 
     public function preparePackProductSale($saleData)
-    {       
+    {
 
         $saleData['ProductSale'] = (isset($saleData['ProductSale'])) ? $saleData['ProductSale'] : [];
 
@@ -682,6 +769,7 @@ class SaleManager extends BaseManager {
             $saleData['employee_id'] = \Auth::user()->id;
         }
 
+
         $saleData['user_id'] = \Auth::user()->id;
 
         if(\Auth::user()->role->level_id >= 3)
@@ -696,6 +784,20 @@ class SaleManager extends BaseManager {
         {
             $data['store_id'] = \Auth::user()->store_id;
         }
+
+        $storeKey = false;
+
+        if(!empty($saleData['store_id']))
+        {
+            $store = \Store::find($saleData['store_id']);
+
+            if($store)
+            {
+                $storeKey = $store->key;
+            }
+        }
+
+        $saleData['sheet'] = $storeKey.'-'.$saleData['sheet'];
 
         $subtotal = 0;
 
@@ -733,8 +835,13 @@ class SaleManager extends BaseManager {
 
         $saleData['total'] = number_format(($subtotal + $commission_pay), 2, '.', '');
 
+        if(!isset($saleData['ColorProductSale']))
+        {
+            $saleData['ColorProductSale'] = [];
+        }
+
         return $saleData;
     }
 
-} 
+}
 

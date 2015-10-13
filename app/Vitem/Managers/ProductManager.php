@@ -49,7 +49,7 @@ class ProductManager extends BaseManager {
 
             foreach($stores as $k => $store)
             {
-                $ProductStore[$store->id]['quantity'] = 0; 
+                $ProductStore[$store->id]['quantity'] = 0;
             }
 
             $data['ProductStore'] = ( !empty($data['ProductStore']) ? $data['ProductStore'] : [] ) + $ProductStore ;*/
@@ -60,7 +60,7 @@ class ProductManager extends BaseManager {
 
             $this->product->colors()->sync($data['ColorProduct']);
 
-            $product_return = \Product::with([ 'user' , 'supplier'])->where('id' , $this->product->id)->first();
+            $product_return = \Product::with([ 'user' , 'supplier' , 'colors'])->where('id' , $this->product->id)->first();
 
             $response = [
                 'success' => true,
@@ -118,7 +118,7 @@ class ProductManager extends BaseManager {
 
             foreach($stores as $k => $store)
             {
-                $ProductStore[$store->id]['quantity'] = 0; 
+                $ProductStore[$store->id]['quantity'] = 0;
             }
 
             $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;*/
@@ -251,7 +251,7 @@ class ProductManager extends BaseManager {
 
             foreach($product->stores as $k => $store)
             {
-                $ProductStore[$store->id]['quantity'] = $store->pivot->quantity; 
+                $ProductStore[$store->id]['quantity'] = $store->pivot->quantity;
             }
 
             $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;*/
@@ -336,13 +336,13 @@ class ProductManager extends BaseManager {
 
             $product->user_id = $data['user_id'];
 
-            $userData = $this->data;          
+            $userData = $this->data;
 
             /*$ProductStore = [];
 
             foreach($product->stores as $k => $store)
             {
-                $ProductStore[$store->id]['quantity'] = $store->pivot->quantity; 
+                $ProductStore[$store->id]['quantity'] = $store->pivot->quantity;
             }
 
             $data['ProductStore'] = $data['ProductStore'] + $ProductStore ;*/
@@ -471,7 +471,7 @@ class ProductManager extends BaseManager {
 
     public function prepareData($data)
     {
-        
+
         if(!isset($data['status']))
         {
             $data['status'] = false;
@@ -485,8 +485,8 @@ class ProductManager extends BaseManager {
         if(isset($data['image']))
         {
             if(!is_object($data['image']))
-            {     
-                
+            {
+
             }else
             {
                 $filename = \Str::slug($data['key']). '_' . time(). '.' .$data['image']->getClientOriginalExtension();
@@ -536,10 +536,10 @@ class ProductManager extends BaseManager {
 
                     'quantity' => $quantityOld + $quantity
 
-                ]; 
+                ];
 
                 $this->product->stores()->updateExistingPivot($store_id, $attributes);
-                
+
             }
 
         }
@@ -555,4 +555,4 @@ class ProductManager extends BaseManager {
         }
     }
 
-} 
+}

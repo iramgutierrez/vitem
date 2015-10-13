@@ -3,8 +3,8 @@
   angular.module('packages.controllers', [])
 
     .controller('PacksController', ['$scope', '$filter' , 'PackagesService' , function ($scope ,  $filter , PackagesService ) {
-        
-        $scope.find = '';   
+
+        $scope.find = '';
         $scope.status = '';
         $scope.sort = 'id';
         $scope.reverse = false;
@@ -37,7 +37,7 @@
             field : 'description',
             label : 'Descripción'
           },
-        ];   
+        ];
 
         PackagesService.API('getMaxProducts').then(function (count) {
 
@@ -70,10 +70,10 @@
 
           $scope.headersExport = JSON.stringify($scope.headersExport);
 
-        });   
+        });
 
         $scope.generateJSONDataExport = function( data )
-        { 
+        {
 
           return JSON.stringify(data);
 
@@ -89,23 +89,23 @@
 
           /*Generar XLS */
 
-          $scope.dataExport = $scope.generateJSONDataExport($scope.packs);  
+          $scope.dataExport = $scope.generateJSONDataExport($scope.packs);
 
-          /*Generar XLS */      
+          /*Generar XLS */
 
           $scope.paginate(1);
 
-          
+
 
         });
 
         $scope.paginate = function( p )
         {
           if($scope.pagination)
-          {            
+          {
 
             if(p)
-              $scope.page = parseInt(p);           
+              $scope.page = parseInt(p);
 
             $scope.pages = Math.ceil( $scope.packs.length / $scope.perPage );
 
@@ -122,24 +122,24 @@
 
         $scope.search = function ()
         {
-          
+
         	$scope.packs = PackagesService.search($scope.find , $scope.packsAll , $scope.status );
 
           /*Generar XLS */
 
-          $scope.dataExport = $scope.generateJSONDataExport($scope.packs);  
+          $scope.dataExport = $scope.generateJSONDataExport($scope.packs);
 
-          /*Generar XLS */      
+          /*Generar XLS */
 
           $scope.paginate(1);
 
         }
 
-        $scope.clear = function () 
+        $scope.clear = function ()
         {
-        	$scope.find = '';   
-	        $scope.type = ''; 
-          $scope.status = ''; 
+        	$scope.find = '';
+	        $scope.type = '';
+          $scope.status = '';
 	        $scope.sort = 'id';
 	        $scope.reverse = false;
 	        $scope.packs = $scope.packsAll;
@@ -167,7 +167,7 @@
 
       ProductsService.all().then(function (data) {
 
-          
+
         $scope.productsAll = data;
 
       });
@@ -176,7 +176,7 @@
 
       $scope.showProduct = function(productId)
       {
-          
+
 
           angular.forEach($scope.products, function(value, key) {
 
@@ -193,7 +193,7 @@
         }
 
         $scope.addProduct = function(product)
-        { 
+        {
 
             product.quantity = 1;
 
@@ -235,7 +235,7 @@
               $scope.cost += ( isNaN( parseFloat( value.productSelected.cost ) ) ) ? 0 : parseFloat( value.productSelected.cost );
 
               $scope.production_days = ( parseFloat( value.productSelected.production_days ) > $scope.production_days ) ?  parseFloat( value.productSelected.production_days ) : $scope.production_days;
-              
+
             }
 
           });
@@ -244,11 +244,11 @@
         }*/
 
         $scope.search = function ()
-        {             
+        {
 
             if($scope.find.length != '')
-            { 
-                $scope.products = ProductsService.search($scope.find , $scope.productsAll , 1, $rootScope.productsSelected);
+            {
+                $scope.products = ProductsService.search($scope.find , $scope.productsAll , $rootScope.productsSelected);
 
                 $scope.autocomplete = true;
 
@@ -258,14 +258,14 @@
 
                 $scope.autocomplete = false;
 
-            }      
+            }
 
         }
 
         $scope.addAutocomplete = function(product , productId)
         {
 
-            
+
             $scope.products[productId].find = product.name;
 
             $scope.products[productId].status = product.status;
@@ -277,27 +277,27 @@
             return false;
         }
 
-        $scope.hideItems = function () 
+        $scope.hideItems = function ()
         {
             window.setTimeout(function() {
 
                 $scope.$apply(function() {
-                
+
                     $scope.autocomplete = false;
 
                 });
 
             }, 300);
-            
+
         }
 
         $scope.productSelectedInit = function (id , quantity , productId)
         {
-         
+
 
           ProductsService.findById(id).then(function (data) {
 
-            
+
               $scope.products.push({
                 show: false,
                 exists : true,
@@ -313,11 +313,11 @@
 
               //$scope.updateFields();
 
-          });          
+          });
 
-        }    
+        }
         $rootScope.productsSelectedInit = function ()
-        {         
+        {
 
           angular.forEach($scope.productsInit, function(value, key) {
 
@@ -330,7 +330,7 @@
 
         $scope.regenerateIndexes = function ()
         {
-          
+
           number = 0;
 
           angular.forEach($scope.products, function(value, key) {
@@ -373,14 +373,14 @@
 
         $scope.getProducts = function(packId)
         {
-          
+
           PackagesService.getProducts(packId).then(function (data) {
 
               var showFirst = true;
 
               angular.forEach(data, function(value, key) {
                   console.log(value);
-                
+
                   $scope.products.push({
                     show: showFirst,
                     exists : true,
@@ -395,14 +395,14 @@
                   if(showFirst)
                     showFirst = false;
 
-              });              
-              
+              });
+
               $scope.completeProducts();
 
-          }); 
+          });
 
         }
-       
+
         $scope.addQuantity = function (quantity , stock)
         {
 
@@ -427,7 +427,7 @@
 
           }
 
-          return quantity + 1;          
+          return quantity + 1;
 
         }
 
@@ -438,7 +438,7 @@
 
           if(quantity > 1)
           {
-            
+
             return quantity - 1;
 
           }
@@ -470,7 +470,7 @@
           angular.forEach($rootScope.productsSelected, function(value, key) {
 
               price += $scope.pricePerQuantity(value.price , value.quantity);
-            
+
 
           });
 
@@ -482,7 +482,7 @@
         {
 
           angular.forEach($scope.productsOld, function(value, key) {
-            
+
               ProductsService.findById(value.product_id).then(function (data) {
 
                 data.quantity = value.quantity;
@@ -513,9 +513,9 @@
 
           if(item.hasOwnProperty('pivot'))
           {
-            
+
             if(item.pivot.hasOwnProperty('quantity'))
-            
+
             {
 
               quantity = item.pivot.quantity;
@@ -524,7 +524,7 @@
 
           }
 
-          return quantity; 
+          return quantity;
 
         }
 

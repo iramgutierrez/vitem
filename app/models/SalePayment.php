@@ -6,12 +6,12 @@ class SalePayment extends \Eloquent {
 
     use SoftDeletingTrait;
 
-	protected $fillable = [ 'sale_id' , 'employee_id' , 'user_id' , 'pay_type_id' ,'subtotal' , 'total' , 'commission_pay'];
-    
+	protected $fillable = [ 'sale_id' , 'employee_id' , 'user_id' , 'pay_type_id' ,'subtotal' , 'total' , 'commission_pay' , 'date'];
+
     protected $appends = ['url_edit' ,  'url_delete', 'day' , 'week' , 'month'  ];
 
-    
-   
+
+
     public function employee()
     {
         return $this->belongsTo('Employee');
@@ -30,7 +30,7 @@ class SalePayment extends \Eloquent {
     public function getUrlEditAttribute()
     {
         return URL::route('sale_payments.edit', [$this->id]);
-    }   
+    }
 
     public function getUrlDeleteAttribute()
     {
@@ -91,7 +91,7 @@ class SalePayment extends \Eloquent {
         });
 
         static::updated(function($sale_payment)
-        { 
+        {
             Record::create([
                 'user_id' => Auth::user()->id,
                 'type' => 3,
@@ -100,11 +100,11 @@ class SalePayment extends \Eloquent {
                 'message' => 'editó un abono con id '.$sale_payment->id.' a la venta con folio  '.$sale_payment->sale->sheet,
                 'object' => $sale_payment->sale->toJson()
             ]);
-        });        
+        });
 
         static::deleted(function($sale_payment)
         {
-            
+
             Record::create([
                 'user_id' => Auth::user()->id,
                 'type' => 4,

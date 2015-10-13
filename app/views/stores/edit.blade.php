@@ -39,6 +39,12 @@
 
                 <div class="form-group col-md-6 col-sm-6" >
 
+                    @include('stores/fields/key')
+
+                </div>
+
+                <div class="form-group col-md-6 col-sm-6" >
+
                     @include('stores/fields/email')
 
                 </div>

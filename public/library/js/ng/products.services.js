@@ -3,7 +3,7 @@
   angular.module('products.services', [])
 
     .factory('ProductsService', ['$http', '$q', '$filter' , function ($http, $q , $filter) {
-      var normalize = $filter('normalize');      
+      var normalize = $filter('normalize');
 
       function all() {
 
@@ -17,7 +17,7 @@
         return deferred.promise;
       }
 
-      function API( method , params) 
+      function API( method , params)
       {
 
         var deferred = $q.defer();
@@ -63,12 +63,12 @@
       }
 
       function search(find, productsAll , productsExcluded , supplier_id , store_id )
-      { 
+      { console.log(productsExcluded);
 
         find = normalize(find);
 
         var products;
-        
+
         if(productsExcluded && productsExcluded.length)
           productsAll = excludeProducts(productsExcluded , productsAll)
 
@@ -81,9 +81,9 @@
         if(find == '')
             products =  productsAll;
           else
-          {   
+          {
             products = productsAll.filter(function (product) {
-              return normalize(product.id.toString()).indexOf(find) != -1 
+              return normalize(product.id.toString()).indexOf(find) != -1
                 || normalize(product.name).indexOf(find) != -1
                 || normalize(product.key).indexOf(find) != -1
                 || normalize(product.model).indexOf(find) != -1;
@@ -94,7 +94,7 @@
       }
 
       function getStockPerStore(store_id , productsAll)
-      { 
+      {
 
         var products;
 
@@ -102,7 +102,7 @@
           products =  productsAll;
         else
         {
-          products = productsAll.filter(function (product) 
+          products = productsAll.filter(function (product)
           {
 
             var quantity = false;
@@ -112,13 +112,13 @@
 
               angular.forEach(product.stores, function(store, key) {
 
-                  
+
 
                 if(store.id == store_id)
                 {
 
                   console.log(store.pivot.quantity);
-                  
+
                   if(store.pivot.quantity > 0)
                   {
 
@@ -134,15 +134,15 @@
 
             return quantity;
 
-          }); 
+          });
 
-        }        
+        }
 
         return products;
 
       }
 
-      function findByStatus(status, productsAll) 
+      function findByStatus(status, productsAll)
       {
 
         var products;
@@ -151,11 +151,11 @@
           products =  productsAll;
         else
         {
-          products = productsAll.filter(function (product) 
+          products = productsAll.filter(function (product)
           {
             return product.status ==  status;
-          }); 
-        }        
+          });
+        }
 
         return products;
 
@@ -185,12 +185,12 @@
       function excludeProducts(productsExcluded , productsAll)
       {
 
-        
+
 
         for( s = 0; s <= productsExcluded.length -1; s++) {
-                         
+
           for( p = 0; p <= productsAll.length -1; p++) {
-                         
+
               if(productsExcluded[s].id === productsAll[p].id)
               {
 
@@ -201,15 +201,15 @@
           }
 
         }
-        
 
-        return productsAll; 
+
+        return productsAll;
 
       }
 
       return {
         all: all ,
-        API : API , 
+        API : API ,
         findById : findById,
         search : search,
 

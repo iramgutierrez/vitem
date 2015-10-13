@@ -3,7 +3,7 @@
   angular.module('sales.services', [])
 
     .factory('SalesService', ['$http', '$q', '$filter' , function ($http, $q , $filter) {
-      var normalize = $filter('normalize');      
+      var normalize = $filter('normalize');
 
       function all() {
         var deferred = $q.defer();
@@ -16,7 +16,7 @@
         return deferred.promise;
       }
 
-      function API( method , params) 
+      function API( method , params)
       {
 
         var deferred = $q.defer();
@@ -73,55 +73,55 @@
         return deferred.promise;
       }
 
-      function search(find, productsAll , sale_type , pay_type , operatorSaleDate , saleDate) 
-      { 
+      function search(find, productsAll , sale_type , pay_type , operatorSaleDate , saleDate)
+      {
 
         find = normalize(find);
 
         var products;
-       
-        if(sale_type) 
+
+        if(sale_type)
           productsAll = findBySaleType(sale_type , productsAll);
 
-        if(pay_type) 
+        if(pay_type)
           productsAll = findByPayType(pay_type , productsAll);
 
         if(operatorSaleDate && saleDate)
           productsAll = findBySaleDate(operatorSaleDate , saleDate , productsAll);
 
-        
+
         if(find == '')
             products =  productsAll;
           else
-          {   
+          {
             products = productsAll.filter(function (product) {
               console.log(product)
               return normalize(product.id.toString()).indexOf(find) != -1
-                || normalize(product.sheet.toString()).indexOf(find) != -1 
+                || normalize(product.sheet.toString()).indexOf(find) != -1
                 || ( ( product.hasOwnProperty('employee') &&  product.employee ) ? ( product.employee.hasOwnProperty('user') &&  product.employee.user ) ? (normalize(product.employee.user.name).indexOf(find) != -1) : '' : '' )
-                || ( ( product.hasOwnProperty('store') &&  product.store ) ? normalize(product.store.name).indexOf(find) != -1 : '' ) 
+                || ( ( product.hasOwnProperty('store') &&  product.store ) ? normalize(product.store.name).indexOf(find) != -1 : '' )
                 || ( ( product.hasOwnProperty('client') &&  product.client ) ? normalize(product.client.name).indexOf(find) != -1 : '' ) ;
             });
-          }   
+          }
 
           return products;
       }
 
-      function search2(employee_id , client_id , productsAll , sale_type , pay_type_id , initDate , endDate , percent_cleared_payment_type , percent_cleared_payment) 
-      {       
+      function search2(employee_id , client_id , productsAll , sale_type , pay_type_id , initDate , endDate , percent_cleared_payment_type , percent_cleared_payment)
+      {
 
         var products = productsAll;
-       
-        if(employee_id) 
+
+        if(employee_id)
           products = findByEmployeeId(employee_id , products);
-       
-        if(client_id) 
+
+        if(client_id)
           products = findByClientId(client_id , products);
-       
-        if(sale_type) 
+
+        if(sale_type)
           products = findBySaleType(sale_type , products);
 
-        if(pay_type_id) 
+        if(pay_type_id)
           products = findByPayTypeId(pay_type_id , products);
 
         if(initDate && endDate)
@@ -129,13 +129,13 @@
 
         if(percent_cleared_payment_type && percent_cleared_payment)
           products = findByPercentClearedPayment(percent_cleared_payment_type , percent_cleared_payment , products);
- 
+
 
           return products;
       }
 
 
-      function findByEmployeeId(employee_id, productsAll) 
+      function findByEmployeeId(employee_id, productsAll)
       {
 
         var products;
@@ -144,17 +144,17 @@
           products =  productsAll;
         else
         {
-          products = productsAll.filter(function (product) 
+          products = productsAll.filter(function (product)
           {
             return product.employee_id ==  employee_id;
-          }); 
-        }        
+          });
+        }
 
         return products;
 
       }
 
-      function findByClientId(client_id, productsAll) 
+      function findByClientId(client_id, productsAll)
       {
 
         var products;
@@ -163,17 +163,17 @@
           products =  productsAll;
         else
         {
-          products = productsAll.filter(function (product) 
+          products = productsAll.filter(function (product)
           {
             return product.client_id ==  client_id;
-          }); 
-        }        
+          });
+        }
 
         return products;
 
       }
 
-      function findBySaleType(sale_type, productsAll) 
+      function findBySaleType(sale_type, productsAll)
       {
 
         var products;
@@ -182,17 +182,17 @@
           products =  productsAll;
         else
         {
-          products = productsAll.filter(function (product) 
+          products = productsAll.filter(function (product)
           {
             return product.sale_type ==  sale_type;
-          }); 
-        }        
+          });
+        }
 
         return products;
 
       }
 
-      function findByPayType(pay_type, productsAll) 
+      function findByPayType(pay_type, productsAll)
       {
 
         var products;
@@ -201,7 +201,7 @@
           products =  productsAll;
         else
         {
-          products = productsAll.filter(function (product) 
+          products = productsAll.filter(function (product)
           {
             if(product.hasOwnProperty('pay_type') && product.pay_type)
             {
@@ -212,15 +212,15 @@
 
             return false;
 
-          }); 
-        }        
+          });
+        }
 
         return products;
 
       }
 
-      function findByPayTypeId(pay_type_id, productsAll) 
-      { 
+      function findByPayTypeId(pay_type_id, productsAll)
+      {
 
         var products;
 
@@ -228,25 +228,25 @@
           products =  productsAll;
         else
         {
-          products = productsAll.filter(function (product) 
+          products = productsAll.filter(function (product)
           {
             if(product.hasOwnProperty('pay_type_id') && product.pay_type_id)
             {
-               
+
                   return product.pay_type_id ==  pay_type_id;
             }
 
             return false;
 
-          }); 
-        }        
+          });
+        }
 
         return products;
 
       }
 
       function findBySaleDate(operator , saleDate , productsAll)
-      { 
+      {
 
         var products;
 
@@ -257,8 +257,8 @@
           products = productsAll.filter(function ( product )
           {
 
-            
-              if(product.hasOwnProperty('sale_date')){ 
+
+              if(product.hasOwnProperty('sale_date')){
 
                 switch(operator)
                 {
@@ -274,11 +274,11 @@
 
                 }
 
-              
+
             }
 
             return false;
-            
+
           });
         }
 
@@ -286,7 +286,7 @@
       }
 
       function findByRangeDate(initDate , endDate , productsAll)
-      { 
+      {
 
         var products;
 
@@ -296,13 +296,13 @@
         {
           products = productsAll.filter(function ( product )
           {
-            
-              if(product.hasOwnProperty('sale_date')){ 
+
+              if(product.hasOwnProperty('sale_date')){
 
                 return product.sale_date >= initDate && product.sale_date <= endDate;
-              
+
               }
-            
+
           });
 
         }
@@ -339,7 +339,7 @@
                 return false;
                 break;
             }
-            
+
           });
 
         }
@@ -351,12 +351,12 @@
       function excludeProducts(productsExcluded , productsAll)
       {
 
-        
+
 
         for( s = 0; s <= productsExcluded.length -1; s++) {
-                         
+
           for( p = 0; p <= productsAll.length -1; p++) {
-                         
+
               if(productsExcluded[s].id === productsAll[p].id)
               {
 
@@ -367,9 +367,9 @@
           }
 
         }
-        
 
-        return productsAll; 
+
+        return productsAll;
 
       }
 

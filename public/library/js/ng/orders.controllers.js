@@ -3,8 +3,8 @@
     angular.module('orders.controllers', [])
 
         .controller('OrdersController', ['$scope', '$filter' , 'OrdersService' , function ($scope ,  $filter , OrdersService ) {
-            
-            $scope.find = '';   
+
+            $scope.find = '';
             $scope.sort = 'id';
             $scope.reverse = false;
             $scope.pagination = true;
@@ -53,7 +53,7 @@
                 field : 'total',
                 label : 'Total'
               },
-            ];     
+            ];
 
             OrdersService.API('getMaxProducts').then(function (count) {
 
@@ -89,7 +89,7 @@
             });
 
             $scope.generateJSONDataExport = function( data )
-            { 
+            {
 
               return JSON.stringify(data);
 
@@ -97,20 +97,20 @@
 
             /*Generar XLS */
 
-            $scope.init = function() 
-            { 
-              
+            $scope.init = function()
+            {
+
               OrdersService.API(
 
                 'find',
-                {              
+                {
                   page : $scope.page ,
-                  perPage : $scope.perPage , 
-                  find : $scope.find , 
-                  operatorOrderDate : $scope.operatorOrderDate , 
+                  perPage : $scope.perPage ,
+                  find : $scope.find ,
+                  operatorOrderDate : $scope.operatorOrderDate ,
                   orderDate : $scope.orderDate
 
-                }).then(function (data) {              
+                }).then(function (data) {
 
                     $scope.ordersP = data.data;
 
@@ -118,7 +118,7 @@
 
                     $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
-                });  
+                });
 
             }
 
@@ -132,34 +132,34 @@
 
               /*Generar XLS */
 
-              $scope.dataExport = $scope.generateJSONDataExport($scope.orders);  
+              $scope.dataExport = $scope.generateJSONDataExport($scope.orders);
 
-              /*Generar XLS */      
+              /*Generar XLS */
 
               $scope.search(true);
 
-              $scope.paginate();     
+              $scope.paginate();
 
             });
 
             $scope.paginate = function( p )
             {
               if($scope.pagination)
-              {            
+              {
 
                 if(p)
-                  $scope.page = parseInt(p);   
+                  $scope.page = parseInt(p);
 
                 if(!$scope.ordersAll)
                 {
-                
+
                   $scope.init();
 
                 }
                 else
                 {
 
-                  $scope.total = $scope.orders.length;          
+                  $scope.total = $scope.orders.length;
 
                   $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
@@ -177,26 +177,26 @@
 
 
             $scope.search = function ( init )
-            { 
+            {
 
               if(!$scope.ordersAll)
               {
-              
+
                 $scope.init();
 
               }
               else
-              { 
-                
+              {
+
                 $scope.orders = OrdersService.search($scope.find , $scope.ordersAll , $scope.operatorOrderDate , $scope.orderDate);
 
                   /*Generar XLS */
 
-                  $scope.dataExport = $scope.generateJSONDataExport($scope.orders);  
+                  $scope.dataExport = $scope.generateJSONDataExport($scope.orders);
 
-                  /*Generar XLS */      
+                  /*Generar XLS */
 
-                
+
               }
 
               if(!init){
@@ -207,9 +207,9 @@
 
             }
 
-            $scope.clear = function () 
+            $scope.clear = function ()
             {
-                $scope.find = '';   
+                $scope.find = '';
               $scope.operatorOrderDate = '';
                 $scope.orderDate = '';
                 $scope.sort = 'id';
@@ -254,7 +254,7 @@
             }
 
             $scope.supplierSelectedInit = function (id)
-            { 
+            {
 
                 if(id)
                 {
@@ -275,12 +275,12 @@
             }
 
             $scope.productSelectedInit = function (id)
-            { 
+            {
 
                 if(id)
                 {
 
-                    ProductsService.findById(id).then(function (data) { 
+                    ProductsService.findById(id).then(function (data) {
 
                         data.quantity = 1;
 
@@ -310,10 +310,10 @@
             $scope.productsOld = [];
 
             $scope.searchProduct = function ()
-            { 
+            {
 
                 if($scope.find_product.length != '')
-                { 
+                {
                     $scope.products = ProductsService.search($scope.find_product , $scope.productsAll , $rootScope.productsSelected , $rootScope.supplier_id );
 
                     $scope.autocompleteProduct = true;
@@ -488,9 +488,9 @@
             $scope.getProductsOld = function()
             {
 
-                angular.forEach($scope.productsOld, function(value, key) { 
+                angular.forEach($scope.productsOld, function(value, key) {
 
-                    ProductsService.findById(value.product_id).then(function (data) { 
+                    ProductsService.findById(value.product_id).then(function (data) {
 
                         data.quantity = value.quantity;
 
@@ -522,7 +522,7 @@
 
         }])
 
-        .controller('AddProductController', ['$rootScope' , '$scope' , 'SuppliersService'  , function ($rootScope , $scope , SuppliersService  ) {
+        .controller('AddProductController', ['$rootScope' , '$scope' , 'SuppliersService' , 'ColorService'  , function ($rootScope , $scope , SuppliersService , ColorService  ) {
 
 
             $scope.cost = '';
@@ -622,7 +622,7 @@
                         },
                         /*production_days : {
                             required : true,
-                            number : true 
+                            number : true
                         },*/
                         user_id : {
                             required : true
@@ -648,6 +648,17 @@
                             {
 
                                 data.product.quantity = 1;
+
+                                angular.forEach(data.product.colors , function(color , i){
+
+                                    if(color.slug == 'not-assigned')
+                                    {
+
+                                      data.product.colors.splice(i , 1);
+
+                                    }
+
+                                });
 
                                 $rootScope.productsSelected.push(data.product);
 
@@ -704,6 +715,227 @@
                 });
 
             }
+
+
+
+        $scope.allColors = [];
+
+        $scope.notColor = false;
+
+        ColorService.
+
+          API('getNotAssignedId')
+
+          .then(function(color) {
+
+            $scope.notColor = color;
+
+            $scope.notColor.quantity = $scope.stock;
+
+          })
+
+
+        $scope.calculateNotAssigned = function()
+        {
+
+          var max = $scope.stock;
+
+          angular.forEach($scope.colors , function (color , i) {
+            max -= color.quantity;
+            /*if(max < 0)
+              max = 0;*/
+          })
+
+          return max;
+
+        }
+
+        $scope.initColors = function(product_id)
+        {
+
+          var product_id = product_id || false;
+
+          ColorService.API('all')
+            .then(function(colors){
+
+              $scope.allColors = colors;
+
+              if(product_id){
+                ProductsService.API('getColorProduct' , { id : product_id})
+                  .then(function (colorsP) {
+
+                    angular.forEach(colorsP , function(c , i) {
+
+                      if($scope.allColors){
+
+                        $scope.addColorI(c);
+                      }
+                      else
+                      {
+                        ColorService.API('all')
+                          .then(function(colors){
+
+                            $scope.allColors = colors;
+
+                            $scope.addColorI(c);
+
+                          })
+                      }
+
+                    });
+
+
+                  })
+              }
+
+            })
+        }
+
+        $scope.addColorI = function(colorI)
+        {
+          var color = false;
+
+          angular.forEach($scope.allColors , function(c , i){
+
+            if(c.id == colorI.id)
+            {
+              color = c;
+
+              color.color_id = i;
+            }
+
+          });
+
+          if(color)
+          {
+
+            color.quantity = colorI.pivot.quantity;
+
+            $scope.colors.push(color);
+
+            $scope.allColors.splice( color.color_id , 1);
+
+            $scope.selectColors = false;
+
+            $scope.quantity_color = 0;
+
+          }
+        }
+
+        $scope.calculateMin = function()
+        {
+
+          var min = 1;
+
+          if($scope.stock < 1){
+            min = 0;
+          }
+
+          $scope.min = min;
+
+        }
+
+        $scope.colors = [];
+
+        $scope.addColor = function()
+        {
+          var color = false;
+
+          angular.forEach($scope.allColors , function(c , i){
+
+            if(c.id == $scope.selectColors)
+            {
+              color = c;
+
+              color.color_id = i;
+            }
+
+          })
+
+          if(color)
+          {
+
+            color.quantity = $scope.quantity_color;
+
+            $scope.colors.push(color);
+
+            $scope.allColors.splice( color.color_id , 1);
+
+            $scope.selectColors = false;
+
+            $scope.quantity_color = 0;
+
+          }
+        }
+
+        $scope.validAddColor = function()
+        {
+
+          return !($scope.stock && $scope.selectColors && $scope.quantity_color) ? true : false ;
+        }
+
+        $scope.stock = 0;
+
+        $scope.calculateMax = function()
+        {
+
+          var max = $scope.stock;
+
+          angular.forEach($scope.colors , function (color , i) {
+            max -= color.quantity;
+            if(max < 0)
+              max = 0;
+          })
+
+          return max;
+
+        }
+
+        $scope.removeColor = function(color)
+        {
+          var color_key = false;
+
+          angular.forEach($scope.colors , function(c , i ){
+            if(c.id == color.id)
+              color_key = i
+          })
+
+
+          if(color_key >= 0)
+          {
+
+            $scope.allColors.push(color);
+
+            $scope.colors.splice(color_key , 1);
+
+          }
+
+
+        }
+
+        $scope.updateColor = function(color)
+        {
+
+          var color_key = false;
+
+          angular.forEach($scope.colors , function(c , i ){
+            if(c.id == color.id)
+              color_key = i
+          })
+
+
+          if(color_key >= 0)
+          {
+            $scope.allColors.push(color);
+
+            $scope.selectColors = color.id;
+
+            $scope.quantity_color = color.quantity;
+
+            $scope.colors.splice(color_key , 1);
+          }
+
+        }
         }])
 
         .controller('AddSupplierController', ['$rootScope' , '$scope' , function ($rootScope , $scope  ) {

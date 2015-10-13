@@ -3,8 +3,8 @@
   angular.module('products.controllers', [])
 
     .controller('ProductsController', ['$scope', '$filter' , 'ProductsService' , function ($scope ,  $filter , ProductsService ) {
-        
-        $scope.find = '';   
+
+        $scope.find = '';
         $scope.status = '';
         $scope.sort = 'id';
         $scope.reverse = false;
@@ -102,10 +102,10 @@
             field : 'state',
             label : 'Estado'
           },
-        ]);        
+        ]);
 
         $scope.generateJSONDataExport = function( data )
-        { 
+        {
 
           return JSON.stringify(data);
 
@@ -113,19 +113,19 @@
 
         /*Generar XLS */
 
-        $scope.init = function() 
-        { 
-          
+        $scope.init = function()
+        {
+
           ProductsService.API(
 
             'find',
-            {              
+            {
               page : $scope.page ,
-              perPage : $scope.perPage , 
-              find : $scope.find , 
+              perPage : $scope.perPage ,
+              find : $scope.find ,
               status : $scope.status
 
-            }).then(function (data) {              
+            }).then(function (data) {
 
                 $scope.productsP = data.data;
 
@@ -133,7 +133,7 @@
 
                 $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
-            });  
+            });
 
         }
 
@@ -149,38 +149,38 @@
 
           /*Generar XLS */
 
-          $scope.dataExport = $scope.generateJSONDataExport($scope.products);  
+          $scope.dataExport = $scope.generateJSONDataExport($scope.products);
 
-          /*Generar XLS */      
+          /*Generar XLS */
 
           $scope.search(true);
 
           $scope.paginate();
 
-          //$scope.paginate(1);          
+          //$scope.paginate(1);
 
         });
 
-           
+
 
         $scope.paginate = function( p )
         {
           if($scope.pagination)
-          {            
+          {
 
             if(p)
-              $scope.page = parseInt(p); 
+              $scope.page = parseInt(p);
 
             if(!$scope.productsAll)
             {
-            
+
               $scope.init();
 
             }
             else
-            {  
+            {
 
-              $scope.total = $scope.products.length;        
+              $scope.total = $scope.products.length;
 
               $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
@@ -199,10 +199,10 @@
 
         $scope.search = function ( init )
         {
-          
+
           if(!$scope.productsAll)
           {
-          
+
             $scope.init();
 
           }
@@ -213,9 +213,9 @@
 
             /*Generar XLS */
 
-            $scope.dataExport = $scope.generateJSONDataExport($scope.products);  
+            $scope.dataExport = $scope.generateJSONDataExport($scope.products);
 
-            /*Generar XLS */      
+            /*Generar XLS */
 
           }
 
@@ -227,11 +227,11 @@
 
         }
 
-        $scope.clear = function () 
+        $scope.clear = function ()
         {
-          $scope.find = '';   
-          $scope.type = ''; 
-          $scope.status = ''; 
+          $scope.find = '';
+          $scope.type = '';
+          $scope.status = '';
           $scope.sort = 'id';
           $scope.reverse = false;
           $scope.products = $scope.productsAll;
@@ -244,20 +244,40 @@
     }])
 
     .controller('FormController', [ '$scope' , 'SuppliersService'  , 'ColorService', 'ProductsService', function ($scope , SuppliersService , ColorService , ProductsService ) {
-      
+
       $scope.status = 'No disponible';
       $scope.find = '';
       $scope.autocomplete = false;
       $scope.supplierSelected = {};
 
-        SuppliersService.all().then(function (data) {
+      SuppliersService.all().then(function (data) {
 
-          $scope.countriesAll = data;
+        $scope.countriesAll = data;
 
-        });
+      });
+
+
+
+      $scope.checkValuePreOrOld = function (pre , old , def)
+      {
+          if(!def)
+              def = '';
+
+          var value = def;
+
+          if(pre)
+              value = pre;
+
+          if(old)
+              value = old;
+
+          return value;
+
+
+            }
         $scope.search = function ()
         {
-          
+
             if($scope.find.length != '')
             {
                 $scope.suppliers = SuppliersService.search($scope.find , $scope.countriesAll , 1 );
@@ -271,14 +291,14 @@
                 $scope.autocomplete = false;
 
             }
-            
+
 
         }
 
         $scope.addAutocomplete = function(supplier)
         {
 
-      
+
             $scope.find = supplier.name;
 
             $scope.supplierSelected = supplier;
@@ -288,40 +308,40 @@
             return false;
         }
 
-        $scope.hideItems = function () 
+        $scope.hideItems = function ()
         {
             window.setTimeout(function() {
 
                 $scope.$apply(function() {
-                
+
                     $scope.autocomplete = false;
 
                 });
 
             }, 300);
-            
+
         }
 
         $scope.supplierSelectedInit = function (id)
         {
-          
+
           SuppliersService.findById(id).then(function (data) {
 
             $scope.supplierSelected = data;
-                
+
             $scope.newSupplier = false;
-                
+
             $scope.find = $scope.supplierSelected.name ;
 
           });
 
-          
 
-        }    
+
+        }
 
         $scope.cost = '';
 
-        $scope.percent_gain = ''; 
+        $scope.percent_gain = '';
 
         $scope.suggested_price = ''
 
@@ -337,7 +357,7 @@
           }
 
           $scope.assignSuggestedPrice();
-          
+
         }
 
         $scope.assignSuggestedPrice = function()
@@ -373,10 +393,10 @@
         }
 
         $scope.checkQuantityByStore = function(store_id)
-        { 
+        {
 
           quantity = $scope.ProductStore[store_id].quantity;
-          
+
           if(!isNaN(quantity) )
           {
 
@@ -388,7 +408,7 @@
 
               var init = $scope.ProductStore[store_id].quantity_init;
 
-              var diff = parseInt(quantity) - parseInt(pre);  
+              var diff = parseInt(quantity) - parseInt(pre);
 
               stock -= diff;
 
@@ -397,8 +417,8 @@
 
                 quantity = quantity + stock;
 
-                stock = 0;              
-                
+                stock = 0;
+
               }
 
               $scope.stock = stock;
@@ -410,7 +430,7 @@
           {
             quantity = $scope.ProductStore[store_id].quantity_init;
           }
-          
+
           $scope.ProductStore[store_id].quantity_pre = quantity;
 
           $scope.ProductStore[store_id].quantity = quantity;
@@ -431,7 +451,12 @@
           ColorService.API('all')
             .then(function(colors){
 
-              $scope.allColors = colors;
+              if(!$scope.allColors.length && !$scope.colors.length)
+              {
+
+                $scope.allColors = colors;
+
+              }
 
               if(product_id){
                 ProductsService.API('getColorProduct' , { id : product_id})
@@ -446,7 +471,7 @@
                       else
                       {
                         ColorService.API('all')
-                          .then(function(colors){
+                          .then(function(colors){ console.log('aqui')
 
                             $scope.allColors = colors;
 
@@ -468,8 +493,8 @@
         {
           var color = false;
 
-          angular.forEach($scope.allColors , function(c , i){ 
-            
+          angular.forEach($scope.allColors , function(c , i){
+
             if(c.id == colorI.id)
             {
               color = c;
@@ -480,7 +505,7 @@
           });
 
           if(color)
-          { 
+          {
 
             color.quantity = colorI.pivot.quantity;
 
@@ -491,7 +516,7 @@
             $scope.selectColors = false;
 
             $scope.quantity_color = 0;
-            
+
           }
         }
 
@@ -514,8 +539,8 @@
         {
           var color = false;
 
-          angular.forEach($scope.allColors , function(c , i){ 
-            
+          angular.forEach($scope.allColors , function(c , i){
+
             if(c.id == $scope.selectColors)
             {
               color = c;
@@ -526,7 +551,7 @@
           })
 
           if(color)
-          { 
+          {
 
             color.quantity = $scope.quantity_color;
 
@@ -537,7 +562,7 @@
             $scope.selectColors = false;
 
             $scope.quantity_color = 0;
-            
+
           }
         }
 
@@ -552,13 +577,27 @@
         $scope.calculateMax = function()
         {
 
-          var max = $scope.stock; 
+          var max = $scope.stock;
 
           angular.forEach($scope.colors , function (color , i) {
             max -= color.quantity;
             if(max < 0)
               max = 0;
-          }) 
+          })
+
+          return max;
+
+        }
+        $scope.calculateNotAssigned = function()
+        {
+
+          var max = $scope.stock;
+
+          angular.forEach($scope.colors , function (color , i) {
+            max -= color.quantity;
+            /*if(max < 0)
+              max = 0;*/
+          })
 
           return max;
 
@@ -588,7 +627,7 @@
 
         $scope.updateColor = function(color)
         {
-          
+
           var color_key = false;
 
           angular.forEach($scope.colors , function(c , i ){
@@ -610,13 +649,87 @@
 
         }
 
+        $scope.notColor = false;
+
+        ColorService.
+
+          API('getNotAssignedId')
+
+          .then(function(color) {
+
+            $scope.notColor = color;
+
+            $scope.notColor.quantity = $scope.stock;
+
+          })
+
+        $scope.colorsOld = [];
+
+        $scope.getColorsOld = function(){
+
+          ColorService.API('all')
+            .then(function(colors){
+
+              $scope.allColors = colors;
+
+              angular.forEach($scope.colorsOld , function(color , i) {
+
+                if(color.color_id != $scope.notColor.id)
+                {
+                    $scope.addColorInit(color)
+                }
+
+              });
+
+            })
+
+        }
+
+        $scope.addColorInit = function(colorInit)
+        {
+
+          var color = false;
+
+          angular.forEach($scope.allColors , function(c , i){
+
+            if(c.id == parseInt(colorInit.color_id))
+            {
+              color = c;
+
+              color.color_id = i;
+            }
+
+          })
+
+          if(color)
+          {
+
+            color.quantity = colorInit.quantity;
+
+            $scope.colors.push(color);
+
+            angular.forEach($scope.allColors , function(c , i ){
+
+              if(color.slug == c.slug)
+              {
+                console.log(color)
+
+                $scope.allColors.splice( i , 1);
+
+              }
+
+            })
+
+          }
+        }
+
     }])
 
     .controller('ShowController', ['$scope', '$filter' , 'SalesService', function ($scope ,  $filter , SalesService) {
 
         $scope.tab = 'profile';
-        $scope.find = '';   
-        $scope.sale_type = '';  
+        $scope.find = '';
+        $scope.sale_type = '';
         $scope.pay_type = '';
         $scope.sort = 'id';
         $scope.reverse = false;
@@ -641,25 +754,25 @@
             dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
         };
 
-        $scope.init = function(product_id) 
-        { 
+        $scope.init = function(product_id)
+        {
 
           $scope.product_id = product_id;
-          
+
           SalesService.API(
 
             'findByProduct',
-            {     
-              product_id : product_id ,         
+            {
+              product_id : product_id ,
               page : $scope.page ,
-              perPage : $scope.perPage , 
-              find : $scope.find , 
-              sale_type : $scope.sale_type , 
-              pay_type : $scope.pay_type, 
-              operatorSaleDate : $scope.operatorSaleDate , 
+              perPage : $scope.perPage ,
+              find : $scope.find ,
+              sale_type : $scope.sale_type ,
+              pay_type : $scope.pay_type,
+              operatorSaleDate : $scope.operatorSaleDate ,
               saleDate : $scope.saleDate
 
-            }).then(function (data) {      
+            }).then(function (data) {
 
                 $scope.salesP = data.data;
 
@@ -691,7 +804,7 @@
 
             $scope.search(true);
 
-            $scope.paginate();     
+            $scope.paginate();
 
           });
         }
@@ -699,21 +812,21 @@
         $scope.paginate = function( p )
         {
           if($scope.pagination)
-          {            
+          {
 
             if(p)
-              $scope.page = parseInt(p);   
+              $scope.page = parseInt(p);
 
             if(!$scope.salesAll)
             {
-            
+
               $scope.init();
 
             }
             else
-            {  
+            {
 
-              $scope.total = $scope.sales.length;          
+              $scope.total = $scope.sales.length;
 
               $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
@@ -732,19 +845,19 @@
 
         $scope.search = function ( init )
         { console.log($scope.find);
-          
+
           if(!$scope.salesAll)
-          { 
-          
+          {
+
             $scope.init();
 
           }
           else
           {
-          
+
             $scope.sales = SalesService.search($scope.find , $scope.salesAll , $scope.sale_type , $scope.pay_type, $scope.operatorSaleDate , $scope.saleDate);
 
-            
+
           }
 
           if(!init){
@@ -755,9 +868,9 @@
 
         }
 
-        $scope.clear = function () 
+        $scope.clear = function ()
         {
-          $scope.find = '';   
+          $scope.find = '';
           $scope.sale_type = '';
           $scope.pay_type = '';
           $scope.operatorSaleDate = '';

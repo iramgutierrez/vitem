@@ -15,7 +15,7 @@ class ReportsController extends \BaseController {
 		$this->beforeFilter('ACL:Sale,Read', ['only' => [ 'sales'  ] ]);
 
 		$this->beforeFilter('ACL:User,Read', ['only' => [ 'compare_sellers' , 'compare_drivers'  ] ]);
-		
+
 	}
 
 	/**
@@ -46,15 +46,16 @@ class ReportsController extends \BaseController {
 	public function compare_sellers()
 	{
 		return View::make('reports/compare_sellers');
-	}	
+	}
 
 	public function compare_drivers()
 	{
 		return View::make('reports/compare_drivers');
-	}	
+	}
 
 	public function generateXls()
-	{ 
+	{
+		\Debugbar::disable();
 
 		$employee_id = (!empty(Input::only('employee_id')['employee_id'])) ? Input::only('employee_id')['employee_id'] : false;
 
@@ -73,7 +74,7 @@ class ReportsController extends \BaseController {
 		$percent_cleared_payment = (!empty(Input::only('percent_cleared_payment')['percent_cleared_payment'])) ? Input::only('percent_cleared_payment')['percent_cleared_payment'] : false;
 
 		$sales =  SaleRepo::findReport($employee_id , $client_id  , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment);
-		
+
 		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=reporte_ventas_".date('Y-m-d_H-i-s').".xls");  //File name extension was wrong
 		header("Expires: 0");
@@ -85,7 +86,7 @@ class ReportsController extends \BaseController {
 	}
 
 	public function generateCustomXls()
-	{ 
+	{
 		$headers = Input::get('headersExport');
 
 		$data = Input::get('dataExport');
@@ -148,7 +149,7 @@ class ReportsController extends \BaseController {
 				'field' => $headerXLS,
 				'label' => $header['label']
 			];
-				
+
 		}
 		$dataXLS = [];
 

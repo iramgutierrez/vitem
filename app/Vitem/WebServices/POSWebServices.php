@@ -67,9 +67,9 @@ class POSWebServices extends BaseWebServices {
 
 		$find = \Input::get('find');
 
-		$store_id = \Input::get('store_id');
+		//$store_id = \Input::get('store_id');
 
-		$products = $this->product->search($find , $store_id);
+		$products = $this->product->search($find );
 
 		return \Response::json($products);
 
@@ -167,9 +167,7 @@ class POSWebServices extends BaseWebServices {
 
 		$key = \Input::get('key');
 
-		$store_id = \Input::get('store_id');
-
-		$product = $this->product->getByKeyAndStore($key , $store_id);
+		$product = $this->product->getByKey($key);
 
 		return \Response::json($product);
 
@@ -233,6 +231,62 @@ class POSWebServices extends BaseWebServices {
 		$next = $lastSale['id'] + 1;
 
 		return \Response::make($next , 200);
+
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 * POST /clients
+	 *
+	 * @return Response
+	 */
+	public function store()
+	{
+		$clientData = Input::all();
+
+		$createClient = new ClientManager( $clientData );
+
+        $response = $createClient->save();
+
+		if (Request::ajax()){
+
+			return Response::json($response , 200);
+
+		}
+		else {
+
+			if ($response['success']) {
+				Session::flash('success', 'El cliente se ha guardado correctamente.');
+
+				return Redirect::route('clients.index');
+			} else {
+
+				Session::flash('error', 'Existen errores en el formulario.');
+
+				return Redirect::back()->withErrors($response['errors'])->withInput();
+
+			}
+
+		}
+	}
+	public function clientCheckEmail()
+	{
+
+		$email = (\Input::has('email')) ? \Input::get('email') : false;
+
+		$client = \Client::where('email' , $email)->first();
+
+		if($client)
+		{
+
+			return 0;
+
+		}
+		else
+		{
+
+			return "true";
+		}
 
 	}
 }

@@ -6,6 +6,7 @@
         'products.services',
         'suppliers.services',
         'users.filters',
+        'colors.services',
         'directives',
     ]).run([ '$q' , '$http' ,  '$rootScope' , function( $q , $http , $rootScope){
 
@@ -91,13 +92,13 @@
               })
 
         }
-        
+
         /*$rootScope.$watch('productsSelected', function(newValue, oldValue) {
-        
+
             console.log('-------');
             console.log(oldValue);
             console.log(newValue);
-            
+
         });*/
 
         $rootScope.productsSelected = [];
@@ -107,7 +108,7 @@
         $rootScope.autocompleteSupplier = false;
 
         $rootScope.addSupplier = function(supplier , init)
-        { 
+        {
             init = init || false;
 
             $rootScope.supplier_id = supplier.id;

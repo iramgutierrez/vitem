@@ -2,7 +2,7 @@
 
 	<label for="pay_type">Forma de pago</label>
 
-	<select class="form-control" name="pay_type_id" ng-model="pay_type_id" ng-value="pay_type_id" ng-init="pay_type_id = checkValuePreOrOld({{((!empty($sale_payment->pay_type_id)) ? $sale_payment->pay_type_id : '')}} , '{{ ((Input::old('pay_type_id')) ? Input::old('pay_type_id') : '') }}')" >
+	<select class="form-control" name="pay_type_id" ng-model="pay_type_id" ng-value="pay_type_id" ng-init="pay_type_id = checkValuePreOrOld({{((!empty($sale_payment->pay_type_id)) ? $sale_payment->pay_type_id : '')}} , '{{ ((Input::old('pay_type_id')) ? Input::old('pay_type_id') : '') }}')" ng-change="calculateTotal()">
 
 		<option value="" selected="selected">Seleccione</option>
 

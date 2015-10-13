@@ -10,21 +10,21 @@ class ProductRepo extends BaseRepo {
 
 	protected static $products;
 
-	public function search($find , $store_id)
+	public function search($find )
 	{
 
-		self::$products = \Product::with('stores');
+		self::$products = \Product::with('colors');
 
 		self::generateLikeCondition( $find , ['id' , 'name' , 'key' , 'model']);
 
-		self::$products->whereIn('id', function ($query) use ($store_id) {
+		/*self::$products->whereIn('id', function ($query) use ($store_id) {
 
 				$query->select(\DB::raw('product_id'))
 						->from('product_store')
 						->where('store_id' , $store_id)
 						->where('product_store.quantity' , '>' , 0);
 
-			});
+			});*/
 
 		return self::$products->get();
 
@@ -34,7 +34,7 @@ class ProductRepo extends BaseRepo {
 	static function all(){
 
 		return \Product::all();
-		
+
 	}
 
 	static function getByField( $field , $search)
@@ -44,18 +44,18 @@ class ProductRepo extends BaseRepo {
 		return $products;
 	}
 
-	static function getByKeyAndStore( $key , $store_id)
+	static function getByKey( $key )
 	{
-		$products = \Product::where('key' , $key);
+		$products = \Product::with('colors')->where('key' , $key);
 
-		$products = $products->whereIn('id', function ($query) use ($store_id) {
+		/*$products = $products->whereIn('id', function ($query) use ($store_id) {
 
 				$query->select(\DB::raw('product_id'))
 						->from('product_store')
 						->where('store_id' , $store_id)
 						->where('product_store.quantity' , '>' , 0);
 
-			});
+			});*/
 
 		$products = $products->first();
 
@@ -63,8 +63,8 @@ class ProductRepo extends BaseRepo {
 	}
 
 	static function findByPage($page , $perPage , $find , $status ,$supplier_id = false)
-	{		
-		
+	{
+
 		$offset = ($page - 1 ) * $perPage;
 
 		self::$products = self::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' ]);
@@ -72,18 +72,18 @@ class ProductRepo extends BaseRepo {
 		self::generateStatusCondition( $status);
 
 		self::generateSupplierIdCondition( $supplier_id);
-		
+
 		self::generateLikeCondition( $find , ['id' , 'name' , 'key' , 'model']);
 
 		self::paginate($offset , $perPage);
 
-		return self::$products->get();		
+		return self::$products->get();
 
 	}
 
 	static function countFind($find , $status,$supplier_id = false)
-	{				
-		
+	{
+
 		self::$products = self::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' ]);
 
 		self::generateStatusCondition( $status);
@@ -92,7 +92,7 @@ class ProductRepo extends BaseRepo {
 
 		self::generateLikeCondition( $find , ['id' , 'name' , 'key' , 'model']);
 
-		return self::$products->count();		
+		return self::$products->count();
 
 	}
 
@@ -100,7 +100,7 @@ class ProductRepo extends BaseRepo {
 	{
 
 		if( $status != '' ){
-		
+
 			self::$products->where( 'status', '=' ,$status );
 
 		}
@@ -111,7 +111,7 @@ class ProductRepo extends BaseRepo {
 	{
 
 		if( $supplier_id ){
-		
+
 			self::$products->where( 'supplier_id', '=' ,$supplier_id );
 
 		}
@@ -125,7 +125,7 @@ class ProductRepo extends BaseRepo {
 
 			self::$products->where(
 							function($query) use ($sentence , $fields) {
-								
+
 								foreach($fields as $field){
 
 									$query->orWhere($field, 'LIKE' , '%' . $sentence . '%' );
@@ -133,7 +133,7 @@ class ProductRepo extends BaseRepo {
 								}
 
 							}
-							
+
 						);
 
 		}

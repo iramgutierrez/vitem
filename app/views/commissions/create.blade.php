@@ -30,24 +30,24 @@
 
   	  	</header>
 
-  	  	<div class="panel-body" >    	  	  
+  	  	<div class="panel-body" >
 
   	  	  <div class="col-md-6 col-sm-6" >
 
-  	  			@include('commissions/fields/sheet_sale')  	  			  
+  	  			@include('commissions/fields/sheet_sale')
 
-  	      </div> 
+  	      </div>
 
           <div ng-show="error" class="col-sm-12" >
             <h2 class="text-center error">@{{ error }}</h2>
-          </div> 
+          </div>
 
           <div ng-show="sale_id" class="col-sm-12">
 
     	  	  <h4 class="col-sm-12">Tipo de venta: <span> @{{ sale.sale_type }}</span></h4>
 
     	  	  <div class="col-sm-12" ng-show="sale.sale_type == 'apartado'">
-  	  	  	  
+
   	  	  	  <p> {{ Form::radio('commission_type', 'total' , false , ['ng-model' => 'commission_type' , 'ng-change' => 'getTotals()']) }} Comisionar sobre el total de la venta </p>
 
   	  	  	  <p> {{ Form::radio('commission_type', 'sale_payments', true, ['ng-model' => 'commission_type' , 'ng-change' => 'getTotals()' ]) }} Comisionar sobre un conjunto de abonos. </p>
@@ -69,7 +69,7 @@
   		  	  	  	<th>Vendedor que recibio</th>
   		  	  	  	<th>Fecha</th>
   		  	  	  </tr>
-  		  	  	  <tr ng-repeat="(k ,sale_payment) in sale.sale_payments"  ng-if="sale.sale_type == 'apartado' && commission_type == 'sale_payments' ">  	  	  	
+  		  	  	  <tr ng-repeat="(k ,sale_payment) in sale.sale_payments"  ng-if="sale.sale_type == 'apartado' && commission_type == 'sale_payments' ">
   		  	  	  	<td><?php echo Form::checkbox('SalePayments[{{ sale_payment.id }}][]' , '1' , false , ['ng-model' => 'sale.sale_payments[k].in_commission' , 'ng-change' => 'getTotals()'] ); ?></td>
   		  	  	  	<td>@{{ k+1 }}</td>
   		  	  	  	<td>@{{ sale_payment.subtotal | currency }}</td>
@@ -81,8 +81,8 @@
     	  	  	<th >@{{ total_commission | currency }}</th>
     	  	  </tr>
     	  	  <tr ng-if="error_total_commission">
-    	  	  	<td colspan="4" class="text-right"> 
-    	  	  		<p class="error_message"  >@{{ error_total_commission }}</p> 
+    	  	  	<td colspan="4" class="text-right">
+    	  	  		<p class="error_message"  >@{{ error_total_commission }}</p>
     	  	  	</td>
     	  	  	<th></th>
     	  	  </tr>
@@ -90,30 +90,36 @@
 
     	      <div class="clearfix"></div>
 
-    	      
+
 
     	      <div class="col-md-6 col-sm-6" >
 
-    	      
 
-  			</div>   
+
+  			</div>
 
 
             <div class="form-group col-md-12 col-sm-12 " >
 
     	  			@include('commissions/fields/employee_id')
 
-    	      </div> 
+    	      </div>
 
-            <div class="form-group col-md-6 col-sm-6" >
+            <div class="form-group col-md-4 col-sm-6" >
 
               @include('commissions/fields/percent')
 
             </div>
 
-            <div class="form-group col-md-6 col-sm-6" >
+            <div class="form-group col-md-4 col-sm-6" >
 
               @include('commissions/fields/status_pay')
+
+            </div>
+
+            <div class="form-group col-md-4 col-sm-6" >
+
+              @include('commissions/fields/date')
 
             </div>
 
@@ -122,10 +128,10 @@
             	<h4>Total de comisión: <span>@{{ total | currency }}</span></h4>
             </div>
 
-            <div class="form-group col-md-12 ">                              
-        
+            <div class="form-group col-md-12 ">
+
               <button type="button" class="btn btn-success pull-right" ng-click="addCommission()" >Agregar comisión</button>
-      
+
             </div>
 
 
@@ -139,7 +145,8 @@
     	  	  		<th>Cantidad Total</th>
     	  	  		<th>Porcentaje de comisión</th>
                 <th>Estatus de pago</th>
-    	  	  		<th>Total</th>
+    	  	  		<th>Fecha</th>
+                <th>Total</th>
     	  	  		<th>Eliminar</th>
 
     	  	  	</tr>
@@ -151,23 +158,24 @@
     	  	  		<td>@{{ commission.total_commission | currency }} <?php echo Form::hidden('Commissions[{{k}}][total_commission]' , '{{ commission.total_commission }}'); ?></td>
     	  	  		<td>@{{ commission.percent }} <?php echo Form::hidden('Commissions[{{k}}][percent]' , '{{ commission.percent }}'); ?></td>
                 <td>@{{ commission.status_pay }} <?php echo Form::hidden('Commissions[{{k}}][status_pay]' , '{{ commission.status_pay }}'); ?></td>
+                <td>@{{ commission.date }} <?php echo Form::hidden('Commissions[{{k}}][date]' , '{{ commission.date }}'); ?></td>
     	  	  		<td>@{{ commission.total | currency }} <?php echo Form::hidden('Commissions[{{k}}][total]' , '{{ commission.total }}'); ?></td>
     	  	  		<td>
     	  	  			<div ng-repeat="(ks , sale_payments) in commission.SalePayments">
-    	  	  				<?php echo Form::hidden('Commissions[{{k}}][SalePayment][]' , '{{ ks }}'); ?>  	  	  			
+    	  	  				<?php echo Form::hidden('Commissions[{{k}}][SalePayment][]' , '{{ ks }}'); ?>
     	  	  			</div>
-  					<button ng-click="deleteCommission(k)" type="button" class="col-sm-12 btn btn-danger"><i class="fa fa-trash-o"></i></button>   
-  					
+  					<button ng-click="deleteCommission(k)" type="button" class="col-sm-12 btn btn-danger"><i class="fa fa-trash-o"></i></button>
+
     	  	  		</td>
     	  	  	</tr>
 
     	  	  </table>
 
 
-            <div class="form-group col-md-12 ">                              
-        
+            <div class="form-group col-md-12 ">
+
               <button type="submit" class="btn btn-success pull-right">Registrar</button>
-      
+
             </div>
 
           </div>
@@ -175,7 +183,7 @@
 
   		</div>
 
-  	</div> 
+  	</div>
 
   {{ Form::close() }}
 
@@ -192,16 +200,28 @@
 @section('footer')
 
 @include('footer', ['js' => [
-        'library/js/ng/commissions.js',
-        'library/js/ng/commissions.controllers.js',
-        'library/js/ng/commissions.services.js',
-        'library/js/ng/sales.services.js',
-        'library/js/ng/users.services.js',
-        'library/js/ng/users.filters.js',
-        'library/js/jquery-ui-1.9.2.custom.min.js' ,
-        'library/assets/bootstrap-fileupload/bootstrap-fileupload.js'
-]
-]
+            'library/js/jquery-ui-1.9.2.custom.min.js' ,
+            'library/js/bootstrap-switch.js' ,
+            'library/js/jquery.tagsinput.js' ,
+            'library/js/ga.js' ,
+            'library/js/ng/date.format.js',
+            'library/js/ng/commissions.js',
+            'library/js/ng/commissions.controllers.js',
+            'library/js/ng/commissions.services.js',
+            'library/js/ng/commissions.filters.js',
+            'library/js/ng/sales.services.js',
+            'library/js/ng/users.services.js',
+            'library/js/ng/clients.services.js',
+            'library/js/ng/products.services.js',
+            'library/js/ng/packages.services.js',
+            'library/js/ng/destinations.services.js',
+            'library/js/ng/ng-date.js',
+            'library/js/ng/users.filters.js',
+            'library/js/ng/commissions.filters.js',
+            'library/js/ng/destinations.filters.js',
+            'library/js/ng/directives.js',
+        ]
+    ]
 )
 
 @stop

@@ -36,9 +36,9 @@ class SettingRepo extends BaseRepo {
 	}*/
 
 	static function addResidue($quantity , $store_id)
-	{ 
+	{
 
-		$store = \Store::find($store_id); 
+		$store = \Store::find($store_id);
 
 		$residue = $store->residue;
 
@@ -67,10 +67,10 @@ class SettingRepo extends BaseRepo {
 	}
 
 	static function checkSettingAndAddResidue($field , $quantity , $store_id)
-	{ 
+	{
 
 		if(self::checkSetting($field) && $store_id)
-		{ 
+		{
 
 			return self::addResidue($quantity , $store_id);
 

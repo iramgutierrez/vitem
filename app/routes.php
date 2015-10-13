@@ -13,7 +13,15 @@
 
 //Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
 
-Route::get('POS/{method?}' , ['as' => 'POS', 'uses' => 'POSController@API']);
+Route::get('POS/{method?}' , [/*'before' => 'oauth' , */ 'as' => 'POS', 'uses' => 'POSController@API']);
+
+Route::post('POS/{method?}' , ['as' => 'POSPost', 'uses' => 'POSController@APIPost']);
+
+Route::post('oauth/access_token' , function() {
+
+    return Response::json(Authorizer::issueAccessToken());
+
+});
 
 Route::group(['before' => 'guest'], function () {
 
@@ -56,9 +64,13 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::get('sale_payments/create/{sale_id}' , ['as' => 'sale_payments.create.sale_id', 'uses' => 'SalePaymentsController@create']);
 
-	Route::resource('commissions', 'CommissionsController');
-
 	Route::get('commissions/create/{sale_id}/{employee_id?}' , ['as' => 'commissions.create.sale_id', 'uses' => 'CommissionsController@create']);
+
+	Route::get("commissions/create-many" , ['as' => 'commissions.create_many_get', 'uses' => 'CommissionsController@createManyGet']);
+
+	Route::post('commissions/create-many' , ['as' => 'commissions.create_many', 'uses' => 'CommissionsController@createMany']);
+
+	Route::resource('commissions', 'CommissionsController');
 
 	Route::resource('destinations', 'DestinationsController');
 
@@ -73,6 +85,8 @@ Route::group(['before' => 'auth'], function () {
 	Route::resource('orders', 'OrdersController');
 
 	Route::get('orders/create/{supplier_id?}/{product_id?}' , ['as' => 'orders.create.supplier_id', 'uses' => 'OrdersController@create']);
+
+	Route::resource('devolutions', 'DevolutionsController');
 
 	Route::resource('pay_types', 'PayTypesController');
 
@@ -152,9 +166,11 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::get('API/orders/{method?}' , ['as' => 'ordersAPI', 'uses' => 'OrdersController@API']);
 
+	Route::get('API/devolutions/{method?}' , ['as' => 'devolutionsAPI', 'uses' => 'DevolutionsController@API']);
+
 	Route::get('API/stores/{method?}' , ['as' => 'storesAPI', 'uses' => 'StoresController@API']);
 
-	
+
 
 	Route::get('reports/sales' , ['as' => 'reports.sales', 'uses' => 'ReportsController@sales']);
 
@@ -165,7 +181,7 @@ Route::group(['before' => 'auth'], function () {
 	Route::post('reports/generate_xls' , ['as' => 'reports.generate_xls', 'uses' => 'ReportsController@generateXls']);
 
 	Route::post('reports/generate_custom_xls' , ['as' => 'reports.generate_custom_xls', 'uses' => 'ReportsController@generateCustomXls']);
-	
+
 });
 
 

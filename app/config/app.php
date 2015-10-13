@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://localhost/vitem/',
+	'url' => 'http://localhost:8000/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -125,7 +125,10 @@ return array(
 		'Barryvdh\Debugbar\ServiceProvider',
 
         // Custom
-        'Vitem\Components\FieldServiceProvider'
+        'Vitem\Components\FieldServiceProvider',
+
+        'LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider',
+		'LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider',
 
 	),
 
@@ -199,7 +202,11 @@ return array(
 
         // Custom
 
-        'Field'           => 'Vitem\Components\Field'
+        'Field'           => 'Vitem\Components\Field',
+
+        'Authorizer' => 'LucaDegasperi\OAuth2Server\Facades\AuthorizerFacade',
+
+        'Debugbar' => 'Barryvdh\Debugbar\Facade',
 
 	),
 

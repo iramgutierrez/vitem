@@ -30,56 +30,81 @@
 
   	  	</header>
 
-  	  	<div class="panel-body" >  
+  	  	<div class="panel-body" >
 
-  	  	  
+
 
   	  	  <div class="col-md-6 col-sm-6" >
 
   	  			@include('sale_payments/fields/sheet_sale')
 
-  	  			  
 
-  	      </div>  
+
+  	      </div>
   	      <div class="clearfix"></div>
 
-  	      
+
 
   	      <div class="col-md-6 col-sm-6" >
 
-  	      
 
-			</div>   
+
+			</div>
 
 
           <div class="form-group col-md-12 col-sm-12 " >
 
   	  			@include('sale_payments/fields/employee_id_edit')
 
-  	      </div> 
+  	      </div>
 
-          <div class="form-group col-md-6 col-sm-6" >
+          <div class="form-group col-md-4 col-sm-6" >
 
             @include('sale_payments/fields/pay_type')
 
-          </div> 
+          </div>
 
-          <div class="form-group col-md-6 col-sm-6" >
+          <div class="form-group col-md-4 col-sm-6" >
 
             @include('sale_payments/fields/quantity')
 
           </div>
 
-          <div class="form-group col-md-12 ">                              
-      
+          <div class="form-group col-md-4 col-sm-6" >
+
+            @include('sale_payments/fields/date')
+
+          </div>
+
+            <div class="form-group col-md-12 col-sm-12 " >
+
+              <table class="table table-bordered table-striped table-condensed">
+                <tr>
+                  <td>Subtotal</td>
+                  <td>@{{ subtotal | currency }}</td>
+                </tr>
+                <tr>
+                  <td>Comisión por forma de pago</td>
+                  <td>@{{ commission_pay | currency }}</td>
+                </tr>
+                <tr>
+                  <td>Total a pagar</td>
+                  <td>@{{ total | currency }}</td>
+                </tr>
+              </table>
+
+            </div>
+
+          <div class="form-group col-md-12 ">
+
             <button type="submit" class="btn btn-success pull-right">Registrar</button>
-    
+
           </div>
 
 
   		</div>
 
-  	</div> 
+  	</div>
 
   {{ Form::close() }}
 
@@ -117,6 +142,7 @@
             'library/js/ng/products.filters.js',
             'library/js/ng/products.services.js',
             'library/js/ng/suppliers.services.js',
+            'library/js/ng/colors.services.js',
             'library/assets/dropzone/dropzone.js',
             'library/js/jquery.validate.min.js'
 

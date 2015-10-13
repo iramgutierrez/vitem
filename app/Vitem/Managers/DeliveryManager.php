@@ -32,7 +32,7 @@ class DeliveryManager extends BaseManager {
         else
         {
             return $this->saveWithExistsDestination();
-        }        
+        }
 
     }
 
@@ -52,7 +52,7 @@ class DeliveryManager extends BaseManager {
 
         $this->data = $data;
 
-        $responseDelivery = $this->saveWithExistsDestination();        
+        $responseDelivery = $this->saveWithExistsDestination();
 
         if($responseDestination['success'] && $responseDelivery['success'])
         {
@@ -69,8 +69,8 @@ class DeliveryManager extends BaseManager {
 
                     unset($responseDestination['errors'][$k]);
 
-                }  
-            }            
+                }
+            }
 
             $errors = ( (isset( $responseDestination['errors'] ) ) ? $responseDestination['errors'] : [] )
 
@@ -88,7 +88,7 @@ class DeliveryManager extends BaseManager {
 
     }
 
-    
+
     public function saveWithExistsDestination()
     {
         $DeliveryValidator = new DeliveryValidator(new \Delivery);
@@ -103,9 +103,9 @@ class DeliveryManager extends BaseManager {
 
         if( $deliveryValid )
         {
-            
-            $delivery = new \Delivery( $deliveryData ); 
-            
+
+            $delivery = new \Delivery( $deliveryData );
+
             $delivery->save();
 
             $store_id = $delivery->sale->store_id;
@@ -115,20 +115,20 @@ class DeliveryManager extends BaseManager {
             $response = [
                 'success' => true,
                 'return_id' => $delivery->id
-            ];            
+            ];
 
         }
         else
         {
-            
+
             $deliveryErrors = [];
 
             if($DeliveryValidator->getErrors())
-                $deliveryErrors = $DeliveryValidator->getErrors()->toArray();            
+                $deliveryErrors = $DeliveryValidator->getErrors()->toArray();
 
             $errors =  $deliveryErrors;
 
-            
+
 
              $response = [
                 'success' => false,
@@ -143,7 +143,7 @@ class DeliveryManager extends BaseManager {
     public function update()
     {
 
-        $deliveryData = $this->data;  
+        $deliveryData = $this->data;
 
         $canCreateDestination = PermissionRepo::checkAuth('Destination' , 'Create');
 
@@ -154,9 +154,9 @@ class DeliveryManager extends BaseManager {
         else
         {
             return $this->updateWithExistsDestination();
-        }       
+        }
 
-        
+
 
     }
 
@@ -176,7 +176,7 @@ class DeliveryManager extends BaseManager {
 
         $this->data = $data;
 
-        $responseDelivery = $this->updateWithExistsDestination();        
+        $responseDelivery = $this->updateWithExistsDestination();
 
         if($responseDestination['success'] && $responseDelivery['success'])
         {
@@ -193,8 +193,8 @@ class DeliveryManager extends BaseManager {
 
                     unset($responseDestination['errors'][$k]);
 
-                }  
-            }            
+                }
+            }
 
             $errors = ( (isset( $responseDestination['errors'] ) ) ? $responseDestination['errors'] : [] )
 
@@ -234,7 +234,7 @@ class DeliveryManager extends BaseManager {
         {
 
             $delivery = $this->delivery;
-            
+
             $delivery->update($deliveryData);
 
             \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $totalOld*(-1) , $store_old );
@@ -244,20 +244,20 @@ class DeliveryManager extends BaseManager {
             $response = [
                 'success' => true,
                 'return_id' => $delivery->id
-            ];            
+            ];
 
         }
         else
         {
-            
+
             $deliveryErrors = [];
 
             if($DeliveryValidator->getErrors())
-                $deliveryErrors = $DeliveryValidator->getErrors()->toArray();            
+                $deliveryErrors = $DeliveryValidator->getErrors()->toArray();
 
             $errors =  $deliveryErrors;
 
-            
+
 
              $response = [
                 'success' => false,
@@ -299,7 +299,7 @@ class DeliveryManager extends BaseManager {
 
             if($destination)
             {
-                $subtotal = $destination->cost;
+                $total = $destination->cost;
             }
         }
 
@@ -311,18 +311,18 @@ class DeliveryManager extends BaseManager {
 
             if($payType)
             {
-                $commission_pay = ($subtotal / 100) * $payType->percent_commission;
+                $commission_pay = ($total / 100) * $payType->percent_commission;
             }
         }
 
-        $deliveryData['subtotal'] = number_format($subtotal, 2, '.', '');
+        $deliveryData['total'] = number_format($total, 2, '.', '');
 
         $deliveryData['commission_pay'] = number_format($commission_pay, 2, '.', '');
 
-        $deliveryData['total'] = number_format(($subtotal + $commission_pay), 2, '.', '');
+        $deliveryData['subtotal'] = number_format(($total + $commission_pay), 2, '.', '');
 
         return $deliveryData;
     }
 
-} 
+}
 

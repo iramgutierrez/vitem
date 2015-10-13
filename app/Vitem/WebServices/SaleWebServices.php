@@ -87,15 +87,15 @@ class SaleWebServices extends BaseWebServices {
         $sales = $sales->where('employee_id' , $employee_id)->get();
 
 		return \Response::json($sales);
-		
+
 	}
 
 	static function findBySeller()
 	{
 
-		$employee_id = (!empty($_GET['employee_id'])) ? $_GET['employee_id'] : false; 
+		$employee_id = (!empty($_GET['employee_id'])) ? $_GET['employee_id'] : false;
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
@@ -110,7 +110,7 @@ class SaleWebServices extends BaseWebServices {
 		$saleDate = (!empty($_GET['saleDate'])) ? $_GET['saleDate'] : false;
 
 		$sales = [
-		
+
 			'data' => SaleRepo::findByPage($page , $perPage , $find , $sale_type , $pay_type , $operatorSaleDate , $saleDate , $employee_id),
 			'total' => SaleRepo::countFind($find , $sale_type , $pay_type , $operatorSaleDate , $saleDate , $employee_id)
 		];
@@ -155,15 +155,15 @@ class SaleWebServices extends BaseWebServices {
 		return \Response::json($sales);
 
 
-		
+
 	}
 
 	static function findByClient()
 	{
 
-		$client_id = (!empty($_GET['client_id'])) ? $_GET['client_id'] : false; 
+		$client_id = (!empty($_GET['client_id'])) ? $_GET['client_id'] : false;
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
@@ -178,7 +178,7 @@ class SaleWebServices extends BaseWebServices {
 		$saleDate = (!empty($_GET['saleDate'])) ? $_GET['saleDate'] : false;
 
 		$sales = [
-		
+
 			'data' => SaleRepo::findByPage($page , $perPage , $find , $sale_type , $pay_type , $operatorSaleDate , $saleDate , false ,$client_id),
 			'total' => SaleRepo::countFind($find , $sale_type , $pay_type , $operatorSaleDate , $saleDate , false, $client_id)
 		];
@@ -198,7 +198,7 @@ class SaleWebServices extends BaseWebServices {
 										'products',
 										'packs',
 										'user',
-										'employee' , 
+										'employee' ,
 										'employee.user',
 										'client',
 										'store',
@@ -215,15 +215,15 @@ class SaleWebServices extends BaseWebServices {
 
 									})
 									->get());
-		
+
 	}
 
 	static function findByProduct()
 	{
 
-		$product_id = (!empty($_GET['product_id'])) ? $_GET['product_id'] : false; 
+		$product_id = (!empty($_GET['product_id'])) ? $_GET['product_id'] : false;
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
@@ -238,7 +238,7 @@ class SaleWebServices extends BaseWebServices {
 		$saleDate = (!empty($_GET['saleDate'])) ? $_GET['saleDate'] : false;
 
 		$sales = [
-		
+
 			'data' => SaleRepo::findByPage($page , $perPage , $find , $sale_type , $pay_type , $operatorSaleDate , $saleDate , false ,false , $product_id),
 			'total' => SaleRepo::countFind($find , $sale_type , $pay_type , $operatorSaleDate , $saleDate , false, false , $product_id)
 		];
@@ -346,7 +346,7 @@ class SaleWebServices extends BaseWebServices {
 	public function find()
 	{
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
@@ -361,7 +361,7 @@ class SaleWebServices extends BaseWebServices {
 		$saleDate = (!empty($_GET['saleDate'])) ? $_GET['saleDate'] : false;
 
 		$sales = [
-		
+
 			'data' => $this->sale->findByPage($page , $perPage , $find , $sale_type , $pay_type , $operatorSaleDate , $saleDate ),
 			'total' => $this->sale->countFind($find , $sale_type , $pay_type , $operatorSaleDate , $saleDate )
 		];
@@ -372,7 +372,7 @@ class SaleWebServices extends BaseWebServices {
 	static function findReport()
 	{
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
@@ -393,7 +393,7 @@ class SaleWebServices extends BaseWebServices {
 		$percent_cleared_payment = (!empty($_GET['percent_cleared_payment'])) ? $_GET['percent_cleared_payment'] : false;
 
 		$sales = [
-		
+
 			'data' => SaleRepo::findByPageReport($page , $perPage , $employee_id , $client_id , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment),
 			'total' => SaleRepo::countFindReport($employee_id , $client_id  , $sale_type , $pay_type_id , $initDate , $endDate , $percent_cleared_payment_type , $percent_cleared_payment)
 		];
@@ -407,7 +407,7 @@ class SaleWebServices extends BaseWebServices {
 
 		$endDefault =  time() ;
 
-		$showByDefault = 'day'; 
+		$showByDefault = 'day';
 
 		$showSalesDefault = true;
 
@@ -430,13 +430,13 @@ class SaleWebServices extends BaseWebServices {
 
 		if($showSales == 'true'){
 			$sales = SaleRepo::getByRange($init , $end , $showBy);
-		}		
+		}
 
 		$canReadSalePayments = PermissionRepo::checkAuth('SalePayment', 'Read' );
 
 		if($showSalePayments == 'true' && $canReadSalePayments){
 			$salePayments = SalePaymentRepo::getByRange($init , $end , $showBy);
-		}		
+		}
 
 		$daysRange = [];
 
@@ -553,6 +553,17 @@ class SaleWebServices extends BaseWebServices {
 	{
 
 		return \Response::json(\PayType::get());
+
+	}
+
+	public function getNextSheet()
+	{
+
+		$lastSale = \Sale::limit(1)->orderBy('id' , 'desc')->first()->toArray();
+
+		$next = $lastSale['id'] + 1;
+
+		return \Response::make($next , 200);
 
 	}
 }

@@ -179,9 +179,12 @@ return array(
 		'store_id' => 'sucursal',
 		'percent_cleared_payment_type' => 'porcentaje pagado',
 		'order_date' => 'fecha de entrega',
+		'devolution_date' => 'fecha de devolución',
 		'status_pay' => 'estatus de pago',
 		'percent' => 'porcentaje',
-		'percent_commission' => 'porcentaje de comisión'
+		'percent_commission' => 'porcentaje de comisión',
+		'subtotal' => 'total',
+		'percent_cleared_payment' => 'porcentaje pagado'
 
 	),
 

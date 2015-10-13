@@ -25,73 +25,84 @@
   </header>
   <div class="panel-body" ng-app="products">
     {{ Form::model( $product->toArray() , ['route' => ['products.update', $product->id] , 'method' => 'PATCH' , 'name' => 'addProductForm' , 'class' => 'form-inline' ,'role' => 'form', 'novalidate' , 'enctype' =>  'multipart/form-data' , 'ng-controller' => 'FormController', 'ng-init' => '$root.generateAuthPermissions('.Auth::user()->role_id.')'   ]) }}
-    <div class="form-group col-md-6 col-sm-12">
+    <div class="form-group col-md-6 col-sm-12" ng-init="
+      @if(Input::old('ColorProduct'))
+        @foreach(Input::old('ColorProduct') as $k => $c)
+                  colorsOld.push({
+                    color_id : '{{ $k }}',
+                    quantity : '{{ $c['quantity'] }}'
+                  });
+        @endforeach
+        getColorsOld();
+      @endif
+
+      ">
 
      {{ Field::text(
-     'name', 
-     null , 
-     [ 
-     'class' => 'col-md-12' , 
+     'name',
+     null ,
+     [
+     'class' => 'col-md-12' ,
      'placeholder' => 'Ingresa el nombre del producto',
      ]
      )
    }}
- </div> 
+ </div>
  <div class="form-group col-md-6 col-sm-12">
 
    {{ Field::text(
-   'key', 
-   null , 
-   [ 
-   'class' => 'col-md-12' , 
+   'key',
+   null ,
+   [
+   'class' => 'col-md-12' ,
    'placeholder' => 'Ingresa el código',
    ]
    )
  }}
-</div>       
+</div>
 <div class="form-group col-md-6 col-sm-12">
  {{ Field::image(
- 'image', 
+ 'image',
  asset('images_products/'.$product->image),
- [ 
- 'class' => 'col-md-12' , 
+ [
+ 'class' => 'col-md-12' ,
  ]
- ) 
+ )
 }}
-</div>    
+</div>
 <div class="form-group col-md-6 col-sm-12">
 
  {{ Field::textarea(
- 'description', 
- null , 
- [ 
- 'class' => 'col-md-12' , 
+ 'description',
+ null ,
+ [
+ 'class' => 'col-md-12' ,
  'placeholder' => 'Ingresa la descripción',
  ]
  )
 }}
-</div>   
+</div>
 
 <div class="form-group col-md-6 col-sm-12">
 
  {{ Field::text(
- 'model', 
- null , 
- [ 
- 'class' => 'col-md-12' , 
+ 'model',
+ null ,
+ [
+ 'class' => 'col-md-12' ,
  'placeholder' => 'Ingresa el modelo',
  ]
  )
 }}
-</div>                               		     
+</div>
 <div class="form-group col-md-6 col-sm-12">
 
 
   {{ Field::text(
-   'stock', 
-   0 , 
-   [ 
-     'class' => 'col-md-12' , 
+   'stock',
+   0 ,
+   [
+     'class' => 'col-md-12' ,
      'placeholder' => 'Ingresa la cantidad',
      'ng-model' => 'stock',
      'ng-init' => 'stock = '.$product->stock
@@ -102,13 +113,13 @@
   {{--@if(Auth::user()->role->level_id >= 3)
 
     {{ Field::number(
-        'stock', 
-        
-        null , 
-        
-        [ 
+        'stock',
+
+        null ,
+
+        [
           'min' => ( ($product->stock < 0) ? $product->stock : 0 ),
-          'class' => 'col-md-12' , 
+          'class' => 'col-md-12' ,
           'placeholder' => 'Ingresa la cantidad para el almacen.',
           'ng-model' => 'stock',
           'ng-init' => 'stock = '. $product->stock
@@ -119,11 +130,11 @@
   @else
 
     {{ Field::hidden(
-        'stock', 
-        
-        null , 
-        
-        [ 
+        'stock',
+
+        null ,
+
+        [
           'ng-model' => 'stock',
           'ng-value' => 'stock',
           'ng-init' => 'stock = '. $product->stock
@@ -135,7 +146,7 @@
 
   <?php /*echo
       Field::checkbox(
-        'restrict', 
+        'restrict',
         '1',
         [
         'ng-model' => 'restrict',
@@ -145,20 +156,20 @@
         ] ,
         [
         'label-value' => 'Restringir la cantidad en sucursal a la cantidad en almacen ({{ stock }})',
-        ]                                     
+        ]
       ) */
     ?>
 
-   {{--@if(Auth::user()->role->level_id >= 3)    
+   {{--@if(Auth::user()->role->level_id >= 3)
 
     @if($current_store)
 
         {{ Field::number(
-               'ProductStore.'.$current_store['id'].'.quantity', 
-               $current_store['quantity'] , 
-               [ 
-                 'min' => ( ($current_store['quantity'] < 0) ? $current_store['quantity'] : 0 ),  
-                 'class' => 'col-md-12' , 
+               'ProductStore.'.$current_store['id'].'.quantity',
+               $current_store['quantity'] ,
+               [
+                 'min' => ( ($current_store['quantity'] < 0) ? $current_store['quantity'] : 0 ),
+                 'class' => 'col-md-12' ,
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',
                  'ng-model' => 'ProductStore['.$current_store['id'].'].quantity',
                  'ng-init' => 'ProductStore['.$current_store['id'].'].quantity = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_pre = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_init = '.$current_store['quantity'],
@@ -176,11 +187,11 @@
           <li>
 
             <?php /*echo Field::number(
-               'ProductStore.'.$store->id.'.quantity', 
-               $store->quantity , 
-               [ 
+               'ProductStore.'.$store->id.'.quantity',
+               $store->quantity ,
+               [
                  'min' => ( ($store->quantity < 0) ? $store->quantity : 0 ),
-                 'class' => 'col-md-12' , 
+                 'class' => 'col-md-12' ,
                  'placeholder' => 'Ingresa la cantidad para la sucursal '.$store->name,
                  'ng-model' => 'ProductStore['.$store->id.'].quantity',
                  'ng-init' => 'ProductStore['.$store->id.'].quantity = '.$store->quantity.'; ProductStore['.$store->id.'].quantity_pre = '.$store->quantity.'; ProductStore['.$store->id.'].quantity_init = '.$store->quantity,
@@ -189,11 +200,11 @@
                );*/
             ?>
 
-            <label for="ProductStore[{{$store->id}}][quantity]">Sucursal {{ $store->name }}</label>            
+            <label for="ProductStore[{{$store->id}}][quantity]">Sucursal {{ $store->name }}</label>
 
-          </li> 
+          </li>
 
-        @endforeach 
+        @endforeach
 
       </ul>-->
 
@@ -202,11 +213,11 @@
   @else
 
     {{ Field::number(
-               'ProductStore.'.Auth::user()->store_id.'.quantity', 
-               $current_store['quantity'] , 
-               [ 
-                 'min' => ( ($current_store['quantity'] < 0) ? $current_store['quantity'] : 0 ),  
-                 'class' => 'col-md-12' , 
+               'ProductStore.'.Auth::user()->store_id.'.quantity',
+               $current_store['quantity'] ,
+               [
+                 'min' => ( ($current_store['quantity'] < 0) ? $current_store['quantity'] : 0 ),
+                 'class' => 'col-md-12' ,
                  'placeholder' => 'Ingresa la cantidad para esta sucursal.',
                  'ng-model' => 'ProductStore['.$current_store['id'].'].quantity',
                  'ng-init' => 'ProductStore['.$current_store['id'].'].quantity = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_pre = '.$current_store['quantity'].'; ProductStore['.$current_store['id'].'].quantity_init = '.$current_store['quantity'],
@@ -218,18 +229,18 @@
   @endif--}}
 
  {{--{{ Field::text(
- 'stock', 
- null , 
- [ 
- 'class' => 'col-md-12' , 
+ 'stock',
+ null ,
+ [
+ 'class' => 'col-md-12' ,
  'placeholder' => 'Ingresa la cantidad',
  ]
  )
 }}--}}
-</div>                                     
+</div>
 <div class="form-group col-md-6 col-sm-12">
   @include('products/fields/colors')
-</div>  
+</div>
 
 
       <div class="form-group col-md-6 col-sm-12">
@@ -242,7 +253,7 @@
 		  'placeholder' => 'Ingresa el costo',
       'ng-model' => 'cost',
       'ng-change' => 'calculatePrice()',
-      'addon-first' => '$' , 
+      'addon-first' => '$' ,
       'ng-init' => 'cost = '.$product->cost
 		  ]
 		  )
@@ -259,7 +270,7 @@
 		  'placeholder' => 'Porcentaje de ganancia',
       'ng-model' => 'percent_gain',
       'ng-change' => 'calculatePrice()',
-      'addon-last' => '%' , 
+      'addon-last' => '%' ,
       'ng-init' => 'percent_gain = '.$product->percent_gain
 		  ]
 		  )
@@ -293,7 +304,7 @@
 		  'class' => 'col-md-12' ,
 		  'placeholder' => 'Ingresa el precio',
       'ng-model' => 'price',
-      'addon-first' => '$' , 
+      'addon-first' => '$' ,
       'ng-init' => 'price = '.$product->price
 		  ]
 		  )
@@ -303,19 +314,19 @@
 <div class="form-group col-md-6 col-sm-12">
 
  {{ Field::text(
- 'production_days', 
- null , 
- [ 
- 'class' => 'col-md-12' , 
+ 'production_days',
+ null ,
+ [
+ 'class' => 'col-md-12' ,
  'placeholder' => 'Ingresa los días de producción',
  ]
  )
 }}
-</div>            
+</div>
 
 <div class="form-group col-md-6 col-sm-12">
  <?php echo  Field::checkbox(
-  'status', 
+  'status',
   '1',
   [
   'ng-model' => 'status',
@@ -325,16 +336,16 @@
   ] ,
   [
   'label-value' => '{{ status | booleanProduct }}',
-  ]                                     
-  ) 
+  ]
+  )
   ?>
-</div>      		
+</div>
 <div class="form-group col-md-12 col-sm-12 ">
 
-  <?php 
+  <?php
 
-     $supplierSelectedIdAttr = [ 
-      'class' => 'col-md-12' , 
+     $supplierSelectedIdAttr = [
+      'class' => 'col-md-12' ,
       'ng-model' => 'supplierSelected.id',
       'ng-value' => 'supplierSelected.id',
       'ng-if' => '!newSupplier',
@@ -343,22 +354,22 @@
     if($product->supplier_id)
     {
       $supplierSelectedIdAttr['ng-init'] = 'supplierSelectedInit('.$product->supplier_id.')';
-    }   
+    }
   ?>
 
   {{ Field::hidden(
-  'supplier_id', 
-  '' , 
+  'supplier_id',
+  '' ,
   $supplierSelectedIdAttr
   );
 }}
-<h3>Proveedor</h3>  
+<h3>Proveedor</h3>
 {{ Field::text(
-  '', 
-  '' , 
-  [ 
-  'class' => 'col-md-10' , 
-  'addon-first' => '<a ng-click="newSupplier = 0" style="cursor:pointer;"><i class="fa fa-search"></i></a>' , 
+  '',
+  '' ,
+  [
+  'class' => 'col-md-10' ,
+  'addon-first' => '<a ng-click="newSupplier = 0" style="cursor:pointer;"><i class="fa fa-search"></i></a>' ,
   'placeholder' => 'Busca por id, nombre o correo electrónico.',
   'ng-model' => 'find',
   'ng-disabled' => 'newSupplier',
@@ -367,8 +378,8 @@
   'ng-blur' => 'hideItems()'
 
   ]
-  ) 
-}}   
+  )
+}}
 <section ng-show="autocomplete" class="panel col-sm-4">
   <ul class="list-group">
     <li ng-click="addAutocomplete(supplier)" ng-repeat="supplier in suppliers" class="list-group-item " href="#">
@@ -392,12 +403,12 @@
       </div>
     </div>
   </div>
-</div>    
+</div>
 </div>
 <span ng-if="$root.auth_permissions.create.supplier" class="col-md-12 col-sm-12 text-center">ó</span>
-<div ng-show="$root.auth_permissions.create.supplier" class="panel"> 
+<div ng-show="$root.auth_permissions.create.supplier" class="panel">
  <div class="form-group col-md-12 col-sm-12 panel-heading">
-   <?php 
+   <?php
 
     $newSupplierAttr = [
       'ng-model' => 'newSupplier',
@@ -408,29 +419,29 @@
 
     if((Session::has('newSupplier')))
     {
-      $newSupplierAttr['ng-init'] = 'newSupplier = ' . Session::get('newSupplier');   
+      $newSupplierAttr['ng-init'] = 'newSupplier = ' . Session::get('newSupplier');
     }
-    
+
 
     echo  Field::checkbox(
-    '', 
+    '',
     '1',
     $newSupplierAttr ,
     [
     'label-value' => 'Agrega un nuevo proveedor',
-    ]                                     
-    ) 
+    ]
+    )
     ?>
-  </div>  
+  </div>
 
   <div class="panel-body" ng-if="newSupplier">
    <div class="form-group col-md-6 col-sm-12">
 
      {{ Field::text(
-     'supplier.name', 
-     '' , 
-     [ 
-     'class' => 'col-md-12' , 
+     'supplier.name',
+     '' ,
+     [
+     'class' => 'col-md-12' ,
      'placeholder' => 'Ingresa el nombre completo',
      'required',
      'ng-model' => 'client.name'
@@ -440,129 +451,129 @@
  </div>
  <div class="form-group col-md-6 col-sm-12">
    {{ Field::text(
-   'supplier.email', 
-   '' , 
-   [ 
-   'class' => 'col-md-12' , 
+   'supplier.email',
+   '' ,
+   [
+   'class' => 'col-md-12' ,
    'placeholder' => 'Ingresa el correo electrónico'
    ]
-   ) 
+   )
  }}
 </div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.rfc', 
-  '' , 
-  [ 
+  'supplier.rfc',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa el RFC'
   ]
-  ) 
+  )
 }}
-</div>      
+</div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.business_name', 
-  '' , 
-  [ 
+  'supplier.business_name',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa la razón social'
   ]
-  ) 
+  )
 }}
-</div>   
+</div>
 <div class="form-group col-md-6 col-sm-12">
  {{ Field::text(
- 'supplier.phone', 
- '' , 
- [ 
+ 'supplier.phone',
+ '' ,
+ [
  'class' => 'col-md-12' ,
  'placeholder' => 'Ingresa el teléfono'
  ]
- ) 
+ )
 }}
 </div>
 
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.street', 
-  '' , 
-  [ 
+  'supplier.street',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa la calle de la dirección'
   ]
-  ) 
+  )
 }}
-</div>                                
+</div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.outer_number', 
-  '' , 
-  [ 
+  'supplier.outer_number',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa el número exterior'
   ]
-  ) 
+  )
 }}
-</div>                                
+</div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.inner_number', 
-  '' , 
-  [ 
+  'supplier.inner_number',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa el número interior'
   ]
-  ) 
+  )
 }}
-</div>                                
+</div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.zip_code', 
-  '' , 
-  [ 
+  'supplier.zip_code',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa el código postal'
   ]
-  ) 
+  )
 }}
-</div>                                
+</div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.colony', 
-  '' , 
-  [ 
+  'supplier.colony',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa la colonia'
   ]
-  ) 
+  )
 }}
-</div>                                
+</div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.city', 
-  '' , 
-  [ 
+  'supplier.city',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa la ciudad, delegación o municipio'
   ]
-  ) 
+  )
 }}
-</div>                                
+</div>
 <div class="form-group col-md-6 col-sm-12">
   {{ Field::text(
-  'supplier.state', 
-  '' , 
-  [ 
+  'supplier.state',
+  '' ,
+  [
   'class' => 'col-md-12' ,
   'placeholder' => 'Ingresa el estado'
   ]
-  ) 
+  )
 }}
-</div>  
+</div>
 <div class="form-group col-md-6 col-sm-12">
  <?php echo  Field::checkbox(
-  'status', 
+  'status',
   '1',
   [
   'ng-model' => 'status',
@@ -572,13 +583,13 @@
   ] ,
   [
   'label-value' => '{{ status | boolean }}',
-  ]                                     
-  ) 
+  ]
+  )
   ?>
-</div>   
-</div>          
-</div>                   
-<div class="form-group col-md-12 ">                                  	 
+</div>
+</div>
+</div>
+<div class="form-group col-md-12 ">
   <button type="submit" class="btn btn-success pull-right">Registrar</button>
 </div>
 {{ Form::close() }}

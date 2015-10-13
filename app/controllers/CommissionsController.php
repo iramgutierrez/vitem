@@ -22,7 +22,7 @@ class CommissionsController extends \BaseController {
 		$this->beforeFilter('ACL:Commission,Update', [ 'only' => [ 'edit' , 'update' ] ]);
 
 		$this->beforeFilter('ACL:Commission,Delete', [ 'only' => 'destroy' ] );
-		
+
 	}
 
 	/**
@@ -33,7 +33,16 @@ class CommissionsController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		$types = [
+
+			'1' => 'Código postal',
+			'2' => 'Colonia',
+			'3' => 'Delegación/Municipio',
+			'4' => 'Estado'
+
+		];
+
+		return View::make('commissions/index' , compact('types'));
 	}
 
 	/**
@@ -43,8 +52,8 @@ class CommissionsController extends \BaseController {
 	 * @return Response
 	 */
 	public function create($sale_id = false , $employee_id = false)
-	{ 
-		
+	{
+
 		if($sale_id)
 		{
 
@@ -61,6 +70,52 @@ class CommissionsController extends \BaseController {
 		return View::make('commissions/create' , compact('sale_id' , 'employee_id'));
 	}
 
+
+
+	public function createMany()
+	{
+		if(!\Input::has('commissions'))
+		{
+			Session::flash('error' , 'No se seleccionaron ventas a comisionar');
+
+			return Redirect::route('commissions.create_many_get');
+		}
+
+		$salesIds = json_decode(\Input::get('commissions') , true);
+
+		if(!is_array($salesIds) || count($salesIds) == 0)
+		{
+			Session::flash('error' , 'No se seleccionaron ventas a comisionar');
+
+			return Redirect::route('commissions.create_many_get');
+		}
+
+		$sales = Sale::with('employee.user')->whereIn('id' , $salesIds)->get();
+
+		$employee_id = false;
+
+		return View::make('commissions/create_many', compact('sales' , 'employee_id'));
+	}
+
+	public function createManyGet()
+	{
+		$sale_types = [
+			'apartado' => 'Apartado',
+			'contado' => 'Contado'
+		];
+
+		$pay_types = PayType::lists('name' , 'id');
+
+		$filtersSaleDate = [
+			'<' => 'Antes de',
+			'==' => 'El dia',
+			'>' => 'Después de'
+ 		];
+
+
+		return View::make('commissions/create_many_get',compact('sale_types' , 'pay_types' , 'filtersSaleDate'));
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 * POST /commissions
@@ -69,9 +124,9 @@ class CommissionsController extends \BaseController {
 	 */
 	public function store()
 	{
-		$data = Input::all(); 
+		$data = Input::all();
 
-		$createCommission = new CommissionManager( $data );		
+		$createCommission = new CommissionManager( $data );
 
 		if(isset($data['Commissions']))
 		{
@@ -89,7 +144,7 @@ class CommissionsController extends \BaseController {
 				}
 
 				Session::flash('success' , $success_message );
-			
+
 			}
 
 			if(isset($response['0'] ) ){
@@ -106,7 +161,15 @@ class CommissionsController extends \BaseController {
 				Session::flash('error' , $error_message);
 			}
 
-			return Redirect::route('sales.show' , [$data['sale_id']]);
+			if(isset($data['sale_id']))
+			{
+				return Redirect::route('sales.show' , [$data['sale_id']]);
+			}
+			else
+			{
+				return Redirect::route('commissions.index');
+			}
+
 
 		}
 		else
@@ -127,9 +190,9 @@ class CommissionsController extends \BaseController {
 	            return Redirect::back()->withErrors($response['errors'])->withInput();
 
 	        }
-		}       
+		}
 
-        
+
 	}
 
 	/**
@@ -157,13 +220,13 @@ class CommissionsController extends \BaseController {
 
 		if(!$commission)
 		{
-			
+
 			Session::flash('error' , 'La comisión especificada no existe.');
 
 	        return Redirect::route('sales.index');
 
-		} 
-		
+		}
+
 		return View::make('commissions/edit', compact('id' , 'commission'));
 	}
 
@@ -185,7 +248,7 @@ class CommissionsController extends \BaseController {
         	return Redirect::route('sales.index' );
 		}
 
-		$data = Input::all(); 
+		$data = Input::all();
 
         $data['id'] = (int) $id;
 
@@ -233,7 +296,7 @@ class CommissionsController extends \BaseController {
         	return Redirect::route('sales.index');
 		}
 
-		$deleteCommission = new CommissionManager( $data );		
+		$deleteCommission = new CommissionManager( $data );
 
         $response = $deleteCommission->delete();
 
@@ -251,7 +314,7 @@ class CommissionsController extends \BaseController {
             return Redirect::back()->withErrors($response['errors'])->withInput();
 
         }
-        
+
 	}
 
 	public function API( $method = 'all')

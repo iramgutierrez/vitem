@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\SoftDeletingTrait;
 class Client extends \Eloquent {
 
 	use SoftDeletingTrait;
-	
+
 	protected $fillable = [
 			'name',
 			'rfc',
@@ -17,14 +17,14 @@ class Client extends \Eloquent {
 			'colony',
 			'city',
 			'state',
-			'phone' , 
-			'email' , 
-			'client_type_id', 
-			'status' , 
+			'phone' ,
+			'email' ,
+			'client_type_id',
+			'status' ,
 			'image_profile',
 			'entry_date'
 			];
-	
+
     protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'image_profile_url' , 'week' ];
 
 	public function ClientType()
@@ -45,7 +45,7 @@ class Client extends \Eloquent {
     public function getUrlEditAttribute()
 	{
 	    return URL::route('clients.edit', [$this->id]);
-	}	
+	}
 
     public function getUrlDeleteAttribute()
 	{
@@ -70,7 +70,7 @@ class Client extends \Eloquent {
             $unix = mktime(0,0,0,$date[1],$date[2],$date[0]);
             //Se devuelve el valor
             return date('W', $unix);
-        
+
         }
     }
 
@@ -80,7 +80,7 @@ class Client extends \Eloquent {
 
         static::created(function($client)
         {
-        	$client->ClientType; 
+        	$client->ClientType;
             Record::create([
 				'user_id' => Auth::user()->id,
 				'type' => 1,
@@ -94,7 +94,7 @@ class Client extends \Eloquent {
 
         static::updated(function($client)
         {
-        	$client->ClientType; 
+        	$client->ClientType;
             Record::create([
 				'user_id' => Auth::user()->id,
 				'type' => 3,
@@ -104,11 +104,11 @@ class Client extends \Eloquent {
 				'object' => $client->toJson()
 
 			]);
-        });        
+        });
 
         static::deleted(function($client)
         {
-        	$client->ClientType; 
+        	$client->ClientType;
             Record::create([
 				'user_id' => Auth::user()->id,
 				'type' => 4,
@@ -121,6 +121,6 @@ class Client extends \Eloquent {
         });
 
     }
-	
+
 
 }

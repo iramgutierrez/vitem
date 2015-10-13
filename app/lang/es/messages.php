@@ -38,6 +38,8 @@ return array(
 
 	'order' => 'pedidos',
 
+	'devolution' => 'devoluciones',
+
 	'store' => 'sucursales',
 
 	'expense_type' => 'tipos de gastos',

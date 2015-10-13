@@ -23,7 +23,7 @@
 						<td>{{ '<?php echo $commission->total; ?>' | currency }}</td>
 						<td>{{ $commission->employee->user->name }}</td>
 						<td>{{ '<?php echo $commission->type ?>' | commission_types }}</td>
-						<td>{{ $commission->created_at }}</td>
+						<td>{{ $commission->date }}</td>
 						<td>
 							<a href="{{ $commission->url_edit }}" ng-if="$root.auth_permissions.update.commission"  >
 								<button  type="button" class="col-sm-5 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>

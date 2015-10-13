@@ -6,7 +6,7 @@ class Commission extends \Eloquent {
 
     use SoftDeletingTrait;
 
-	protected $fillable = ['total' , 'sale_id' , 'type' , 'employee_id' , 'user_id' , 'total_commission' , 'percent' ,'status_pay'];
+	protected $fillable = ['total' , 'sale_id' , 'type' , 'employee_id' , 'user_id' , 'total_commission' , 'percent' ,'status_pay' , 'date'];
 
 	protected $appends = ['url_edit' ,  'url_delete' ];
 
@@ -33,7 +33,7 @@ class Commission extends \Eloquent {
     public function getUrlEditAttribute()
     {
         return URL::route('commissions.edit', [$this->id]);
-    }   
+    }
 
     public function getUrlDeleteAttribute()
     {
@@ -68,7 +68,7 @@ class Commission extends \Eloquent {
                 'object' => $commision->sale->toJson()
 
             ]);
-        });        
+        });
 
         static::deleted(function($commision)
         {

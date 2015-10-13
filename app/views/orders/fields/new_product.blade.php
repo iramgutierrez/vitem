@@ -73,6 +73,24 @@
                     )
                    }}
                 </div>
+                {{-- <div class="form-group col-md-6 col-sm-12">
+
+                    {{ Field::number(
+                          'stock',
+                          1 ,
+
+                          [
+                            'min' => 1 ,
+                            'ng-model' => 'stock',
+                            'ng-init' => 'stock = 1'
+                          ]
+                        )
+                    }}
+
+                </div>
+                <div class="form-group col-md-6 col-sm-12">
+                    @include('products/fields/colors')
+                </div>--}}
                 <div class="form-group col-md-6 col-sm-12">
 
                     {{ Field::text(

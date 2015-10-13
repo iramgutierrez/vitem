@@ -1,7 +1,7 @@
 <?php namespace Vitem\Validators;
 
 class ClientValidator extends BaseValidator {
-    
+
     protected $rules = array(
         'email'     => 'required|email|unique:clients,email',
         'name' => 'required|min:4|max:40',
@@ -9,7 +9,7 @@ class ClientValidator extends BaseValidator {
         'inner_number' => 'required',
         'zip_code' => 'required',
         'phone' => 'required',
-        'client_type_id' => 'required',
+        //'client_type_id' => 'required',
         'image_profile'  => 'max:500',
     );
 
@@ -25,9 +25,9 @@ class ClientValidator extends BaseValidator {
         $rules = $this->getRules();
 
 
-        
+
         if (isset ($rules['email']))
-        { 
+        {
             // Si el usuario existe: Excluimos su ID de la regla "unique" (definida al final de la cadena)
             $rules['email'] .= ',' . $this->model->id;
         }
@@ -37,8 +37,8 @@ class ClientValidator extends BaseValidator {
         return $rules;
     }
 
-    
 
-    
-    
+
+
+
 }

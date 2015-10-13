@@ -1,30 +1,30 @@
-<div class="col-sm-12" ng-init=" 
+<div class="col-sm-12" ng-init="
 @if(Input::old('ProductSale'))
-  @foreach(Input::old('ProductSale') as $k => $p)    
+  @foreach(Input::old('ProductSale') as $k => $p)
             productsOld.push({
               product_id : '{{ $k }}',
               quantity : '{{ $p['quantity'] }}'
-            });    
+            });
   @endforeach
   getProductsOld();
-@endif 
+@endif
 
 @if(Input::old('PackSale'))
-  @foreach(Input::old('PackSale') as $k => $p)    
+  @foreach(Input::old('PackSale') as $k => $p)
             packsOld.push({
               pack_id : '{{ $k }}',
               quantity : '{{ $p['quantity'] }}'
-            });    
+            });
   @endforeach
   getPacksOld();
-@endif  
+@endif
 
 " >
 
   <table class="table table-bordered table-striped table-condensed" >
-    
+
     <thead>
-                  
+
         <tr>
 
         <th>Id</th>
@@ -46,15 +46,15 @@
         <th>Precio</th>
 
         <th>Borrar</th>
-        
+
       </tr>
 
       </thead>
 
       <tbody ng-repeat="(k , product) in $root.productsSelected">
-                                    
+
       	<tr ng-class="{ quantity_null : product.quantity_null  }">
-      
+
   	    	<td>
 
   	        	@{{product.id }}
@@ -74,37 +74,37 @@
   		    <td> @{{product.price | currency }}</td>
 
   		    <td>
-          
+
           		<div id="spinner1 col-sm-2">
-                  
+
                     <div class="input-group input-small">
-                      
+
                         <input type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="ProductSale[@{{ product.id }}][quantity]" >
-                      
+
                         <div class="spinner-buttons input-group-btn btn-group-vertical">
-                        
+
                           <button ng-disabled="product.quantity_null" ng-click= "product.quantity = addQuantity(product.quantity , product.stock)" type="button" class="btn spinner-up btn-xs btn-default">
-                            
+
                               <i class="fa fa-angle-up"></i>
 
                             </button>
-                            
+
                             <button ng-disabled="product.quantity_null" ng-click= "product.quantity = removeQuantity(product.quantity)" type="button" class="btn spinner-down btn-xs btn-default">
-                            
+
                               <i class="fa fa-angle-down"></i>
-                            
+
                             </button>
-                        
+
                         </div>
-                    
+
                     </div>
-                          
+
                   </div>
 
                   <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showColors(product); " ng-show="!product.showColors" >Mostrar colores</button>
 
                   <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showColors(product); " ng-show="product.showColors" >Ocultar colores</button>
-        
+
         		</td>
 
         		<td> @{{ pricePerQuantity(product.price , product.quantity) | currency  }}</td>
@@ -121,13 +121,6 @@
 
       	</tr>
 
-        <tr ng-if="product.showColors">
-          <td colspan="7" class="text-right">Cantidad sin asignar color</td>
-          <td>@{{ getProductsWithoutColors(product) }}</td> 
-          <td></td>
-          <td></td>
-        </tr>
-
         <tr ng-if="product.showColors && product.colors.length">
           <td colspan="5"></td>
           <td>Color</td>
@@ -139,6 +132,19 @@
 
         <tr ng-if="product.showColors && !product.colors.length">
           <td colspan="8" class="text-right">Este producto no tiene colores asignados</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr ng-if="product.showColors && product.colors.length">
+          <td colspan="6" class="text-right">
+            Ningun color asignado
+          </td>
+          <td>
+            @{{ product.notColor.pivot.quantity }}
+            <input type="hidden" name="ColorProductSale[@{{product.notColor.pivot.id}}][quantity]" value="@{{ getProductsWithoutColors(product) }}">
+          </td>
+          <td>@{{ getProductsWithoutColors(product) }}</td>
           <td></td>
           <td></td>
         </tr>
@@ -156,14 +162,14 @@
           <td></td>
           <td></td>
         </tr>
-        
+
 
       </tbody>
 
       <tbody>
 
       	<tr ng-repeat="(k , pack) in packsSelected" >
-      
+
   	    	<td> @{{pack.id }}</td>
 
   	      	<td> @{{pack.name }}</td>
@@ -179,33 +185,33 @@
   		    <td> @{{pack.price | currency }}</td>
 
   		    <td>
-          
+
           		<div id="spinner1 col-sm-2">
-                  
+
                     <div class="input-group input-small">
-                      
+
                         <input type="text" class="spinner-input form-control" maxlength="3" ng-model="pack.quantity" name="PackSale[@{{ pack.id }}][quantity]" >
-                      
+
                         <div class="spinner-buttons input-group-btn btn-group-vertical">
-                        
+
                           <button ng-click= "pack.quantity = addQuantity(pack.quantity )" type="button" class="btn spinner-up btn-xs btn-default">
-                            
+
                               <i class="fa fa-angle-up"></i>
 
                             </button>
-                            
+
                             <button ng-click= "pack.quantity = removeQuantity(pack.quantity)" type="button" class="btn spinner-down btn-xs btn-default">
-                            
+
                               <i class="fa fa-angle-down"></i>
-                            
+
                             </button>
-                        
+
                         </div>
-                    
+
                     </div>
-                          
+
                   </div>
-        
+
         		</td>
 
         		<td> @{{ pricePerQuantity(pack.price , pack.quantity) | currency  }}</td>
@@ -294,9 +300,8 @@
 
         </tr>
 
-      </tbody>  
+      </tbody>
 
-  </table>   
+  </table>
 
 </div>
-	    

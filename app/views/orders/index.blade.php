@@ -30,20 +30,20 @@
 				<header class="panel-heading col-sm-12">
 				<h1 class="col-sm-3">Pedidos</h1>
 					<a ng-if="$root.auth_permissions.create.order" href="{{ route('orders.create') }}"><button type="button" class="pull-right btn btn-success ">Agregar pedido</button></a>
-				</header>    
+				</header>
 
 				{{ Field::text(
-				'', 
-				'' , 
-				[ 
-				'class' => 'col-md-10' , 
-				'addon-first' => '<i class="fa fa-search"></i>' , 
+				'',
+				'' ,
+				[
+				'class' => 'col-md-10' ,
+				'addon-first' => '<i class="fa fa-search"></i>' ,
 				'placeholder' => 'Busca por id o pedido.',
 				'ng-model' => 'find',
 				'ng-change' => 'search()'
 
 				]
-				) 
+				)
 			}}
 			<hr>
 			<div class="col-sm-12">
@@ -61,14 +61,14 @@
 			<div class="clearfix"></div>
 			<hr>
 			<div class="col-sm-12">
-				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> ventas</p>        
+				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> ventas</p>
 				<button type="button" ng-click="clear()" class="pull-right btn btn-info">Limpiar filtros</button>
 			</div>
 
         @if(Auth::user()->role->level_id >= 3)
-        
+
         <!-- Generar XLS -->
-        
+
         <div class="clearfix"></div>
 
         <hr>
@@ -86,7 +86,7 @@
                     ]
                 )
 
-            }} 
+            }}
 
             {{
 
@@ -123,13 +123,13 @@
         <!-- Generar XLS -->
 
         @endif
-        
+
 			<div class="clearfix"></div>
 			<hr>
 			<table  class="display table table-bordered table-striped col-sm-12" id="dynamic-table" >
 				<thead>
 					<tr >
-						<th class="col-sm-2">                        
+						<th class="col-sm-2">
 							<a href="" ng-click="sort = 'id'; reverse=!reverse">Id
 								<span class="pull-right" >
 									<i class="fa fa-sort" ng-if="sort != 'id' "></i>
@@ -162,29 +162,29 @@
                 	<th></th>
                 	<th ng-if="$root.auth_permissions.read.supplier" ></th>
                 	<th>
-                		
+
 
                         <span class="col-sm-12">
                             {{ Field::select(
-                                                        '', 
+                                                        '',
                                                         $filtersOrderDate,
                                                         '' ,
-                                                        [ 
+                                                        [
                                                             'ng-model' => 'operatorOrderDate',
                                                             'ng-change' => 'search()'
                                                         ]
-                                                ) 
+                                                )
                                         }}
                         </span>
-                        <span class="col-sm-12">                                                      
+                        <span class="col-sm-12">
                             {{ Field::date(
-                                                        '', 
+                                                        '',
                                                         '' ,
-                                                        [ 
+                                                        [
                                                             'ng-model' => 'orderDate ',
                                                             'ng-change' => 'search()',
                                                         ]
-                                                ) 
+                                                )
                                         }}
                         </span>
 
@@ -205,7 +205,7 @@
 				<button  type="button" class="col-sm-3 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
 			</a>
 			<a ng-if="$root.auth_permissions.delete.order" data-toggle="modal" href="#myModal@{{order.id}}" >
-				<button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+				<button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
 			</a>
 			<div ng-if="$root.auth_permissions.delete.order" class="modal fade" id="myModal@{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
@@ -219,13 +219,13 @@
 							¿Deseas eliminar el pedido con id <strong>@{{order.id}}</strong>?
 
 						</div>
-						<div class="modal-footer">                                        
+						<div class="modal-footer">
 							<form class="btn " method="POST" action = "@{{ order.url_delete }}">
 								<input name="_method" type="hidden" value="DELETE">
 								{{  Form::token() }}
-								
-							<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>      
-								<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>    
+
+							<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>
+								<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>
 							</form>
 						</div>
 					</div>
@@ -233,11 +233,11 @@
 			</div>
 
 		</td>
-	</tr>              
+	</tr>
 </tbody>
-</table>      
+</table>
 </div>
-</div> 
+</div>
 
 <div class="panel" ng-if="ordersP.length == 0">
 	<div class="panel-body">
@@ -270,7 +270,7 @@
 									<button  type="button" class="col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
 								</a>
 								<a data-toggle="modal" href="#myModalD@{{order.id}}" class="col-sm-4" ng-if="$root.auth_permissions.delete.order" >
-									<button type="button" class="col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>    
+									<button type="button" class="col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
 								</a>
 								<div ng-if="$root.auth_permissions.delete.order" class="modal fade" id="myModalD@{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 									<div class="modal-dialog">
@@ -285,11 +285,11 @@
 
 											</div>
 											<div class="modal-footer">
-												<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>                                              
+												<button data-dismiss="modal" class="btn btn-default" type="button">Regresar</button>
 												<form class="btn " method="POST" action = "@{{ order.url_delete }}">
 													<input name="_method" type="hidden" value="DELETE">
 													{{  Form::token() }}
-													<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>    
+													<button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>Confirmar</button>
 												</form>
 											</div>
 										</div>
@@ -302,10 +302,10 @@
 					</div>
 				</div>
 			</div>
-		</div>            
+		</div>
 
 	</div>
-</div>  
+</div>
 
 </div>
 </div>
@@ -337,6 +337,7 @@
             'library/js/ng/products.filters.js',
             'library/js/ng/products.services.js',
             'library/js/ng/suppliers.services.js',
+            'library/js/ng/colors.services.js',
             'library/assets/dropzone/dropzone.js',
             'library/js/jquery.validate.min.js'
 

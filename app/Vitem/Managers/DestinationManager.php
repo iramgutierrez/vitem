@@ -7,12 +7,12 @@ class DestinationManager extends BaseManager {
 
     protected $commission;
 
-    
+
     public function save()
     {
         $DestinationValidator = new DestinationValidator(new \Destination);
 
-        $destinationData = $this->data; 
+        $destinationData = $this->data;
 
         $destinationData = $this->prepareData($destinationData);
 
@@ -20,24 +20,25 @@ class DestinationManager extends BaseManager {
 
         if( $destinationValid )
         {
-            
-            $destination = new \Destination( $destinationData ); 
-            
-            $destination->save(); 
+
+            $destination = new \Destination( $destinationData );
+
+            $destination->save();
 
             $response = [
                 'success' => true,
-                'return_id' => $destination->id
-            ];            
+                'return_id' => $destination->id,
+                'destination' => $destination
+            ];
 
         }
         else
         {
-            
+
             $destinationErrors = [];
 
             if($DestinationValidator->getErrors())
-                $destinationErrors = $DestinationValidator->getErrors()->toArray();            
+                $destinationErrors = $DestinationValidator->getErrors()->toArray();
 
             $errors =  $destinationErrors;
 
@@ -54,8 +55,8 @@ class DestinationManager extends BaseManager {
     public function update()
     {
 
-        $destinationData = $this->data; 
-        
+        $destinationData = $this->data;
+
 
         $this->destination = \Destination::find($destinationData['id']);
 
@@ -63,33 +64,33 @@ class DestinationManager extends BaseManager {
 
         $destinationData = $this->prepareData($destinationData);
 
-        $destinationValid  =  $DestinationValidator->isValid($destinationData); 
+        $destinationValid  =  $DestinationValidator->isValid($destinationData);
 
 
         if( $destinationValid )
         {
 
             $destination = $this->destination;
-            
-            $destination->update($destinationData); 
+
+            $destination->update($destinationData);
 
             $response = [
                 'success' => true,
                 'return_id' => $destination->id
-            ];            
+            ];
 
         }
         else
         {
-            
+
             $destinationErrors = [];
 
             if($DestinationValidator->getErrors())
-                $destinationErrors = $DestinationValidator->getErrors()->toArray();            
+                $destinationErrors = $DestinationValidator->getErrors()->toArray();
 
             $errors =  $destinationErrors;
 
-            
+
 
              $response = [
                 'success' => false,
@@ -104,7 +105,7 @@ class DestinationManager extends BaseManager {
     public function delete()
     {
 
-        $saleData = $this->data; 
+        $saleData = $this->data;
 
         $this->sale = \Sale::with('products')
                            ->with('packs')
@@ -114,7 +115,7 @@ class DestinationManager extends BaseManager {
 
                            echo "<pre>";
         if($this->sale)
-        { 
+        {
 
             if($saleData['add_stock'])
             {
@@ -128,7 +129,7 @@ class DestinationManager extends BaseManager {
                             'id' => $p->id
 
                         ];
-                        
+
                         $addStockProduct = new ProductManager( $product );
 
                         $addStockProduct->addStock($p->pivot->quantity);
@@ -147,7 +148,7 @@ class DestinationManager extends BaseManager {
                             'id' => $p->id
 
                         ];
-                        
+
                         $addStockPack = new PackManager( $pack );
 
                         $addStockPack->addStock($p->pivot->quantity);
@@ -169,13 +170,13 @@ class DestinationManager extends BaseManager {
 
     }
 
-    public function prepareData($commissionData)
+    public function prepareData($destinationData)
     {
-        
-        $commissionData['user_id'] = \Auth::user()->id;
 
-        return $commissionData;
+        $destinationData['user_id'] = (\Auth::check()) ? \Auth::user()->id : '';
+
+        return $destinationData;
     }
 
-} 
+}
 

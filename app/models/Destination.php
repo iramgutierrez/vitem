@@ -24,12 +24,12 @@ class Destination extends \Eloquent {
     public function getUrlEditAttribute()
 	{
 	    return URL::route('destinations.edit', [$this->id]);
-	}	
+	}
 
     public function getUrlDeleteAttribute()
 	{
 	    return URL::route('destinations.destroy', [$this->id]);
-	}	
+	}
 
     public function getValueTypeAttribute()
 	{
@@ -38,7 +38,7 @@ class Destination extends \Eloquent {
 
 	    switch($this->type)
 	    {
-	    
+
 	    	case 1:
 	    		$value = $this->zip_code;
 	    		break;
@@ -64,7 +64,7 @@ class Destination extends \Eloquent {
 
 	    switch($this->type)
 	    {
-	    
+
 	    	case 1:
 	    		$value = 'Código postal';
 	    		break;
@@ -83,7 +83,7 @@ class Destination extends \Eloquent {
 	    return $value;
 	}
 
-	public static function boot()
+	/*public static function boot()
     {
         parent::boot();
 
@@ -111,7 +111,7 @@ class Destination extends \Eloquent {
 				'object' => $destination->toJson()
 
 			]);
-        });        
+        });
 
         static::deleted(function($destination)
         {
@@ -126,7 +126,7 @@ class Destination extends \Eloquent {
 			]);
         });
 
-    }
+    }*/
 
 
 }

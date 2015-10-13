@@ -81,10 +81,25 @@
                           <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('sales.index') }}">Ver todas</a></li>
                           <li data-entities="sale" data-actions="create" data-permissions ><a  href="{{ route('sales.create') }}">Agregar venta</a></li>
                           <li data-entities="sale_payment" data-actions="create" data-permissions ><a  href="{{ route('sale_payments.create') }}">Agregar abono</a></li>
-                          <li data-entities="commission" data-actions="create" data-permissions ><a  href="{{ route('commissions.create') }}">Agregar comisiones</a></li>
                           <li data-entities="delivery" data-actions="create" data-permissions ><a  href="{{ route('deliveries.create') }}">Agregar entrega</a></li>
                       </ul>
                   </li>
+
+                  @if(Auth::user()->role->level_id >= 2)
+
+                  <li class="sub-menu" data-entities="supplier" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-dollar"></i>
+                          <span>Comisiones</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="supplier" data-actions="read" data-permissions ><a  href="{{ route('commissions.index') }}">Ver todas</a></li>
+                          <li data-entities="supplier" data-actions="create" data-permissions ><a  href="{{ route('commissions.create_many_get') }}">Agregar comisiones</a></li>
+                          <li data-entities="commission" data-actions="create" data-permissions ><a  href="{{ route('commissions.create') }}">Agregar por venta</a></li>
+                      </ul>
+                  </li>
+
+                  @endif
 
                   @if(Auth::user()->role->level_id >= 2)
 
@@ -135,6 +150,16 @@
                       <ul class="sub">
                           <li data-entities="order" data-actions="read" data-permissions ><a  href="{{ route('orders.index') }}">Ver todos</a></li>
                           <li data-entities="order" data-actions="create" data-permissions ><a  href="{{ route('orders.create') }}">Agregar pedido</a></li>
+                      </ul>
+                  </li>
+                  <li class="sub-menu" data-entities="devolution" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-truck"></i>
+                          <span>Devoluciones</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="devolution" data-actions="read" data-permissions ><a  href="{{ route('devolutions.index') }}">Ver todas</a></li>
+                          <li data-entities="devolution" data-actions="create" data-permissions ><a  href="{{ route('devolutions.create') }}">Agregar devolución</a></li>
                       </ul>
                   </li>
                   @endif

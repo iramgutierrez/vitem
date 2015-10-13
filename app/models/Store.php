@@ -8,7 +8,7 @@ class Store extends \Eloquent {
 
     protected $dates = ['deleted_at'];
 
-	protected $fillable = ['name' , 'email' , 'address' , 'phone' , 'user_id'];
+	protected $fillable = ['name' , 'key' , 'email' , 'address' , 'phone' , 'user_id'];
 
     protected $appends = ['url_show' , 'url_edit' ,  'url_delete' ];
 
@@ -25,10 +25,10 @@ class Store extends \Eloquent {
     public function getUrlEditAttribute()
     {
         return URL::route('stores.edit', [$this->id]);
-    }   
+    }
 
     public function getUrlDeleteAttribute()
     {
         return URL::route('stores.destroy', [$this->id]);
-    }   
+    }
 }

@@ -20,7 +20,7 @@
 @section('content')
 
 <!-- page start-->
-<div ng-app="order">
+<div ng-app="orders">
 	<div class="row"  ng-controller="ShowController" ng-init="generateAuthPermissions({{ \Auth::user()->role_id; }})">
 		<aside class="profile-nav col-lg-3">
 			<section class="panel">
@@ -43,7 +43,7 @@
 
 	                      <section class="panel" >
 	                      	<div class="panel-heading">
-	                      		<h2>Datos de paquete. </h2>
+	                      		<h2>Datos del pedido. </h2>
 	                      	</div>
 	                      	<div class="panel-body bio-graph-info">
 	                      		<div class="row">
@@ -127,6 +127,7 @@
             'library/js/ng/products.filters.js',
             'library/js/ng/products.services.js',
             'library/js/ng/suppliers.services.js',
+            'library/js/ng/colors.services.js',
             'library/assets/dropzone/dropzone.js',
             'library/js/jquery.validate.min.js'
 

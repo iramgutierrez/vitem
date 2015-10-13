@@ -46,4 +46,6 @@ $app = require_once __DIR__.'/../bootstrap/start.php';
 |
 */
 
+Config::set('session.cookie','laravel_api_session');
+
 $app->run();

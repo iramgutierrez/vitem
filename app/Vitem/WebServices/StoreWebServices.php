@@ -15,7 +15,7 @@ class StoreWebServices extends BaseWebServices {
 	{
 
 		return \Response::json(\Store::all());
-		
+
 	}
 	static function findById()
 	{
@@ -33,7 +33,7 @@ class StoreWebServices extends BaseWebServices {
 	static function find()
 	{
 
-		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1; 
+		$page = (!empty($_GET['page'])) ? $_GET['page'] : 1;
 
 		$perPage = (!empty($_GET['perPage'])) ? $_GET['perPage'] : 50;
 
@@ -44,7 +44,7 @@ class StoreWebServices extends BaseWebServices {
 		$orderDate = (!empty($_GET['orderDate'])) ? $_GET['orderDate'] : false;
 
 		$orders = [
-		
+
 			'data' => StoreRepo::findByPage($page , $perPage , $find ),
 			'total' => StoreRepo::countFind($find )
 		];
@@ -62,10 +62,10 @@ class StoreWebServices extends BaseWebServices {
 		$products = OrderRepo::getProducts($id);
 
 		return \Response::json($products);
-	}	
+	}
 
 	static function getTotalResidue()
-	{	
+	{
 
         $canReadSettings = PermissionRepo::checkAuth('Setting' , 'Read');
 
@@ -80,12 +80,31 @@ class StoreWebServices extends BaseWebServices {
         {
 
         	$store = \Store::find($store_id);
-        	
+
         	if(is_numeric($store->residue))
         	{
         		$residue += $store->residue;
         	}
         }
+
+        if(count($whereStoreId) == \Store::count() )
+        {
+            $movements = \Movement::all();
+        }
+        else
+        {
+            $movements = \Movement::whereIn('store_id' , $whereStoreId)->get();
+        }
+
+        foreach($movements as $m => $movement)
+        {
+
+            $total = $movement->amount_in - $movement->amount_out;
+
+            $residue += $total;
+
+        }
+
 
 		return \Response::make($residue , 200);
 	}
