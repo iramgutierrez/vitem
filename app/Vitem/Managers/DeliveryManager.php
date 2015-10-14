@@ -110,6 +110,7 @@ class DeliveryManager extends BaseManager {
 
             $store_id = $delivery->sale->store_id;
 
+
             \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['subtotal'] , $store_id );
 
             $response = [
