@@ -9,7 +9,7 @@
     <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <link rel="shortcut icon" href="{{ asset('library/img/favicon.png') }}">
 
-    <title>Vitem Muebles</title>
+    <title>SIKA Muebles</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('library/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -26,7 +26,7 @@
     <link href="{{ asset('library/css/style-responsive.css') }}" rel="stylesheet" />
 
     @if( isset($css) )
-      @foreach ($css as $kc => $css) 
+      @foreach ($css as $kc => $css)
         <link href="{{ asset( $css ) }}" rel="stylesheet" >
       @endforeach
     @endif
@@ -49,9 +49,9 @@
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
             <!--logo start-->
-            <a href="{{ route('dashboard') }}" class="logo">Vitem<span> muebles</span></a>
+            <a href="{{ route('dashboard') }}" class="logo">Sika<span> muebles</span></a>
             <!--logo end-->
-            
+
             <div class="nav notify-row" id="top_menu">
                 <!--  notification start -->
                 <ul class="nav top-menu">
@@ -59,14 +59,14 @@
 
                 </ul>
                 <!--  notification end -->
-            </div> 
+            </div>
             <div class="top-nav ">
                 <!--search & user info start-->
 
 
 
                 <ul class="nav pull-right top-menu" >
-                    
+
                     <li class="dropdown">
 
                         <h4>
@@ -104,10 +104,10 @@
                             <span>Cambiar sucursal</span>
                         </a>
                         <ul class="dropdown-menu extended tasks-bar" id="storesList">
-                            <div class="notify-arrow notify-arrow-gray"></div> 
+                            <div class="notify-arrow notify-arrow-gray"></div>
                             <li>
                                 <a href="{{ route('stores.change') }}">Todas las sucursales</a>
-                            </li>               
+                            </li>
                         </ul>
                     </li>
 
