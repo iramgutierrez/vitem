@@ -110,8 +110,18 @@ class DeliveryManager extends BaseManager {
 
             $store_id = $delivery->sale->store_id;
 
+            \Movement::create([
+                'user_id' => \Auth::user()->id,
+                'store_id' => $delivery->sale->store_id,
+                'type' => 'create',
+                'entity' => 'Delivery',
+                'entity_id' => $delivery->id,
+                'amount_in' => $delivery->total,
+                'amount_out' => 0,
+                'date' => $delivery->delivery_date
+            ]);
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['subtotal'] , $store_id );
+            //\Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['subtotal'] , $store_id );
 
             $response = [
                 'success' => true,
@@ -219,7 +229,9 @@ class DeliveryManager extends BaseManager {
 
         $this->delivery = \Delivery::find($deliveryData['id']);
 
-        $totalOld = $this->delivery->subtotal;
+        $totalOld = $this->delivery->total;
+
+        $dateOld = $this->delivery->delivery_date;
 
         $store_id = $this->delivery->sale->store_id;
 
@@ -238,9 +250,50 @@ class DeliveryManager extends BaseManager {
 
             $delivery->update($deliveryData);
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $totalOld*(-1) , $store_old );
+            if($store_old == $delivery->sale->store_id && $dateOld == $delivery->delivery_date)
+            {
+                \Movement::create([
+                    'user_id' => \Auth::user()->id,
+                    'store_id' => $store_old,
+                    'type' => 'update',
+                    'entity' => 'Delivery',
+                    'entity_id' => $delivery->id,
+                    'amount_in' => $delivery->total,
+                    'amount_out' => $totalOld,
+                    'date' => $delivery->delivery_date
+                ]);
+            }
+            else
+            {
 
-            \Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['subtotal'] , $store_id );
+                \Movement::create([
+                    'user_id' => \Auth::user()->id,
+                    'store_id' => $store_old,
+                    'type' => 'update',
+                    'entity' => 'Delivery',
+                    'entity_id' => $delivery->id,
+                    'amount_in' => 0,
+                    'amount_out' => $totalOld,
+                    'date' => $dateOld
+                ]);
+
+
+                \Movement::create([
+                    'user_id' => \Auth::user()->id,
+                    'store_id' => $store_old,
+                    'type' => 'update',
+                    'entity' => 'Delivery',
+                    'entity_id' => $delivery->id,
+                    'amount_in' => $delivery->total,
+                    'amount_out' => 0,
+                    'date' => $delivery->delivery_date
+                ]);
+
+            }
+
+            //\Setting::checkSettingAndAddResidue('add_residue_new_delivery', $totalOld*(-1) , $store_old );
+
+            //\Setting::checkSettingAndAddResidue('add_residue_new_delivery', $deliveryData['subtotal'] , $store_id );
 
             $response = [
                 'success' => true,
@@ -281,7 +334,18 @@ class DeliveryManager extends BaseManager {
 
         $store_id = $delivery->sale->store_id;
 
-        \Setting::checkSettingAndAddResidue('add_residue_new_delivery', ( ($delivery->subtotal)*(-1)  ) , $store_id );
+        \Movement::create([
+            'user_id' => \Auth::user()->id,
+            'store_id' => $delivery->sale->store_id,
+            'type' => 'delete',
+            'entity' => 'Delivery',
+            'entity_id' => $delivery->id,
+            'amount_in' => 0,
+            'amount_out' => $delivery->total,
+            'date' => $delivery->delivery_date
+        ]);
+
+        //\Setting::checkSettingAndAddResidue('add_residue_new_delivery', ( ($delivery->subtotal)*(-1)  ) , $store_id );
 
         return $delivery->delete();
 

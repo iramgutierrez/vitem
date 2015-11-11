@@ -30,9 +30,9 @@
 				<header class="panel-heading col-sm-12">
 				<h1 class="col-sm-3">Ventas</h1>
 					<a href="{{ route('sales.create') }}"><button type="button" class="pull-right btn btn-success ">Agregar venta</button></a>
-				</header>   
+				</header>
 
-			 	
+
 			<hr>
 			<div class="clearfix"></div>
 			<hr>
@@ -44,16 +44,16 @@
 
   	  			 @include('reports/fields/employee_id')
 
-  	    	</div> 
+  	    	</div>
 
   	    	<div class="form-group col-md-12 col-sm-12 " >
 
   	  			@include('reports/fields/client_id')
 
-  	    	</div>   
+  	    	</div>
 			<div class="form-group col-sm-4">
-				
-				{{ 
+
+				{{
 				Field::date
 					(
 						'init_date',
@@ -67,8 +67,8 @@
 
 			</div>
 			<div class="form-group col-sm-4">
-				
-				{{ 
+
+				{{
 				Field::date
 					(
 						'end_date',
@@ -79,20 +79,20 @@
 						]
 					)
 				}}
-				
+
 			</div>
 
 			<div class="form-group col-sm-4">
 
 				{{ Field::select(
-					'pay_type_id', 
+					'pay_type_id',
 					$pay_types,
 					'' ,
-					[ 
+					[
 					'ng-model' => 'pay_type_id',
 					'ng-change' => 'search()'
 					]
-					) 
+					)
 				}}
 
 			</div>
@@ -100,14 +100,14 @@
 			<div class="form-group col-sm-4">
 
             	{{ Field::select(
-					'sale_type', 
+					'sale_type',
 					$sale_types,
 					'' ,
-					[ 
+					[
 					'ng-model' => 'sale_type',
 					'ng-change' => 'search()'
 					]
-					) 
+					)
 				}}
 
 			</div>
@@ -115,18 +115,18 @@
 			<div class="form-group col-sm-4">
 
             	{{ Field::select(
-					'percent_cleared_payment_type', 
+					'percent_cleared_payment_type',
 					[
 						"<=" => 'Menor o igual que',
 						"==" => 'Igual',
 						">=" => 'Mayor o igual que'
 					],
 					'' ,
-					[ 
+					[
 					'ng-model' => 'percent_cleared_payment_type',
 					'ng-change' => 'search()'
 					]
-					) 
+					)
 				}}
 
 			</div>
@@ -136,9 +136,9 @@
 					(
 						'percent_cleared_payment',
 						'' ,
-						[ 
+						[
 
-							'addon-last' => '%' , 
+							'addon-last' => '%' ,
 
 							'placeholder' => 'Ingresa el porcentaje',
 
@@ -148,9 +148,9 @@
 
 						]
 
-					) 
+					)
 
-				}}   
+				}}
 
 			</div>
 			<div class="form-group col-sm-12">
@@ -161,9 +161,9 @@
 				</div>
 				<p class="form-group col-sm-2">
 					<span class="badge bg-success">@{{total}}</span> ventas
-				</p>    
-				<div class="form-group pull-right">    
-					<button type="button" ng-click="clear()" class="btn btn-info">Limpiar filtros</button>     
+				</p>
+				<div class="form-group pull-right">
+					<button type="button" ng-click="clear()" class="btn btn-info">Limpiar filtros</button>
 					<button type="submit" class="btn btn-success">Generar XLS</button>
 				</div>
 			</div>
@@ -182,15 +182,15 @@
 							<th class="col-sm-1" >Tipo de venta</th>
 							<th class="col-sm-1" >Cantidad pagado</th>
 							<th class="col-sm-1" >Porcentaje pagado</th>
-							<th class="col-sm-1" >Forma de pago</th>						
-							<th class="col-sm-1" >Total de venta</th>								
-							<th class="col-sm-1" >Comisión a forma de pago</th>								
-							<th class="col-sm-1" >Total en caja</th>				
-							{{--<th>Productos</th>					
+							<th class="col-sm-1" >Forma de pago</th>
+							<th class="col-sm-1" >Total de venta</th>
+							<th class="col-sm-1" >Comisión a forma de pago</th>
+							<th class="col-sm-1" >Total en caja</th>
+							{{--<th>Productos</th>
 							<th>Paquetes</th>
-							<th>Comisiones</th>			
+							<th>Comisiones</th>
 							<th>Entrega</th>--}}
-	                </tr>      
+	                </tr>
 	</thead>
 	<tbody ng-if="viewGrid == 'list'" >
 		<tr class="gradeX" ng-repeat="sale in salesP | orderBy:sort:reverse">
@@ -256,12 +256,12 @@
 					</tr>
 				</table>
 			</td>--}}
-		</tr>              
+		</tr>
 	</tbody>
-	</table> 
-</div>     
+	</table>
 </div>
-</div> 
+</div>
+</div>
 
 <div class="panel" ng-if="salesP.length == 0">
 	<div class="panel-body">
@@ -292,6 +292,7 @@
         'library/js/ng/reports.js',
         'library/js/ng/reports.controllers.js',
         'library/js/ng/sales.services.js',
+        'library/js/ng/movements.services.js',
         'library/js/ng/users.services.js',
         'library/js/ng/clients.services.js',
         'library/js/ng/products.services.js',

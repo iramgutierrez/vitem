@@ -3,8 +3,8 @@
   angular.module('reports.controllers', [])
 
     .controller('SalesController', ['$scope', '$filter' , 'SalesService' , 'UsersService' , 'ClientsService' , function ($scope ,  $filter , SalesService , UsersService , ClientsService ) {
-        
-        $scope.find = '';   
+
+        $scope.find = '';
         $scope.sale_type = '';
         $scope.pay_type_id = '';
         $scope.sort = 'id';
@@ -37,7 +37,7 @@
 
         $scope.searchSeller = function ()
         {
-          
+
             if($scope.find_seller.length != '')
             {
                 $scope.sellers = UsersService.search($scope.find_seller , $scope.sellersAll , false , 1 , false , false , false , false );
@@ -51,14 +51,14 @@
                 $scope.autocompleteSeller = false;
 
             }
-            
 
-        }        
+
+        }
 
         $scope.addSeller = function(seller)
-        { 
+        {
 
-      
+
             $scope.employee_id = seller.employee.id;
 
             $scope.find_seller = seller.name;
@@ -117,7 +117,7 @@
 
         $scope.searchClient = function ()
         {
-          
+
             if($scope.find_client.length != '')
             {
                 $scope.clients = ClientsService.search($scope.find_client , $scope.clientsAll , false , 1 , false , false );
@@ -131,14 +131,14 @@
                 $scope.autocompleteClient = false;
 
             }
-            
+
 
         }
 
         $scope.addClient = function(client)
         {
 
-      
+
             $scope.client_id = client.id;
 
             $scope.find_client = client.name;
@@ -180,41 +180,41 @@
 
         }
 
-        $scope.hideItems = function () 
+        $scope.hideItems = function ()
         {
             window.setTimeout(function() {
 
                 $scope.$apply(function() {
-                
+
                     $scope.autocompleteSeller = false;
-                
+
                     $scope.autocompleteClient = false;
 
                 });
 
             }, 300);
-            
+
         }
 
-        $scope.init = function() 
+        $scope.init = function()
         { console.log($scope.pay_type_id)
-          
+
           SalesService.API(
 
             'findReport',
-            {              
+            {
               page : $scope.page ,
-              perPage : $scope.perPage , 
+              perPage : $scope.perPage ,
               employee_id : $scope.employee_id,
               client_id : $scope.client_id,
-              sale_type : $scope.sale_type , 
-              pay_type_id : $scope.pay_type_id, 
-              percent_cleared_payment_type : $scope.percent_cleared_payment_type, 
-              percent_cleared_payment : $scope.percent_cleared_payment, 
-              initDate : (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate, 
+              sale_type : $scope.sale_type ,
+              pay_type_id : $scope.pay_type_id,
+              percent_cleared_payment_type : $scope.percent_cleared_payment_type,
+              percent_cleared_payment : $scope.percent_cleared_payment,
+              initDate : (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate,
               endDate : (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate
 
-            }).then(function (data) {              
+            }).then(function (data) {
 
                 $scope.salesP = data.data;
 
@@ -222,7 +222,7 @@
 
                 $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
-            });  
+            });
 
         }
 
@@ -243,21 +243,21 @@
         $scope.paginate = function( p )
         {
           if($scope.pagination)
-          {            
+          {
 
             if(p)
-              $scope.page = parseInt(p);   
+              $scope.page = parseInt(p);
 
             if(!$scope.salesAll)
             {
-            
+
               $scope.init();
 
             }
             else
-            {  
+            {
 
-              $scope.total = $scope.sales.length;          
+              $scope.total = $scope.sales.length;
 
               $scope.pages = Math.ceil( $scope.total / $scope.perPage );
 
@@ -275,20 +275,20 @@
 
 
         $scope.search = function ( init )
-        { 
+        {
 
           if(!$scope.salesAll)
           {
-          
+
             $scope.init();
 
           }
           else
-          { 
-          
+          {
+
           	$scope.sales = SalesService.search2($scope.employee_id , $scope.client_id , $scope.salesAll , $scope.sale_type , $scope.pay_type_id, (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate , (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate , $scope.percent_cleared_payment_type , $scope.percent_cleared_payment);
 
-            
+
           }
 
           if(!init){
@@ -299,8 +299,8 @@
 
         }
 
-        $scope.clear = function () 
-        {   
+        $scope.clear = function ()
+        {
           $scope.employee_id = '';
           $scope.client_id = '';
           $scope.sale_type = '';
@@ -312,6 +312,129 @@
 	        $scope.sales = $scope.salesAll;
           $scope.paginate(1);
           $scope.modal = false;
+
+        }
+
+
+    }])
+
+    .controller('MovementsController', ['$scope', '$filter' , 'MovementsService' , function ($scope ,  $filter , MovementsService ) {
+
+        $scope.find = '';
+        $scope.sort = 'id';
+        $scope.reverse = false;
+        $scope.pagination = true;
+        $scope.page = 1;
+        $scope.perPage = 10;
+        $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
+        $scope.initDate = '';
+        $scope.endDate = '';
+
+        $scope.init = function()
+        {
+
+          MovementsService.API(
+
+            'findReport',
+            {
+              page : $scope.page ,
+              perPage : $scope.perPage ,
+              initDate : (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate,
+              endDate : (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate
+
+            }).then(function (data) {
+                console.log(data);
+                $scope.movementsP = data.data;
+
+                $scope.total = data.total;
+
+                $scope.pages = Math.ceil( $scope.total / $scope.perPage );
+
+            });
+
+        }
+
+        $scope.init();
+
+        MovementsService.all().then(function (data) {
+
+          $scope.movementsAll = data;
+
+          $scope.movements = data;
+
+          $scope.search(true);
+
+          $scope.paginate();
+
+        });
+
+        $scope.paginate = function( p )
+        {
+          if($scope.pagination)
+          {
+
+            if(p)
+              $scope.page = parseInt(p);
+
+            if(!$scope.movementsAll)
+            {
+
+              $scope.init();
+
+            }
+            else
+            {
+
+              $scope.total = $scope.movements.length;
+
+              $scope.pages = Math.ceil( $scope.total / $scope.perPage );
+
+              $scope.movementsP = $scope.movements.slice( ( ($scope.page -1) *  $scope.perPage ) , ($scope.page *  $scope.perPage ) );
+
+            }
+
+          }
+          else
+          {
+            $scope.movementsP = $scope.movements;
+          }
+        }
+
+
+
+        $scope.search = function ( init )
+        {
+
+          if(!$scope.movementsAll)
+          {
+
+            $scope.init();
+
+          }
+          else
+          {
+
+            $scope.movements = MovementsService.search2($scope.movementsAll , (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate , (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate );
+
+
+          }
+
+          if(!init){
+
+            $scope.paginate(1);
+
+          }
+
+        }
+
+        $scope.clear = function ()
+        {
+          $scope.initDate = '';
+          $scope.endDate = '';
+          $scope.sort = 'id';
+          $scope.reverse = false;
+          $scope.movements = $scope.movementsAll;
+          $scope.paginate(1);
 
         }
 

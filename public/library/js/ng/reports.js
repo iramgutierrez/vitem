@@ -3,6 +3,7 @@
   var app = angular.module('reports', [
     'reports.controllers',
     'sales.services',
+    'movements.services',
     'users.services',
     'clients.services',
     'products.services',

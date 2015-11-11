@@ -17,8 +17,8 @@ class ACLFilter
 	}
 
 	public function check($route, $request, $entity, $action , $json = false)
-	{ 
-		if (\Auth::check()) { 
+	{
+		if (\Auth::check()) {
 
 			$user_id = \Auth::user()->id;
 
@@ -47,7 +47,7 @@ class ACLFilter
 
 			if($segment_2 && is_numeric($segment_2)) {
 
-				if(in_array($entity , ['User' , 'Commission', 'SalePayment' , 'Delivery' , 'Expense' , 'Sale'])){		
+				if(in_array($entity , ['User' , 'Commission', 'SalePayment' , 'Delivery' , 'Expense' , 'Sale'])){
 
 					$entity_user_id = false;
 
@@ -97,7 +97,7 @@ class ACLFilter
 
 							return \Response::json([]);
 						}
-							
+
 					}
 
 				}
@@ -113,7 +113,7 @@ class ACLFilter
 
 		$user = \Auth::user();
 
-		$level_id = $user->role->level_id; 
+		$level_id = $user->role->level_id;
 
 		$whereUserId = [];
 
@@ -181,7 +181,7 @@ class ACLFilter
 
 		$user = \Auth::user();
 
-		$level_id = $user->role->level_id; 
+		$level_id = $user->role->level_id;
 
 		$whereStoreId = [];
 
@@ -205,7 +205,7 @@ class ACLFilter
 				}
 				else
 				{
-				
+
 					$whereStoreId = \Store::lists('id');
 
 				}
@@ -219,7 +219,7 @@ class ACLFilter
 				}
 				else
 				{
-				
+
 					$whereStoreId = \Store::lists('id');
 
 				}

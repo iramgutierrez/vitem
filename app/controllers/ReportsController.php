@@ -43,6 +43,11 @@ class ReportsController extends \BaseController {
 		return View::make('reports/sales',compact('sale_types' , 'pay_types' , 'filtersSaleDate'));
 	}
 
+	public function movements()
+	{
+		return View::make('reports/movements');
+	}
+
 	public function compare_sellers()
 	{
 		return View::make('reports/compare_sellers');

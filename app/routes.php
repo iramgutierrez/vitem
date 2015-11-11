@@ -134,6 +134,10 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::get('API/sales/{method}' , ['as' => 'salesAPI', 'uses' => 'SalesController@API']);
 
+	Route::get('API/movements/' , ['as' => 'movementsAPI', 'uses' => 'MovementsController@API']);
+
+	Route::get('API/movements/{method}' , ['as' => 'movementsAPI', 'uses' => 'MovementsController@API']);
+
 	Route::get('API/commissions/' , ['as' => 'commissionsAPI', 'uses' => 'CommissionsController@API']);
 
 	Route::get('API/commissions/{method}' , ['as' => 'commissionsAPI', 'uses' => 'CommissionsController@API']);
@@ -173,6 +177,8 @@ Route::group(['before' => 'auth'], function () {
 
 
 	Route::get('reports/sales' , ['as' => 'reports.sales', 'uses' => 'ReportsController@sales']);
+
+	Route::get('reports/movements' , ['as' => 'reports.movements', 'uses' => 'ReportsController@movements']);
 
 	Route::get('reports/compare-sellers' , ['as' => 'reports.compare_sellers', 'uses' => 'ReportsController@compare_sellers']);
 

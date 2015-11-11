@@ -22,7 +22,7 @@ class DeliveriesController extends \BaseController {
 		$this->beforeFilter('ACL:Delivery,Update', [ 'only' => [ 'edit' , 'update' ] ]);
 
 		$this->beforeFilter('ACL:Delivery,Delete', [ 'only' => 'destroy' ] );
-		
+
 	}
 
 
@@ -45,7 +45,7 @@ class DeliveriesController extends \BaseController {
 	 * @return Response
 	 */
 	public function create($sale_id = false)
-	{ 
+	{
 		$types = [
 
 			'1' => 'Código postal',
@@ -85,9 +85,9 @@ class DeliveriesController extends \BaseController {
 	 */
 	public function store()
 	{
-		$data = Input::all(); 
+		$data = Input::all();
 
-		$createDelivery = new DeliveryManager( $data );		
+		$createDelivery = new DeliveryManager( $data );
 
 		$response = $createDelivery->save();
 
@@ -139,12 +139,12 @@ class DeliveriesController extends \BaseController {
 
 		if(!$delivery)
 		{
-			
+
 			Session::flash('error' , 'La entrega especificada no existe.');
 
 	        return Redirect::route('sales.index');
 
-		} 
+		}
 
 		$types = [
 
@@ -154,7 +154,7 @@ class DeliveriesController extends \BaseController {
 			'4' => 'Estado'
 
 		];
-		
+
 		return View::make('deliveries/edit', compact('id' , 'delivery' , 'types'));
 	}
 
@@ -167,7 +167,7 @@ class DeliveriesController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		
+
 		$delivery =  Delivery::find($id);
 
 		if(!$delivery)
@@ -177,7 +177,7 @@ class DeliveriesController extends \BaseController {
         	return Redirect::route('sales.index' );
 		}
 
-		$data = Input::all(); 
+		$data = Input::all();
 
         $data['id'] = (int) $id;
 
@@ -227,11 +227,25 @@ class DeliveriesController extends \BaseController {
         	return Redirect::route('deliveries.index');
 		}
 
-		Delivery::destroy($id);
+		$deleteDelivery = new DeliveryManager( ['id' => $id] );
 
-	    Session::flash('success' , 'La entrega se ha eliminado correctamente.');
+        $response = $deleteDelivery->delete();
 
-        return Redirect::route('deliveries.index' );
+        if($response)
+        {
+        	Session::flash('success' , 'La entrega se ha eliminado correctamente.');
+
+            return Redirect::route('deliveries.index');
+        }
+        else
+        {
+
+            Session::flash('error' , 'No ha sido posible eliminar la entrega.');
+
+            return Redirect::back()->withErrors($response['errors'])->withInput();
+
+        }
+
 	}
 
 	public function API( $method = 'all')

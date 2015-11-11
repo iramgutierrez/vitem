@@ -8,9 +8,14 @@ class Movement extends Eloquent {
 
     protected $appends = [];
 
-    public function User()
+    public function user()
     {
         return $this->belongsTo('User', 'user_id' ,'id');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('Store', 'store_id' ,'id');
     }
 
 }
