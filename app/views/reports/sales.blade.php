@@ -298,6 +298,7 @@
         'library/js/ng/products.services.js',
         'library/js/ng/packages.services.js',
         'library/js/ng/destinations.services.js',
+        'library/js/ng/stores.services.js',
         'library/js/ng/ng-date.js',
         'library/js/ng/users.filters.js',
         'library/js/ng/commissions.filters.js',

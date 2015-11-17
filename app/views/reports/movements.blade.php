@@ -33,6 +33,21 @@
 
 				{{ Form::open(['route' => 'reports.generate_xls']) }}
 
+				<div class="form-group-col-sm-12">
+					{{ Field::text(
+							'',
+							'' ,
+							[
+								'class' => 'col-md-10' ,
+								'addon-first' => '<i class="fa fa-search"></i>' ,
+								'placeholder' => 'Busca por id, usario de sistema o id de entidad',
+								'ng-model' => 'find',
+								'ng-change' => 'preSearch()'
+							]
+						)
+					}}
+				</div>
+				<br>
 				<div class="form-group col-sm-4">
 
 					{{
@@ -62,6 +77,68 @@
 						)
 					}}
 
+				</div>
+				<div class="col-sm-4 form-group">
+					{{
+					Field::select
+						(
+							'store_id',
+							[],
+							'',
+							[
+								'ng-model' => 'store_id',
+								'ng-change' => 'search()',
+								'ng-options' => "store.id as store.name for store in stores"
+							]
+						)
+					}}
+				</div>
+				<div class="col-sm-4 form-group">
+					{{
+					Field::select
+						(
+							'type',
+							[],
+							'',
+							[
+								'ng-model' => 'type',
+								'ng-change' => 'search()',
+								'ng-options' => "k as type for (k , type )  in types"
+							]
+						)
+					}}
+				</div>
+				<div class="col-sm-4 form-group">
+					{{
+					Field::select
+						(
+							'entity',
+							[],
+							'',
+							[
+								'ng-model' => 'entity_type',
+								'ng-change' => 'search()',
+								'ng-options' => "k as entity for (k , entity )  in entity_types"
+							]
+						)
+					}}
+				</div>
+				<div class="col-sm-4 form-group">
+					{{
+					Field::select
+						(
+							'flow',
+							[],
+							'',
+							[
+								'ng-model' => 'flow',
+								'ng-change' => 'search()',
+								'ng-options' => "k as flow for (k , flow )  in flows"
+							]
+						)
+					}}
+				</div>
+				<div class="col-sm-4 form-group">
 				</div>
 				<div class="form-group col-sm-12">
 
@@ -105,13 +182,13 @@
 								<td>@{{ movement.id }}</td>
 								<td>@{{ movement.user.name }}</td>
 								<td>@{{ movement.store.name }} </td>
-								<td>@{{ movement.type }}</td>
-								<td>@{{ movement.entity }}</td>
+								<td>@{{ types[movement.type] }}</td>
+								<td>@{{ entity_types[movement.entity] }}</td>
 								<td>@{{ movement.entity_id }}</td>
 								<td>@{{ movement.date | date:'yyyy-MM-dd'}}</td>
 								<td>@{{ movement.amount_in | currency }}</td>
 								<td>@{{ movement.amount_out | currency }}</td>
-								<td>@{{ movement.amount_in - movement.amount_out | currency }}</td>
+								<td>@{{ movement.total | currency }}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -154,6 +231,7 @@
         'library/js/ng/products.services.js',
         'library/js/ng/packages.services.js',
         'library/js/ng/destinations.services.js',
+        'library/js/ng/stores.services.js',
         'library/js/ng/ng-date.js',
         'library/js/ng/users.filters.js',
         'library/js/ng/commissions.filters.js',

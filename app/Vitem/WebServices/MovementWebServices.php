@@ -52,10 +52,20 @@ class MovementWebServices extends BaseWebServices {
 
 		$endDate = (!empty($_GET['endDate'])) ? $_GET['endDate'] : false;
 
+		$find = (!empty($_GET['find'])) ? $_GET['find'] : false;
+
+		$storeId = (!empty($_GET['storeId'])) ? $_GET['storeId'] : false;
+
+		$type = (!empty($_GET['type'])) ? $_GET['type'] : false;
+
+		$entityType = (!empty($_GET['entity_type'])) ? $_GET['entity_type'] : false;
+
+		$flow = (!empty($_GET['flow'])) ? $_GET['flow'] : false;
+
 		$movements = [
 
-			'data' => MovementRepo::findByPageReport($page , $perPage , $initDate , $endDate ),
-			'total' => MovementRepo::countFindReport($initDate , $endDate)
+			'data' => MovementRepo::findByPageReport($page , $perPage , $initDate , $endDate , $find , $storeId , $type , $entityType , $flow),
+			'total' => MovementRepo::countFindReport($initDate , $endDate , $find , $storeId , $type , $entityType , $flow)
 		];
 
 		return \Response::json($movements);

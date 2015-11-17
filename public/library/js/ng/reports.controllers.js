@@ -318,7 +318,7 @@
 
     }])
 
-    .controller('MovementsController', ['$scope', '$filter' , 'MovementsService' , function ($scope ,  $filter , MovementsService ) {
+    .controller('MovementsController', ['$scope', '$filter' , 'MovementsService','StoresService' , '$timeout', function ($scope ,  $filter , MovementsService ,StoresService ,$timeout) {
 
         $scope.find = '';
         $scope.sort = 'id';
@@ -329,6 +329,28 @@
         $scope.optionsPerPage = [ 5, 10, 15 , 20 , 30, 40, 50, 100 ];
         $scope.initDate = '';
         $scope.endDate = '';
+        $scope.store_id = '';
+        $scope.type = '';
+        $scope.entity_type = '';
+        $scope.flow = '';
+        $scope.types = {
+          'create' : 'Crear',
+          'update' : 'Editar',
+          'delete' : 'Eliminar'
+        };
+        $scope.entity_types = {
+          'Sales' : 'Venta',
+          'SalePayment' : 'Abono',
+          'Commission' : 'Comisión',
+          'Order' : 'Pedido',
+          'Devolution' : 'Devolución',
+          'Expense' : 'Gasto',
+          'Delivery' : 'Entrega'
+        };
+        $scope.flows = {
+          'in' : 'Entrante',
+          'out' : 'Saliente'
+        }
 
         $scope.init = function()
         {
@@ -339,11 +361,16 @@
             {
               page : $scope.page ,
               perPage : $scope.perPage ,
+              find : ($scope.find) ? $scope.find : '',
               initDate : (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate,
-              endDate : (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate
+              endDate : (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate,
+              storeId : ($scope.store_id) ? $scope.store_id : '',
+              type : ($scope.type) ? $scope.type : '',
+              entity_type : ($scope.entity_type) ? $scope.entity_type : '',
+              flow : ($scope.flow) ? $scope.flow : ''
 
             }).then(function (data) {
-                console.log(data);
+
                 $scope.movementsP = data.data;
 
                 $scope.total = data.total;
@@ -358,7 +385,7 @@
 
         MovementsService.all().then(function (data) {
 
-          $scope.movementsAll = data;
+          //$scope.movementsAll = data;
 
           $scope.movements = data;
 
@@ -367,6 +394,13 @@
           $scope.paginate();
 
         });
+
+
+        StoresService.all().then(function(stores){
+
+          $scope.stores = stores;
+
+        })
 
         $scope.paginate = function( p )
         {
@@ -400,6 +434,19 @@
           }
         }
 
+        $scope.preSearch = function()
+        {
+
+          var find = $scope.find;
+
+          $timeout(function(){
+            if(find == $scope.find)
+            {
+              $scope.search()
+            }
+          },1000);
+
+        }
 
 
         $scope.search = function ( init )
@@ -414,7 +461,16 @@
           else
           {
 
-            $scope.movements = MovementsService.search2($scope.movementsAll , (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate , (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate );
+            $scope.movements = MovementsService.searchLocal(
+                                  $scope.movementsAll ,
+                                  $scope.find,
+                                  (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate ,
+                                  (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate ,
+                                  $scope.store_id ,
+                                  $scope.type,
+                                  $scope.entity_type,
+                                  $scope.flow
+                              );
 
 
           }
@@ -429,8 +485,13 @@
 
         $scope.clear = function ()
         {
+          $scope.find = '';
           $scope.initDate = '';
           $scope.endDate = '';
+          $scope.store_id = '';
+          $scope.type = '';
+          $scope.entity_type = '';
+          $scope.flow = '';
           $scope.sort = 'id';
           $scope.reverse = false;
           $scope.movements = $scope.movementsAll;

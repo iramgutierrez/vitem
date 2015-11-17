@@ -9,6 +9,7 @@
     'products.services',
     'packages.services',
     'destinations.services',
+    'stores.services',
     'users.filters',
     'commissions.filters',
     'destinations.filters',

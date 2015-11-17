@@ -116,7 +116,7 @@ class MovementRepo extends BaseRepo {
 
 	}
 
-	static function findByPageReport($page , $perPage , $initDate , $endDate)
+	static function findByPageReport($page , $perPage , $initDate , $endDate , $find , $storeId , $type , $entityType , $flow)
 	{
 
 		$offset = ($page - 1 ) * $perPage;
@@ -127,6 +127,16 @@ class MovementRepo extends BaseRepo {
 									]);
 
 		self::generateDateRangeCondition( $initDate , $endDate);
+
+		self::generateStoreIdCondition( $storeId);
+
+		self::generateLikeCondition( $find , ['id' , 'entity_id']);
+
+		self::generateTypeCondition( $type);
+
+		self::generateEntityTypeCondition( $entityType);
+
+		self::generateFlowCondition( $flow);
 
 		self::paginate($offset , $perPage);
 
@@ -146,7 +156,7 @@ class MovementRepo extends BaseRepo {
 
 	}
 
-	static function countFindReport($initDate , $endDate)
+	static function countFindReport($initDate , $endDate ,$find, $storeId , $type , $entityType , $flow)
 	{
 
 
@@ -157,6 +167,16 @@ class MovementRepo extends BaseRepo {
 									]);
 
 		self::generateDateRangeCondition( $initDate , $endDate);
+
+		self::generateLikeCondition( $find , ['id' , 'entity_id']);
+
+		self::generateStoreIdCondition( $storeId);
+
+		self::generateTypeCondition( $type);
+
+		self::generateEntityTypeCondition( $entityType);
+
+		self::generateFlowCondition( $flow);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
@@ -252,6 +272,92 @@ class MovementRepo extends BaseRepo {
 			self::$movements
 					->where( 'date', '>=' ,$initDate )
 					->where( 'date', '<=' ,$endDate );
+
+		}
+
+	}
+
+	private static function generateLikeCondition( $sentence , $fields )
+	{
+
+		if($sentence != ''){
+
+			self::$movements->where(
+							function($query) use ($sentence , $fields) {
+
+								foreach($fields as $field){
+
+									$query->orWhere($field, 'LIKE' , '%' . $sentence . '%' );
+
+								}
+
+								$query->orWhereIn('user_id' ,function($query) use ($sentence)
+								{
+									$query->select(\DB::raw('id'))
+										->from('users')
+										->whereRaw('users.name LIKE "%' . $sentence . '%"');
+								});
+
+							}
+
+						);
+
+		}
+
+	}
+
+	private static function generateStoreIdCondition( $storeId)
+	{
+
+		if( $storeId){
+
+			self::$movements
+					->where( 'store_id',$storeId );
+
+		}
+
+	}
+
+	private static function generateTypeCondition( $type)
+	{
+
+		if( $type){
+
+			self::$movements
+					->where( 'type',$type );
+
+		}
+
+	}
+
+	private static function generateEntityTypeCondition( $entityType)
+	{
+
+		if( $entityType){
+
+			self::$movements
+					->where( 'entity',$entityType );
+
+		}
+
+	}
+
+	private static function generateFlowCondition( $flow)
+	{
+
+		if( $flow){
+
+			if($flow == 'in')
+			{
+				self::$movements
+					->where( 'total', '>= ', 0 );
+			}
+			else if($flow == 'out')
+			{
+				self::$movements
+					->where( 'total' , '<' , 0 );
+			}
+
 
 		}
 

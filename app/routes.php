@@ -96,6 +96,8 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::resource('client_types', 'ClientTypesController');
 
+	Route::get('addresses/create/{entity}/{entity_id}' , ['as' => 'addresses.create.entity.entity_id', 'uses' => 'AddressesController@create']);
+
 	Route::get('API/lists/{method}' , ['as' => 'usersAPI', 'uses' => 'HomeController@API']);
 
 	Route::get('API/users' , ['as' => 'usersAPI', 'uses' => 'UsersController@API']);

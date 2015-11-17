@@ -184,7 +184,9 @@ return array(
 		'percent' => 'porcentaje',
 		'percent_commission' => 'porcentaje de comisión',
 		'subtotal' => 'total',
-		'percent_cleared_payment' => 'porcentaje pagado'
+		'percent_cleared_payment' => 'porcentaje pagado',
+		'entity' => 'entidad',
+		'flow' => 'flujo'
 
 	),
 

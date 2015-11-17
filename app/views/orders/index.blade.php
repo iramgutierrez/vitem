@@ -61,7 +61,7 @@
 			<div class="clearfix"></div>
 			<hr>
 			<div class="col-sm-12">
-				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> ventas</p>
+				<p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> pedidos</p>
 				<button type="button" ng-click="clear()" class="pull-right btn btn-info">Limpiar filtros</button>
 			</div>
 
