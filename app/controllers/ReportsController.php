@@ -114,7 +114,7 @@ class ReportsController extends \BaseController {
             return Redirect::back();
 		}
 
-		$headerXLS = [];
+		$headersXLS = [];
 
 		foreach($headers as $header)
 		{
@@ -156,6 +156,7 @@ class ReportsController extends \BaseController {
 			];
 
 		}
+
 		$dataXLS = [];
 
 		foreach($data as $key => $record)
@@ -218,13 +219,23 @@ class ReportsController extends \BaseController {
 
 		$filename = (Input::has('filename')) ? Input::get('filename') : 'reporte';
 
-		header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-		header("Content-Disposition: attachment; filename=".$filename."_".date('Y-m-d_H-i-s').".xls");
-		header("Expires: 0");
-		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-		header("Cache-Control: private",false);
-
 		return View::make('reports/generate_custom_xls',compact('headersXLS' , 'dataXLS'));
+
+        Excel::create($filename."_".date('Y-m-d_H-i-s'), function($excel) use ($headersXLS , $dataXLS , $filename){
+
+            $excel->sheet($filename, function($sheet) use ($headersXLS , $dataXLS) {
+
+                $sheet->loadView(
+                    'reports/generate_custom_xls',
+                    [
+                        'headersXLS' => $headersXLS ,
+                        'dataXLS' => $dataXLS
+                    ]
+                );
+
+            });
+
+        })->export('xls');
 
 	}
 

@@ -73,7 +73,7 @@
 
                     <div class="input-group input-small">
 
-                        <input type="text" class="spinner-input form-control" maxlength="3" ng-model="uniqueItem.quantity" name="item_quantity" >
+                        <input type="text" class="spinner-input form-control" maxlength="3" ng-model="uniqueItem.quantity" name="item_quantity" ng-init='uniqueItem.quantity = checkValuePreOrOld("{{ ((!empty($discount->item_quantity)) ? $discount->item_quantity : '') }}" , "{{ ((Input::old('item_quantity')) ? Input::old('item_quantity') : '') }}")' >
 
                         <div class="spinner-buttons input-group-btn btn-group-vertical">
 
@@ -105,7 +105,52 @@
 
     </table>
 
-    <input type="text" name="item_type" ng-value="tab" ng-model="tab" ng-if="type == 1" />
-    <input type="text" name="item_id" ng-value="uniqueItem.id" ng-model="uniqueItem.id" />
+    {{ Field::hidden
+
+       (
+
+           'item_type',
+
+           null ,
+
+           [
+
+               'ng-model' => 'tab',
+
+               'ng-value' => 'tab',
+
+               'ng-init' => 'tab = checkValuePreOrOld("'.((!empty($discount->item_type)) ? strtolower($discount->item_type) : '').'" , "'.((Input::old('item_type')) ? strtolower(Input::old('item_type')) : '').'")',
+
+
+           ]
+
+       )
+
+   }}
+
+
+
+    {{ Field::hidden
+
+       (
+
+           'item_id',
+
+           null ,
+
+           [
+
+               'ng-model' => 'uniqueItem.id',
+
+               'ng-value' => 'uniqueItem.id',
+
+               'ng-init' => 'uniqueItem.id = checkValuePreOrOld("'.((!empty($discount->item_id)) ? $discount->item_id : '').'" , "'.((Input::old('item_id')) ? Input::old('item_id') : '').'")',
+
+
+           ]
+
+       )
+
+   }}
 
 </div>

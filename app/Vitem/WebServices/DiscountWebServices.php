@@ -13,7 +13,7 @@ class DiscountWebServices extends BaseWebServices {
 	static function all()
 	{
 
-		return \Response::json(\Discount::with(['item' , 'pay_types','stores'])->get());
+		return \Response::json(\Discount::with(['user' , 'item' , 'pay_types','stores'])->get());
 
 	}
 	static function findById()
@@ -24,9 +24,9 @@ class DiscountWebServices extends BaseWebServices {
 			return false;
 
 
-		$destination = \Discount::where('id' , $id)->first();
+		$discount = \Discount::with('stores' , 'pay_Types' , 'item')->find($id);
 
-		return \Devolution::json($destination);
+		return \Response::json($discount);
 
 	}
 	static function find()
@@ -48,7 +48,7 @@ class DiscountWebServices extends BaseWebServices {
 
         $store = (!empty($_GET['store'])) ? $_GET['store'] : '';
 
-        $payType = (!empty($_GET['pay_type'])) ? $_GET['pay_type'] : '';
+        $payType = (!empty($_GET['payType'])) ? $_GET['payType'] : '';
 
 		$discounts = [
 

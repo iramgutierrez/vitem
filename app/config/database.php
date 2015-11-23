@@ -58,7 +58,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'sika',
 			'username'  => 'root',
-			'password'  => '',
+			'password'  => 'gigigo10',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

@@ -16,6 +16,7 @@ class DiscountValidator extends BaseValidator {
     public function getUpdateRules()
     {
         $rules = $this->getRules();
+
         return $rules;
     }
 
