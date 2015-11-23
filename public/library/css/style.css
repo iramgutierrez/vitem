@@ -202,6 +202,10 @@ select.error , select:focus.error{
     border: 3px solid red;
 }
 
+select[multiple]{
+    height: 150px;
+}
+
 /*LEFT NAVIGATION ICON*/
 .dcjq-icon {
     height:17px;

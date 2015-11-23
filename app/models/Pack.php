@@ -14,8 +14,11 @@ class Pack extends \Eloquent {
     {
         return $this->belongsToMany('Product', 'pack_product')->withPivot('quantity');
     }
-
-        public function getUrlShowAttribute()
+    public function discounts()
+    {
+        return $this->morphMany('Discount', 'item');
+    }
+    public function getUrlShowAttribute()
 	{
 	    return URL::route('packs.show', [$this->id]);
 	}

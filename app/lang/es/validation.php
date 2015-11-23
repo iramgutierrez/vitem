@@ -186,7 +186,12 @@ return array(
 		'subtotal' => 'total',
 		'percent_cleared_payment' => 'porcentaje pagado',
 		'entity' => 'entidad',
-		'flow' => 'flujo'
+		'flow' => 'flujo',
+        'stores' => 'sucursales',
+        'pay_types' => 'formas de pago',
+        'DiscountStore' => 'sucursales',
+        'DiscountPayType' => 'formas de pago',
+        'discount_type' => 'tipo de descuento'
 
 	),
 

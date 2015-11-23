@@ -93,6 +93,10 @@ class FieldBuilder {
         {
             case 'select':
                 $options = array('' => 'Seleccione') + $options;
+                if(!empty($attributes['multiple']))
+                {
+                    $name.='[]';
+                }
                 return $this->form->select($name, $options, $value, $attributes);
             case 'password':
                 return $this->form->password($name, $attributes);

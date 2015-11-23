@@ -62,6 +62,8 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::resource('sale_payments', 'SalePaymentsController');
 
+    Route::resource('discounts', 'DiscountsController');
+
 	Route::get('sale_payments/create/{sale_id}' , ['as' => 'sale_payments.create.sale_id', 'uses' => 'SalePaymentsController@create']);
 
 	Route::get('commissions/create/{sale_id}/{employee_id?}' , ['as' => 'commissions.create.sale_id', 'uses' => 'CommissionsController@create']);

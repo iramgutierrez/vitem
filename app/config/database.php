@@ -54,11 +54,11 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-            'unix_socket'   => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
+            //'unix_socket'   => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock',
 			'host'      => 'localhost',
 			'database'  => 'sika',
 			'username'  => 'root',
-			'password'  => '',
+			'password'  => 'gigigo10',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
