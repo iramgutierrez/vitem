@@ -4,8 +4,13 @@
 
     .controller('DiscountsController', ['$scope', '$filter' , 'DiscountsService' , function ($scope ,  $filter , DiscountsService ) {
         
-        $scope.find = '';   
-        $scope.type = '';
+        $scope.find = '';
+          $scope.type = '';
+          $scope.initDate = '';
+          $scope.endDate = '';
+          $scope.discountType = '';
+          $scope.store = '';
+          $scope.payType = '';
         $scope.sort = 'id';
         $scope.reverse = false;
         $scope.pagination = true;
@@ -16,7 +21,7 @@
 
         /*Generar XLS */
 
-        $scope.filename = 'reporte_entregas';
+        $scope.filename = 'reporte_descuentos';
 
         $scope.dataExport = false;
 
@@ -97,13 +102,16 @@
             'find',
             {              
               page : $scope.page ,
-              perPage : $scope.perPage , 
-              find : $scope.find , 
-              type : $scope.type , 
+              perPage : $scope.perPage ,
+              find : $scope.find ,
+              type : $scope.type ,
+                initDate : (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : '' ,
+                endDate : (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : '' ,
+                discountType : $scope.discountType ,
+                store : $scope.store ,
+                payType : $scope.payType ,
 
-            }).then(function (data) {      
-
-              console.log(data);        
+            }).then(function (data) {
 
                 $scope.discountsP = data.data;
 
@@ -119,7 +127,7 @@
 
         DiscountsService.all().then(function (data) {
 
-          $scope.discountsAll = data;
+          //$scope.discountsAll = data;
 
           $scope.discounts = data;
 
@@ -180,8 +188,17 @@
           }
           else
           {
-          
-            $scope.discounts = DiscountsService.search($scope.find , $scope.discountsAll );
+
+            $scope.discounts = DiscountsService.search(
+                $scope.find ,
+                $scope.discountsAll ,
+                $scope.type ,
+                (angular.isDate($scope.initDate)) ? $scope.initDate.format('yyyy-mm-dd') : $scope.initDate ,
+                (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate,
+                $scope.discountType,
+                $scope.store,
+                $scope.pay_type
+            );
 
             /*Generar XLS */
 
@@ -217,21 +234,6 @@
 
     .controller('FormController', [ '$scope' , '$filter' ,'ProductsService' , 'PackagesService' , 'PayTypeService' , 'StoresService' , function ($scope , $filter , ProductsService , PackagesService, PayTypeService , StoresService) {
 
-          $scope.allPayTypes = [];
-
-          PayTypeService.API('all').then(function(pay_types) {
-
-              $scope.allPayTypes = pay_types;
-
-          });
-
-          $scope.allStores = [];
-
-          StoresService.API('all').then(function(stores) {
-
-              $scope.allStores = stores;
-
-          });
 
           $scope.tab = 'pack';
 
@@ -476,6 +478,74 @@
 
           }
 
+          $scope.payTypes = [];
+
+          $scope.getPayTypes = function(payTypes)
+          {
+              $scope.allPayTypes = [];
+
+              PayTypeService.API('all').then(function(pay_types) {
+
+                  $scope.allPayTypes = pay_types;
+
+                  if(payTypes != '')
+                  {
+                      var realPayTypes = [];
+
+                      var payTypesObject = JSON.parse(payTypes);
+
+                      angular.forEach(payTypesObject , function(pay){
+
+                          realPayTypes[realPayTypes.length] = $scope.allPayTypes[pay];
+                      });
+
+                      $scope.payTypes =  realPayTypes;
+
+                      console.log($scope.payTypes );
+                  }
+
+
+
+              });
+          }
+
+          $scope.allStores = [];
+
+          $scope.getStores = function(storesV)
+          {
+              $scope.allStores = [];
+
+              StoresService.API('all').then(function(stores) {
+
+                  $scope.allStores = stores;
+
+                  if(storesV != '')
+                  {
+                      var realStores = [];
+
+                      var storesObject = JSON.parse(storesV);
+
+                      angular.forEach(storesObject , function(pay){
+
+                          realStores[realStores.length] = $scope.allStores[pay];
+                      });
+
+                      $scope.stores =  realStores;
+
+                      console.log($scope.stores );
+                  }
+
+
+
+              });
+          }
+
+          StoresService.API('all').then(function(stores) {
+
+              $scope.allStores = stores;
+
+          });
+
     }]) 
 
     .controller('EditController', [ '$scope' , '$filter' , '$q' ,'SalesService' , 'UsersService' , 'DiscountsService' , 'DestinationsService' , function ($scope , $filter , $q ,SalesService , UsersService , DiscountsService , DestinationsService) {
@@ -706,7 +776,45 @@
 
 
 
-    }]);
+    }])
+      .filter('type' , function () {
+          return function (type) {
+
+              var types = {
+                  1 : 'Por producto/paquete',
+                  2 : 'Por venta'
+              };
+
+              return types[type] || '';
+          }
+      })
+      .filter('discountType' , function () {
+          return function (discountType) {
+
+              var discountTypes = {
+                  'percent' : 'Porcentaje',
+                  'quantity' : 'Cantidad'
+              };
+
+              return discountTypes[discountType] || '';
+          }
+      })
+      .filter('quantityDiscountType' , function ($filter) {
+          return function (discount) {
+
+              if(discount.discount_type == 'percent')
+              {
+                  return discount.quantity+'%';
+              }
+              else if(discount.discount_type == 'quantity')
+              {
+                  return $filter('currency')(discount.quantity);
+              }
+
+
+              return discount.quantity;
+          }
+      })
 
 
 })();

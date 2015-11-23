@@ -4,7 +4,7 @@
 
         (
 
-            'DiscountStore',
+            'stores',
             [],
 
             '' ,
@@ -15,16 +15,14 @@
 
                 'multiple' => 'multiple',
 
-                'ng-options' => 's.id as s.name for s in allStores',
+                'ng-options' => 's as s.name for s in allStores',
 
-                'ng-init' => 'stores = checkValuePreOrOld("'.((!empty($discount->stores)) ? $discount->stores : '').'" , "'.((Input::old('stores')) ? Input::old('stores') : '').'")'
+                'ng-init' => 'getStores(checkValuePreOrOld(\''.((!empty($discount->stores)) ? json_encode($discount->stores) : '').'\' , \''.((Input::old('stores')) ? json_encode(Input::old('stores')) : '').'\'));'
 
             ]
 
         )
 
     }}
-
-    <input type="hidden" name="DiscountStore" ng-model="stores" ng-value="stores"/>
 
 </div>

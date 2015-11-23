@@ -191,7 +191,8 @@ return array(
         'pay_types' => 'formas de pago',
         'DiscountStore' => 'sucursales',
         'DiscountPayType' => 'formas de pago',
-        'discount_type' => 'tipo de descuento'
+        'discount_type' => 'tipo de descuento',
+        'discount' => 'descuento'
 
 	),
 

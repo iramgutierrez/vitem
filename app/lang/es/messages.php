@@ -54,6 +54,8 @@ return array(
 
 	'delete' => 'eliminar',
 
-	'color' => 'colores'
+	'color' => 'colores',
+
+    'discount' => 'descuento'
 
 );

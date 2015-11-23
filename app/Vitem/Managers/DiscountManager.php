@@ -116,9 +116,20 @@ class DiscountManager extends BaseManager {
 
         $discountData['user_id'] = \Auth::user()->id;
 
-        $discountData['DiscountStore'] = (!empty($discountData['DiscountStore'])) ? explode(',',$discountData['DiscountStore']) :[];
+        $discountData['DiscountStore'] = (!empty($discountData['stores'])) ? $discountData['stores'] :[];
 
-        $discountData['DiscountPayType'] = (!empty($discountData['DiscountPayType'])) ?  explode(',',$discountData['DiscountPayType']) :[];
+        $discountData['DiscountPayType'] = (!empty($discountData['pay_types'])) ? $discountData['pay_types'] :[];
+
+        if(isset($discountData['stores']))
+        {
+            unset($discountData['stores']);
+        }
+
+        if(isset($discountData['pay_types']))
+        {
+            unset($discountData['pay_types']);
+        }
+
 
         if( $discountData['type'] == 1 && isset($discountData['item_type']))
         {

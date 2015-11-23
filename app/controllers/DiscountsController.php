@@ -2,8 +2,27 @@
 
 
 use Vitem\Managers\DiscountManager;
+use Vitem\WebServices\DiscountWebServices as DiscountAPI;
 
 class DiscountsController extends \BaseController {
+
+    protected $api;
+
+    public function __construct(DiscountAPI $DiscountAPI)
+    {
+        $this->api = $DiscountAPI;
+
+        /*$this->beforeFilter('ACL:Discount,Read', ['only' => [ 'index' , 'show' ] ]);
+
+        $this->beforeFilter('ACL:Discount,Read,true', ['only' => [ 'API'] ]);
+
+        $this->beforeFilter('ACL:Discount,Create', ['only' => [ 'create' , 'store' ] ]);
+
+        $this->beforeFilter('ACL:Discount,Update', [ 'only' => [ 'edit' , 'update' ] ]);
+
+        $this->beforeFilter('ACL:Discount,Delete', [ 'only' => 'destroy' ] );*/
+
+    }
 
 	/**
 	 * Display a listing of the resource.
@@ -13,7 +32,21 @@ class DiscountsController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+        $types = [
+            '1' => 'Por producto/paquete',
+            '2' => 'Por venta'
+        ];
+
+        $discount_types = [
+            'percent' => 'Porcentaje',
+            'quantity' => 'Cantidad'
+        ];
+
+        $stores = Store::lists('name' , 'id');
+
+        $pay_types = PayType::lists('name' , 'id');
+
+        return View::make('discounts/index' , compact('types' , 'discount_types' , 'stores' , 'pay_types'));
 	}
 
 	/**
@@ -109,5 +142,13 @@ class DiscountsController extends \BaseController {
 	{
 		//
 	}
+
+
+    public function API( $method = 'all')
+    {
+
+        return $this->api->$method();
+
+    }
 
 }

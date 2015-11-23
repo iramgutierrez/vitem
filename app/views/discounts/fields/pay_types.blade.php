@@ -5,7 +5,7 @@
 
         (
 
-            'DiscountPayType',
+            'pay_types',
             [],
 
             '' ,
@@ -16,9 +16,9 @@
 
                 'multiple' => 'multiple',
 
-                'ng-options' => 'p.id as p.name for p in allPayTypes',
+                'ng-options' => 'p as p.name for p in allPayTypes',
 
-                'ng-init' => 'payTypes = checkValuePreOrOld(\''.((!empty($discount->pay_types)) ? $discount->pay_types : '').'\' , \''.((Input::old('pay_types')) ? Input::old('pay_types') : '').'\')'
+                'ng-init' => 'getPayTypes(checkValuePreOrOld(\''.((!empty($discount->pay_types)) ? json_encode($discount->pay_types) : '').'\' , \''.((Input::old('pay_types')) ? json_encode(Input::old('pay_types')) : '').'\'));'
 
             ]
 
@@ -26,6 +26,5 @@
 
     }}
 
-    <input type="hidden" name="DiscountPayType" ng-model="payTypes" ng-value="payTypes"/>
 
 </div>
