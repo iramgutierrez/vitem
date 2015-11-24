@@ -256,7 +256,7 @@
                                         $pay_types,
                                         '' ,
                                         [
-                                            'ng-model' => 'pay_type',
+                                            'ng-model' => 'payType',
                                             'ng-change' => 'search()'
                                         ]
                                     )

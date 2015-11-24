@@ -58,40 +58,42 @@ class DiscountManager extends BaseManager {
     public function update()
     {
 
-        $destinationData = $this->data; 
-        
+        $discountData = $this->data;
 
-        $this->destination = \Destination::find($destinationData['id']);
+        $this->discount = \Discount::find($discountData['id']);
 
-        $DestinationValidator = new DestinationValidator($this->destination);
+        $DiscountValidator = new DiscountValidator($this->discount);
 
-        $destinationData = $this->prepareData($destinationData);
+        $discountData = $this->prepareData($discountData);
 
-        $destinationValid  =  $DestinationValidator->isValid($destinationData); 
+        $discountValid  =  $DiscountValidator->isValid($discountData);
 
-
-        if( $destinationValid )
+        if( $discountValid )
         {
 
-            $destination = $this->destination;
-            
-            $destination->update($destinationData); 
+            $discount = $this->discount;
+
+            $discount->update($discountData);
+
+            $discount->stores()->sync($discountData['DiscountStore']);
+
+            $discount->pay_types()->sync($discountData['DiscountPayType']);
 
             $response = [
                 'success' => true,
-                'return_id' => $destination->id
+                'return_id' => $discount->id
             ];            
 
         }
         else
         {
             
-            $destinationErrors = [];
+            $discountErrors = [];
 
-            if($DestinationValidator->getErrors())
-                $destinationErrors = $DestinationValidator->getErrors()->toArray();            
+            if($DiscountValidator->getErrors())
+                $discountErrors = $DiscountValidator->getErrors()->toArray();
 
-            $errors =  $destinationErrors;
+            $errors =  $discountErrors;
 
             
 
@@ -116,10 +118,10 @@ class DiscountManager extends BaseManager {
 
         $discountData['user_id'] = \Auth::user()->id;
 
-        $discountData['DiscountStore'] = (!empty($discountData['stores'])) ? $discountData['stores'] :[];
+        $discountData['DiscountStore'] = (!empty($discountData['DiscountStore'])) ? explode(',' , $discountData['DiscountStore']) :[];
 
-        $discountData['DiscountPayType'] = (!empty($discountData['pay_types'])) ? $discountData['pay_types'] :[];
-
+        $discountData['DiscountPayType'] = (!empty($discountData['DiscountPayType'])) ? explode(',' , $discountData['DiscountPayType']) :[];
+       
         if(isset($discountData['stores']))
         {
             unset($discountData['stores']);

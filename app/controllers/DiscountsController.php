@@ -103,7 +103,7 @@ class DiscountsController extends \BaseController {
 	 * @return Response
 	 */
 	public function show($id)
-	{   echo "<pre>";
+	{
 		dd(Discount::with('item' , 'stores' , 'pay_types')->find($id)->toArray());
 	}
 
@@ -116,7 +116,14 @@ class DiscountsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+        $types = [
+            '1' => 'Por producto/paquete',
+            '2' => 'Por venta'
+        ];
+
+        $discount = \Discount::with('stores' , 'pay_types' , 'item' )->find($id);
+
+        return View::make('discounts/edit' , compact('types' , 'discount'));
 	}
 
 	/**
@@ -128,7 +135,38 @@ class DiscountsController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+        $discount =  Discount::find($id);
+
+        if(!$discount)
+        {
+            Session::flash('error' , 'El descuento no existe.');
+
+            return Redirect::route('discounts.index');
+        }
+
+        $data = Input::all();
+
+        $data['id'] = $id;
+
+
+        $updateDiscount = new DiscountManager( $data );
+
+        $response = $updateDiscount->update();
+
+        if($response['success'])
+        {
+            Session::flash('success' , 'El descuento se ha actualizado correctamente.');
+
+            return Redirect::route('discounts.index');
+        }
+        else
+        {
+
+            Session::flash('error' , 'Existen errores en el formulario.');
+
+            return Redirect::back()->withErrors($response['errors'])->withInput();
+
+        }
 	}
 
 	/**

@@ -25,53 +25,12 @@ class DiscountRepo extends BaseRepo {
 
 		$offset = ($page - 1 ) * $perPage;
 
-        $with = [
-            'item'
-        ];
-
-
-        if($store)
-        {
-            $Store = \Store::find($store);
-
-            if($Store)
-            {
-                $with['stores'] = function($query) use ($Store){
-                    $query->where('stores.id', '=', $Store->id);
-                };
-            }
-            else
-            {
-                $with[] = 'stores';
-            }
-        }
-        else
-        {
-            $with[] = 'stores';
-        }
-
-
-        if($payType)
-        {
-            $PayType = \Store::find($payType);
-
-            if($PayType)
-            {
-                $with['pay_types'] = function($query) use ($PayType){
-                    $query->where('pay_types.id', '=', $PayType->id);
-                };
-            }
-            else
-            {
-                $with[] = 'pay_types';
-            }
-        }
-        else
-        {
-            $with[] = 'pay_types';
-        }
-
-        self::$discounts = \Discount::with($with);
+        self::$discounts = \Discount::with([
+            'user',
+            'item',
+            'stores',
+            'pay_types'
+        ]);
 
 		self::generateLikeCondition( $find , ['id']);
 
@@ -82,6 +41,10 @@ class DiscountRepo extends BaseRepo {
         self::generateEndDateCondition( $endDate);
 
         self::generateDiscountTypeCondition( $discountType);
+
+        self::generateStoreCondition( $store);
+
+        self::generatePayTypeCondition( $payType);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
@@ -97,53 +60,12 @@ class DiscountRepo extends BaseRepo {
 	static function countFind($find , $type , $initDate , $endDate , $discountType, $store , $payType)
 	{
 
-        $with = [
-            'item'
-        ];
-
-
-        if($store)
-        {
-            $Store = \Store::find($store);
-
-            if($Store)
-            {
-                $with['stores'] = function($query) use ($Store){
-                    $query->where('stores.id', '=', $Store->id);
-                };
-            }
-            else
-            {
-                $with[] = 'stores';
-            }
-        }
-        else
-        {
-            $with[] = 'stores';
-        }
-
-
-        if($payType)
-        {
-            $PayType = \Store::find($payType);
-
-            if($PayType)
-            {
-                $with['pay_types'] = function($query) use ($PayType){
-                    $query->where('pay_types.id', '=', $PayType->id);
-                };
-            }
-            else
-            {
-                $with[] = 'pay_types';
-            }
-        }
-        else
-        {
-            $with[] = 'pay_types';
-        }
-
-        self::$discounts = \Discount::with($with);
+        self::$discounts = \Discount::with([
+            'user',
+            'item',
+            'stores',
+            'pay_types'
+        ]);
 
 		self::generateLikeCondition( $find , ['id']);
 
@@ -154,6 +76,10 @@ class DiscountRepo extends BaseRepo {
         self::generateEndDateCondition( $endDate);
 
         self::generateDiscountTypeCondition( $discountType);
+
+        self::generateStoreCondition( $store);
+
+        self::generatePayTypeCondition( $payType);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
@@ -255,7 +181,11 @@ class DiscountRepo extends BaseRepo {
         if($store)
         {
             self::$discounts
-                ->stores()->where('store_id' , $store);
+                ->whereIn('id' , function($query) use ($store){
+                    $query->select(\DB::raw('discount_id'))
+                        ->from('discount_store')
+                        ->whereRaw('discount_store.store_id = ' . $store );
+                });
         }
     }
 
@@ -264,7 +194,11 @@ class DiscountRepo extends BaseRepo {
         if($payType)
         {
             self::$discounts
-                ->pay_types()->where('pay_type_id' , $payType);
+                ->whereIn('id' , function($query) use ($payType){
+                    $query->select(\DB::raw('discount_id'))
+                        ->from('discount_pay_type')
+                        ->whereRaw('discount_pay_type.pay_type_id = ' . $payType );
+                });
         }
     }
 

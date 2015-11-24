@@ -30,58 +30,50 @@
             field : 'id',
             label : 'Id'
           },
+            {
+                field : {
+                    user: 'name'
+                },
+                label : 'Usuario que dio de alta el descuento'
+            },
+            {
+                field : 'type_filter',
+                label : 'Tipo'
+            },
+            {
+                field : 'init_date',
+                label : 'Fecha de inicio'
+            },
+            {
+                field : 'end_date',
+                label : 'Fecha de fin'
+            },
+            {
+                field : 'discount_type_filter',
+                label : 'Tipo de descuento'
+            },
+            {
+                field : 'quantity_filter',
+                label : 'Cantidad de descuento'
+            },,
+            {
+                field : 'item_type_filter',
+                label : 'Paquete/Producto'
+            },
+            {
+                field : 'item_id',
+                label : 'Id de producto/paquete'
+            },
           {
             field : {
-              sale: 'sheet'
+              item: 'name'
             },
-            label : 'Folio de venta'
+            label : 'Nombre de productpo/paquete'
           },
-          {
-            field : {
-              employee: {
-                user : 'name'
-              }
+            {
+                field : 'item_quantity',
+                label : 'Cantidad en que aplica el descuento'
             },
-            label : 'Chofer'
-          },
-          {
-            field : {
-              destination: 'value_string'
-            },
-            label : 'Tipo de destino'
-          },
-          {
-            field : {
-              destination: 'value_type'
-            },
-            label : 'Destino'
-          },
-          {
-            field : 'address',
-            label : 'Direción'
-          },
-          {
-            field : 'discount_date',
-            label : 'Fecha de entrega'
-          },
-          {
-            field : 'subtotal',
-            label : 'Total de la entrega'
-          },
-          {
-            field : {
-              pay_type: 'name'
-            },
-            label : 'Forma de pago'
-          },
-          {
-            field : 'commission_pay',
-            label : 'Comisión por forma de pago'
-          },
-          {
-            field : 'total',
-            label : 'Total en caja'
-          },
         ]);   
 
         $scope.generateJSONDataExport = function( data )
@@ -127,7 +119,7 @@
 
         DiscountsService.all().then(function (data) {
 
-          //$scope.discountsAll = data;
+          $scope.discountsAll = data;
 
           $scope.discounts = data;
 
@@ -197,7 +189,7 @@
                 (angular.isDate($scope.endDate)) ? $scope.endDate.format('yyyy-mm-dd') : $scope.endDate,
                 $scope.discountType,
                 $scope.store,
-                $scope.pay_type
+                $scope.payType
             );
 
             /*Generar XLS */
@@ -232,7 +224,7 @@
 
     }])   
 
-    .controller('FormController', [ '$scope' , '$filter' ,'ProductsService' , 'PackagesService' , 'PayTypeService' , 'StoresService' , function ($scope , $filter , ProductsService , PackagesService, PayTypeService , StoresService) {
+    .controller('FormController', [ '$scope' , '$filter' ,'DiscountsService','ProductsService' , 'PackagesService' , 'PayTypeService' , 'StoresService' , function ($scope , $filter ,DiscountsService ,  ProductsService , PackagesService, PayTypeService , StoresService) {
 
 
           $scope.tab = 'pack';
@@ -318,6 +310,33 @@
                   {
                       $scope.uniqueItem.discount_price = $scope.uniqueItem.price;
                   }
+              }
+          }
+
+          $scope.getUniqueItem = function(id)
+          {
+
+              if(id)
+              {
+
+                  DiscountsService.API('findById', {
+                      id : id
+                  }).then(function(discount){
+
+                      if(discount.type = 1 && angular.isDefined(discount.item))
+                      {
+                          $scope.uniqueItem.name = discount.item.name;
+
+                          $scope.uniqueItem.type = discount.item_type;
+
+                          $scope.uniqueItem.key = discount.item.key;
+
+                          $scope.uniqueItem.price = discount.item.price;
+
+                          $scope.getDiscountPrice();
+                      }
+                  })
+
               }
           }
 
@@ -496,12 +515,25 @@
 
                       angular.forEach(payTypesObject , function(pay){
 
-                          realPayTypes[realPayTypes.length] = $scope.allPayTypes[pay];
+                          if(angular.isObject(pay))
+                          {
+                              angular.forEach($scope.allPayTypes , function(p){
+                                  if(p.id == pay.id)
+                                  {
+                                      realPayTypes[realPayTypes.length] = p.id;
+                                  }
+                              })
+
+                          }
+                          else
+                          {
+                              realPayTypes[realPayTypes.length] = $scope.allPayTypes[pay].id;
+                          }
+
                       });
 
                       $scope.payTypes =  realPayTypes;
 
-                      console.log($scope.payTypes );
                   }
 
 
@@ -525,14 +557,26 @@
 
                       var storesObject = JSON.parse(storesV);
 
-                      angular.forEach(storesObject , function(pay){
+                      angular.forEach(storesObject , function(store){
 
-                          realStores[realStores.length] = $scope.allStores[pay];
+                          if(angular.isObject(store))
+                          {
+                              angular.forEach($scope.allStores , function(s){
+                                  if(s.id == store.id)
+                                  {
+                                      realStores[realStores.length] = s.id;
+                                  }
+                              })
+
+                          }
+                          else
+                          {
+                              realStores[realStores.length] = $scope.allStores[store].id;
+                          }
+
                       });
 
                       $scope.stores =  realStores;
-
-                      console.log($scope.stores );
                   }
 
 
@@ -546,232 +590,7 @@
 
           });
 
-    }]) 
-
-    .controller('EditController', [ '$scope' , '$filter' , '$q' ,'SalesService' , 'UsersService' , 'DiscountsService' , 'DestinationsService' , function ($scope , $filter , $q ,SalesService , UsersService , DiscountsService , DestinationsService) {
-
-      $scope.pay_types = {};
-
-      SalesService
-          .API('getPayTypes')
-          .then(function (pay_types) {
-
-              $scope.pay_types = pay_types;
-
-          })
-
-
-      $scope.init = function(id)
-      {
-
-        DiscountsService.API('findById' , {id : id}).then(function (discount) {
-
-          $scope.discount = discount;
-
-          $scope.sale = discount.sale;   
-
-          $scope.sale_id = discount.sale.id;     
-
-          $scope.employee_id = $scope.discount.employee_id; 
-
-          $scope.find_driver = $scope.discount.employee.user.name;   
-
-          $scope.destination_id = $scope.discount.destination_id; 
-
-          $scope.find_destination = $filter('destination_types')($scope.discount.destination.type) + ': ' + $scope.discount.destination.value_type; 
-
-          $scope.destination = $scope.discount.destination;
-
-          $scope.dateOptions = {
-
-              dateFormat: "yy-mm-dd",
-              prevText: '<',
-              nextText: '>',
-              monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-              monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-                      'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-              dayNames: ['Domingo', 'Lunes', 'Martes', 'MIercoles', 'Jueves', 'Viernes', 'Sábado'],
-              dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-              dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa']
-
-          };
-
-        })
-
-      }
-
-
-      $scope.setSaleId = function(sale_id)
-      {
-
-        $scope.sale_id = sale_id; 
-
-        $scope.getSale();
-
-      }
-
-      $scope.getSale = function()
-      { 
-
-        SalesService.API('findById' , {id : $scope.sale_id}).then(function (sale) {
-
-            $scope.sale = sale;
-
-            angular.forEach($scope.sale.sale_payments, function(value, key) {
-
-
-              $scope.sale.sale_payments[key].in_commission = true;
-
-            });
-
-        }).then(function(){
-
-          $scope.commission_type = $scope.getCommissionTypeInit();
-
-        }).then(function(){
-
-          $scope.getTotalCommission();
-
-          $scope.percent = 0;
-
-          $scope.getTotal();
-
-        });
-
-      }  
-
-      $scope.find_driver = '';
-
-      $scope.autocompleteDriver = false;
-
-      $scope.drivers = {};
-
-      UsersService.API('getSellers').then(function (data) {
-
-            $scope.driversAll = data;
-
-      });
-
-      $scope.searchDriver = function ()
-      {           
-            if($scope.find_driver.length != '')
-            {
-                $scope.drivers = UsersService.search($scope.find_driver , $scope.driversAll , false , 1 , false , false , false , false );
-
-                $scope.autocompleteDriver = true;
-
-            }else{
-
-                $scope.drivers = {};
-
-                $scope.autocompleteDriver = false;
-
-            }
-            
-
-      }        
-
-      $scope.addDriver = function(driver)
-      { 
-
-      
-            $scope.employee_id = driver.employee.id;
-
-            $scope.find_driver = driver.name;
-
-            $scope.autocompleteDriver = false;
-
-            return false;
-      }
-
-      $scope.find_destination = '';
-
-      $scope.destination = false;
-
-      $scope.autocompleteDestination = false;
-
-      $scope.destinations = {};
-
-      DestinationsService.all().then(function (data) {
-
-            $scope.destinationsAll = data;
-
-      });
-
-      $scope.searchDestination = function ()
-      {           
-            if($scope.find_destination.length != '')
-            {
-                $scope.destinations = DestinationsService.search($scope.find_destination , $scope.destinationsAll );
-
-                $scope.autocompleteDestination = true;
-
-            }else{
-
-                $scope.destinations = {};
-
-                $scope.destination = false;
-
-                $scope.autocompleteDestination = false;
-
-            }
-            
-
-      }        
-
-      $scope.addDestination = function(destination)
-      { 
-            $scope.destination = destination;
-      
-            $scope.destination_id = destination.id;
-
-            $scope.find_destination = $filter('destination_types')(destination.type) + ': ' + destination.value_type;
-
-            $scope.autocompleteDestination = false;
-
-            return false;
-      }
-
-      $scope.checkNewDestination = function()
-      {
-
-        if($scope.newDestination === 1)
-        {
-
-          
-
-        }
-        else
-        {
-
-
-
-        }
-
-
-      }
-      
-      $scope.checkValuePreOrOld = function (pre , old , def)
-      {
-          if(!def)
-            def = '';
-
-          var value = def;
-
-          if(pre)
-            value = pre;
-
-          if(old)
-              value = old;
-
-          return value;
-
-
-      } 
-
-    }]) 
-
+    }])
     .controller('ShowController', [ '$scope'  , function ($scope ) {
 
 
