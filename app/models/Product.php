@@ -40,6 +40,11 @@ class Product extends \Eloquent {
 		return $this->belongsToMany('Color', 'color_product')->withPivot('quantity' , 'id');
 	}
 
+    public function segments()
+    {
+        return $this->belongsToMany('Segment', 'segment_product')->withPivot('quantity' , 'id');
+    }
+
     public function discounts()
     {
         return $this->morphMany('Discount', 'item');

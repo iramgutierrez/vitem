@@ -109,7 +109,13 @@ class DiscountManager extends BaseManager {
 
     public function delete()
     {
+        $discountData = $this->data;
 
+        $this->discount = \Discount::find($discountData['id']);
+
+        $discount = $this->discount;
+
+        return $discount->delete();
         
     }
 

@@ -218,6 +218,11 @@
           $scope.discounts = $scope.discountsAll;
           $scope.paginate(1);
           $scope.modal = false;
+            $scope.initDate = '';
+            $scope.endDate = '';
+            $scope.discountType = '';
+            $scope.store = '';
+            $scope.payType = '';
 
         }
 
@@ -480,7 +485,7 @@
 
           $scope.checkValuePreOrOld = function (pre , old , def)
           {
-              var isArray = isArray || false;
+
               if(!def)
                 def = '';
 

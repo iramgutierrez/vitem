@@ -27,14 +27,14 @@
     {{ Form::model( new Product ,['route' => 'products.store',  'name' => 'addproductForm' , 'method' => 'POST', 'class' => 'form-inline' ,'role' => 'form', 'novalidate' , 'enctype' =>  'multipart/form-data' , 'ng-controller' => 'FormController' , 'ng-init' => '$root.generateAuthPermissions('.Auth::user()->role_id.')' ]) }}
 
     <div class="form-group col-md-6  col-sm-12" ng-init="
-      @if(Input::old('ColorProduct'))
-        @foreach(Input::old('ColorProduct') as $k => $c)
-                  colorsOld.push({
-                    color_id : '{{ $k }}',
+      @if(Input::old('SegmentProduct'))
+        @foreach(Input::old('SegmentProduct') as $k => $c)
+                  segmentsOld.push({
+                    segment_id : '{{ $k }}',
                     quantity : '{{ $c['quantity'] }}'
                   });
         @endforeach
-        getColorsOld();
+        getSegmentsOld();
       @endif
 
       " >
@@ -182,7 +182,7 @@
 
 </div>
 <div class="form-group col-md-6 col-sm-12">
-  @include('products/fields/colors')
+  @include('products/fields/segments')
 </div>
 <div class="form-group col-md-6 col-sm-12">
 
@@ -553,7 +553,7 @@
 'library/js/ng/products.services.js',
 'library/js/ng/sales.services.js',
 'library/js/ng/suppliers.services.js',
-'library/js/ng/colors.services.js',
+'library/js/ng/segments.services.js',
 'library/js/ng/directives.js',
 'library/js/jquery-ui-1.9.2.custom.min.js' ,
 'library/assets/bootstrap-fileupload/bootstrap-fileupload.js'

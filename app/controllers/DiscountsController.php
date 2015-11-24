@@ -104,7 +104,7 @@ class DiscountsController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		dd(Discount::with('item' , 'stores' , 'pay_types')->find($id)->toArray());
+
 	}
 
 	/**
@@ -178,7 +178,37 @@ class DiscountsController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+        $data = Input::all();
+
+        $data['id'] = (int) $id;
+
+        $discount = Discount::find($id);
+
+        if(!$discount)
+        {
+            Session::flash('error' , 'El descuento especificado no existe.');
+
+            return Redirect::route('discounts.index');
+        }
+
+        $deleteDiscount = new DiscountManager( $data );
+
+        $response = $deleteDiscount->delete();
+
+        if($response)
+        {
+            Session::flash('success' , 'El descuento se ha eliminado correctamente.');
+
+            return Redirect::route('discounts.index');
+        }
+        else
+        {
+
+            Session::flash('error' , 'No ha sido posible eliminar el descuento.');
+
+            return Redirect::back()->withErrors($response['errors'])->withInput();
+
+        }
 	}
 
 

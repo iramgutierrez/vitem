@@ -70,6 +70,7 @@ return array(
 	),
 	"unique"               => "The :attribute has already been taken.",
 	"url"                  => "The :attribute format is invalid.",
+    "unique_with" => "Ya existe el elemento dentro de este catálogo.",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -192,7 +193,9 @@ return array(
         'DiscountStore' => 'sucursales',
         'DiscountPayType' => 'formas de pago',
         'discount_type' => 'tipo de descuento',
-        'discount' => 'descuento'
+        'discount' => 'descuento',
+        'catalog' => 'catálogo',
+        'catalog_item' => 'valor'
 
 	),
 

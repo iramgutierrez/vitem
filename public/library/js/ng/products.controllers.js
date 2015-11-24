@@ -243,7 +243,7 @@
 
     }])
 
-    .controller('FormController', [ '$scope' , 'SuppliersService'  , 'ColorService', 'ProductsService', function ($scope , SuppliersService , ColorService , ProductsService ) {
+    .controller('FormController', [ '$scope' , 'SuppliersService'  , 'SegmentService', 'ProductsService', function ($scope , SuppliersService , SegmentService , ProductsService ) {
 
       $scope.status = 'No disponible';
       $scope.find = '';
@@ -439,43 +439,43 @@
 
         $scope.min = 0;
 
-        $scope.quantity_color = 0;
+        $scope.quantity_segment = 0;
 
-        $scope.allColors = [];
+        $scope.allSegments = [];
 
-        $scope.initColors = function(product_id)
+        $scope.initSegments = function(product_id)
         {
 
           var product_id = product_id || false;
 
-          ColorService.API('all')
-            .then(function(colors){
+          SegmentService.API('all')
+            .then(function(segments){
 
-              if(!$scope.allColors.length && !$scope.colors.length)
+              if(!$scope.allSegments.length && !$scope.segments.length)
               {
 
-                $scope.allColors = colors;
+                $scope.allSegments = segments;
 
               }
 
               if(product_id){
-                ProductsService.API('getColorProduct' , { id : product_id})
-                  .then(function (colorsP) {
+                ProductsService.API('getSegmentProduct' , { id : product_id})
+                  .then(function (segmentsP) {
 
-                    angular.forEach(colorsP , function(c , i) {
+                    angular.forEach(segmentsP , function(c , i) {
 
-                      if($scope.allColors){
+                      if($scope.allSegments){
 
-                        $scope.addColorI(c);
+                        $scope.addSegmentI(c);
                       }
                       else
                       {
-                        ColorService.API('all')
-                          .then(function(colors){ console.log('aqui')
+                        SegmentService.API('all')
+                          .then(function(segments){ console.log('aqui')
 
-                            $scope.allColors = colors;
+                            $scope.allSegments = segments;
 
-                            $scope.addColorI(c);
+                            $scope.addSegmentI(c);
 
                           })
                       }
@@ -489,33 +489,33 @@
             })
         }
 
-        $scope.addColorI = function(colorI)
+        $scope.addSegmentI = function(segmentI)
         {
-          var color = false;
+          var segment = false;
 
-          angular.forEach($scope.allColors , function(c , i){
+          angular.forEach($scope.allSegments , function(c , i){
 
-            if(c.id == colorI.id)
+            if(c.id == segmentI.id)
             {
-              color = c;
+              segment = c;
 
-              color.color_id = i;
+              segment.segment_id = i;
             }
 
           });
 
-          if(color)
+          if(segment)
           {
 
-            color.quantity = colorI.pivot.quantity;
+            segment.quantity = segmentI.pivot.quantity;
 
-            $scope.colors.push(color);
+            $scope.segments.push(segment);
 
-            $scope.allColors.splice( color.color_id , 1);
+            $scope.allSegments.splice( segment.segment_id , 1);
 
-            $scope.selectColors = false;
+            $scope.selectSegments = false;
 
-            $scope.quantity_color = 0;
+            $scope.quantity_segment = 0;
 
           }
         }
@@ -533,43 +533,43 @@
 
         }
 
-        $scope.colors = [];
+        $scope.segments = [];
 
-        $scope.addColor = function()
+        $scope.addSegment = function()
         {
-          var color = false;
+          var segment = false;
 
-          angular.forEach($scope.allColors , function(c , i){
+          angular.forEach($scope.allSegments , function(c , i){
 
-            if(c.id == $scope.selectColors)
+            if(c.id == $scope.selectSegments)
             {
-              color = c;
+              segment = c;
 
-              color.color_id = i;
+              segment.segment_id = i;
             }
 
           })
 
-          if(color)
+          if(segment)
           {
 
-            color.quantity = $scope.quantity_color;
+            segment.quantity = $scope.quantity_segment;
 
-            $scope.colors.push(color);
+            $scope.segments.push(segment);
 
-            $scope.allColors.splice( color.color_id , 1);
+            $scope.allSegments.splice( segment.segment_id , 1);
 
-            $scope.selectColors = false;
+            $scope.selectSegments = false;
 
-            $scope.quantity_color = 0;
+            $scope.quantity_segment = 0;
 
           }
         }
 
-        $scope.validAddColor = function()
+        $scope.validAddSegment = function()
         {
 
-          return !($scope.stock && $scope.selectColors && $scope.quantity_color >= 0) ? true : false ;
+          return !($scope.stock && $scope.selectSegments && $scope.quantity_segment >= 0) ? true : false ;
         }
 
         $scope.stock = 0;
@@ -579,8 +579,8 @@
 
           var max = $scope.stock;
 
-          angular.forEach($scope.colors , function (color , i) {
-            max -= color.quantity;
+          angular.forEach($scope.segments , function (segment , i) {
+            max -= segment.quantity;
             if(max < 0)
               max = 0;
           })
@@ -593,8 +593,8 @@
 
           var max = $scope.stock;
 
-          angular.forEach($scope.colors , function (color , i) {
-            max -= color.quantity;
+          angular.forEach($scope.segments , function (segment , i) {
+            max -= segment.quantity;
             /*if(max < 0)
               max = 0;*/
           })
@@ -603,80 +603,80 @@
 
         }
 
-        $scope.removeColor = function(color)
+        $scope.removeSegment = function(segment)
         {
-          var color_key = false;
+          var segment_key = false;
 
-          angular.forEach($scope.colors , function(c , i ){
-            if(c.id == color.id)
-              color_key = i
+          angular.forEach($scope.segments , function(c , i ){
+            if(c.id == segment.id)
+              segment_key = i
           })
 
 
-          if(color_key >= 0)
+          if(segment_key >= 0)
           {
 
-            $scope.allColors.push(color);
+            $scope.allSegments.push(segment);
 
-            $scope.colors.splice(color_key , 1);
+            $scope.segments.splice(segment_key , 1);
 
           }
 
 
         }
 
-        $scope.updateColor = function(color)
+        $scope.updateSegment = function(segment)
         {
 
-          var color_key = false;
+          var segment_key = false;
 
-          angular.forEach($scope.colors , function(c , i ){
-            if(c.id == color.id)
-              color_key = i
+          angular.forEach($scope.segments , function(c , i ){
+            if(c.id == segment.id)
+              segment_key = i
           })
 
 
-          if(color_key >= 0)
+          if(segment_key >= 0)
           {
-            $scope.allColors.push(color);
+            $scope.allSegments.push(segment);
 
-            $scope.selectColors = color.id;
+            $scope.selectSegments = segment.id;
 
-            $scope.quantity_color = color.quantity;
+            $scope.quantity_segment = segment.quantity;
 
-            $scope.colors.splice(color_key , 1);
+            $scope.segments.splice(segment_key , 1);
           }
 
         }
 
-        $scope.notColor = false;
+        $scope.notSegment = false;
 
-        ColorService.
+        SegmentService.
 
           API('getNotAssignedId')
 
-          .then(function(color) {
+          .then(function(segment) {
 
-            $scope.notColor = color;
+            $scope.notSegment = segment;
 
-            $scope.notColor.quantity = $scope.stock;
+            $scope.notSegment.quantity = $scope.stock;
 
           })
 
-        $scope.colorsOld = [];
+        $scope.segmentsOld = [];
 
-        $scope.getColorsOld = function(){
+        $scope.getSegmentsOld = function(){
 
-          ColorService.API('all')
-            .then(function(colors){
+          SegmentService.API('all')
+            .then(function(segments){
 
-              $scope.allColors = colors;
+              $scope.allSegments = segments;
 
-              angular.forEach($scope.colorsOld , function(color , i) {
+              angular.forEach($scope.segmentsOld , function(segment , i) {
 
-                if(color.color_id != $scope.notColor.id)
+                if(segment.segment_id != $scope.notSegment.id)
                 {
-                    $scope.addColorInit(color)
+                    $scope.addSegmentInit(segment)
                 }
 
               });
@@ -685,36 +685,36 @@
 
         }
 
-        $scope.addColorInit = function(colorInit)
+        $scope.addSegmentInit = function(segmentInit)
         {
 
-          var color = false;
+          var segment = false;
 
-          angular.forEach($scope.allColors , function(c , i){
+          angular.forEach($scope.allSegments , function(c , i){
 
-            if(c.id == parseInt(colorInit.color_id))
+            if(c.id == parseInt(segmentInit.segment_id))
             {
-              color = c;
+              segment = c;
 
-              color.color_id = i;
+              segment.segment_id = i;
             }
 
           })
 
-          if(color)
+          if(segment)
           {
 
-            color.quantity = colorInit.quantity;
+            segment.quantity = segmentInit.quantity;
 
-            $scope.colors.push(color);
+            $scope.segments.push(segment);
 
-            angular.forEach($scope.allColors , function(c , i ){
+            angular.forEach($scope.allSegments , function(c , i ){
 
-              if(color.slug == c.slug)
+              if(segment.slug == c.slug)
               {
-                console.log(color)
+                console.log(segment)
 
-                $scope.allColors.splice( i , 1);
+                $scope.allSegments.splice( i , 1);
 
               }
 

@@ -132,6 +132,8 @@ return array(
 
         'Maatwebsite\Excel\ExcelServiceProvider',
 
+        'Felixkiss\UniqueWithValidator\UniqueWithValidatorServiceProvider',
+
 	),
 
 	/*

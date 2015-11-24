@@ -96,6 +96,12 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::resource('colors', 'ColorsController');
 
+    Route::resource('segments', 'SegmentsController');
+
+    Route::resource('catalogs', 'CatalogsController');
+
+    Route::resource('catalog_items', 'CatalogItemsController');
+
 	Route::resource('client_types', 'ClientTypesController');
 
 	Route::get('addresses/create/{entity}/{entity_id}' , ['as' => 'addresses.create.entity.entity_id', 'uses' => 'AddressesController@create']);
@@ -167,7 +173,11 @@ Route::group(['before' => 'auth'], function () {
 
 	Route::get('API/colors/{method?}' , ['as' => 'colorsAPI', 'uses' => 'ColorsController@API']);
 
-	Route::get('API/client_types/{method?}' , ['as' => 'clientTypesAPI', 'uses' => 'ClientTypesController@API']);
+    Route::get('API/segments/{method?}' , ['as' => 'segmentsAPI', 'uses' => 'SegmentsController@API']);
+
+    Route::get('API/catalogs/{method?}' , ['as' => 'catalogsAPI', 'uses' => 'CatalogsController@API']);
+
+    Route::get('API/client_types/{method?}' , ['as' => 'clientTypesAPI', 'uses' => 'ClientTypesController@API']);
 
 	Route::get('API/orders/{method?}' , ['as' => 'ordersAPI', 'uses' => 'OrdersController@API']);
 

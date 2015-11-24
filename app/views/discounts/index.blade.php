@@ -27,7 +27,7 @@
                     <div ng-view></div>
                     <header class="panel-heading col-sm-12">
                         <h1 class="col-sm-3">Descuentos</h1>
-                        <a ng-if="$root.auth_permissions.create.discount" href="{{ route('discounts.create') }}"><button type="button" class="pull-right btn btn-success ">Agregar devolución</button></a>
+                        <a ng-if="$root.auth_permissions.create.discount" href="{{ route('discounts.create') }}"><button type="button" class="pull-right btn btn-success ">Agregar descuento</button></a>
                     </header>
 
                     {{ Field::text(
@@ -62,6 +62,7 @@
                         <p class="col-sm-2"><span class="badge bg-success">@{{total}}</span> ventas</p>
                         <button type="button" ng-click="clear()" class="pull-right btn btn-info">Limpiar filtros</button>
                     </div>
+
 
                     @if(Auth::user()->role->level_id >= 3)
 
@@ -283,14 +284,11 @@
                                 </ul>
                             </td>
                             <td>
-                                <a ng-if="$root.auth_permissions.read.discount"  href="@{{ discount.url_show }}" >
-                                    <button type="button" class="col-sm-3 btn btn-success"><i class="fa fa-eye"></i></button>
-                                </a>
                                 <a ng-if="$root.auth_permissions.update.discount" href="@{{ discount.url_edit }}" >
-                                    <button  type="button" class="col-sm-3 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
+                                    <button  type="button" class="col-sm-4 col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
                                 </a>
                                 <a ng-if="$root.auth_permissions.delete.discount" data-toggle="modal" href="#myModal@{{discount.id}}" >
-                                    <button type="button" class="col-sm-3 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                                    <button type="button" class="col-sm-4 col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
                                 </a>
                                 <div ng-if="$root.auth_permissions.delete.discount" class="modal fade" id="myModal@{{discount.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -301,7 +299,7 @@
                                             </div>
                                             <div class="modal-body">
 
-                                                ¿Deseas eliminar el devolución con id <strong>@{{discount.id}}</strong>?
+                                                ¿Deseas eliminar el descuento con id <strong>@{{discount.id}}</strong>?
 
                                             </div>
                                             <div class="modal-footer">
@@ -360,14 +358,10 @@
                                             </ul>
                                         </div>
                                         <div class="col-sm-6 pull-right">
-
-                                            <a href="@{{ discount.url_show }}" class="col-sm-4" ng-if="$root.auth_permissions.read.discount" >
-                                                <button type="button" class=" btn btn-success"><i class="fa fa-eye"></i></button>
-                                            </a>
-                                            <a href="@{{ discount.url_edit }}" class="col-sm-4" ng-if="$root.auth_permissions.update.discount" >
+                                            <a href="@{{ discount.url_edit }}" class="col-sm-6" ng-if="$root.auth_permissions.update.discount" >
                                                 <button  type="button" class="col-sm-offset-1 btn btn-info "><i class="fa fa-refresh"></i></button>
                                             </a>
-                                            <a data-toggle="modal" href="#myModalD@{{discount.id}}" class="col-sm-4" ng-if="$root.auth_permissions.delete.discount" >
+                                            <a data-toggle="modal" href="#myModalD@{{discount.id}}" class="col-sm-6" ng-if="$root.auth_permissions.delete.discount" >
                                                 <button type="button" class="col-sm-offset-1 btn btn-danger"><i class="fa fa-trash-o"></i></button>
                                             </a>
                                             <div ng-if="$root.auth_permissions.delete.discount" class="modal fade" id="myModalD@{{discount.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -379,7 +373,7 @@
                                                         </div>
                                                         <div class="modal-body">
 
-                                                            ¿Deseas eliminar el devolución con id<strong>@{{discount.id}}</strong>?
+                                                            ¿Deseas eliminar el descuento con id<strong>@{{discount.id}}</strong>?
 
                                                         </div>
                                                         <div class="modal-footer">
