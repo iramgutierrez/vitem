@@ -195,7 +195,8 @@ return array(
         'discount_type' => 'tipo de descuento',
         'discount' => 'descuento',
         'catalog' => 'catálogo',
-        'catalog_item' => 'valor'
+        'catalog_item' => 'valor',
+        'segment_quantity' => 'cantidad'
 
 	),
 

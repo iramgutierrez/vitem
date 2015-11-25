@@ -24,7 +24,16 @@
     <h1>Nuevo producto</h1>
   </header>
   <div class="panel-body" ng-app="products">
-    {{ Form::model( new Product ,['route' => 'products.store',  'name' => 'addproductForm' , 'method' => 'POST', 'class' => 'form-inline' ,'role' => 'form', 'novalidate' , 'enctype' =>  'multipart/form-data' , 'ng-controller' => 'FormController' , 'ng-init' => '$root.generateAuthPermissions('.Auth::user()->role_id.')' ]) }}
+
+      <!--SEGMENT MODAL -->
+
+
+      <!--SEGMENT MODAL -->
+
+
+
+
+      {{ Form::model( new Product ,['route' => 'products.store',  'name' => 'addproductForm' , 'method' => 'POST', 'class' => 'form-inline' ,'role' => 'form', 'novalidate' , 'enctype' =>  'multipart/form-data' , 'ng-controller' => 'FormController' , 'ng-init' => '$root.generateAuthPermissions('.Auth::user()->role_id.')' ]) }}
 
     <div class="form-group col-md-6  col-sm-12" ng-init="
       @if(Input::old('SegmentProduct'))
@@ -536,6 +545,8 @@
 </div>
 </div>
 
+
+
 @stop
 
 @section('sidebar_right')
@@ -554,6 +565,7 @@
 'library/js/ng/sales.services.js',
 'library/js/ng/suppliers.services.js',
 'library/js/ng/segments.services.js',
+'library/js/ng/catalogs.services.js',
 'library/js/ng/directives.js',
 'library/js/jquery-ui-1.9.2.custom.min.js' ,
 'library/assets/bootstrap-fileupload/bootstrap-fileupload.js'

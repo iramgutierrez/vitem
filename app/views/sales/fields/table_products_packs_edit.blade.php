@@ -110,9 +110,9 @@
 
                   </div>
 
-                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showColors(product); " ng-show="!product.showColors" >Mostrar colores</button>
+                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="!product.showSegments" >Mostrar criterios de segmentación</button>
 
-                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showColors(product); " ng-show="product.showColors" >Ocultar colores</button>
+                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="product.showSegments" >Ocultar criterios de segmentación</button>
 
         		</td>
 
@@ -130,9 +130,9 @@
 
       	</tr>
 
-        <tr ng-if="product.showColors && product.colors.length">
+        <tr ng-if="product.showSegments && product.segments.length">
           <td colspan="5"></td>
-          <td>Color</td>
+          <td>Segment</td>
           <td>Disponibles</td>
           <td>En venta original</td>
           <td>Asignados</td>
@@ -140,36 +140,36 @@
           <td></td>
         </tr>
 
-        <tr ng-if="product.showColors && !product.colors.length">
-          <td colspan="8" class="text-right">Este producto no tiene colores asignados</td>
+        <tr ng-if="product.showSegments && !product.segments.length">
+          <td colspan="8" class="text-right">Este producto no tiene criterios de segmentación asignados</td>
           <td></td>
           <td></td>
           <td></td>
         </tr>
 
-        <tr ng-if="product.showColors && product.colors.length">
+        <tr ng-if="product.showSegments && product.segments.length">
           <td colspan="6" class="text-right">
-            Ningun color asignado
+            Ningun criterio de segmentación asignado
           </td>
           <td>
-            @{{ product.notColor.pivot.quantity }}
-            <input type="hidden" name="ColorProductSale[@{{product.notColor.pivot.id}}][quantity]" value="@{{ getProductsWithoutColors(product) }}">
+            @{{ product.notSegment.pivot.quantity }}
+            <input type="hidden" name="SegmentProductSale[@{{product.notSegment.pivot.id}}][quantity]" value="@{{ getProductsWithoutSegments(product) }}">
           </td>
-          <td>@{{ product.notColor.assigned }}</td>
-          <td>@{{ getProductsWithoutColors(product) }}</td>
+          <td>@{{ product.notSegment.assigned }}</td>
+          <td>@{{ getProductsWithoutSegments(product) }}</td>
           <td></td>
           <td></td>
         </tr>
 
-        <tr  ng-show="product.showColors && product.colors.length" ng-repeat="(c , color)  in product.colors">
+        <tr  ng-show="product.showSegments && product.segments.length" ng-repeat="(c , segment)  in product.segments">
           <td colspan="5"></td>
-          <td>@{{ color.name }}</td>
-          <td>@{{ color.pivot.quantity  }}</td>
-          <td>@{{ product.assigned_colors[color.pivot.id]}}</td>
+          <td>@{{ segment.name }}</td>
+          <td>@{{ segment.pivot.quantity  }}</td>
+          <td>@{{ product.assigned_segments[segment.pivot.id]}}</td>
           <td>
-            <select class="form-control" ng-model="product.assignedColors[color.pivot.id]" name="ColorProductSale[@{{color.pivot.id}}][quantity]" ng-change="getProductsWithoutColors(product)" >
+            <select class="form-control" ng-model="product.assignedSegments[segment.pivot.id]" name="SegmentProductSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" >
               <option value="0">0</option>
-              <option ng-repeat="n in [] | range:getMaxProductColor(getProductsWithoutColors(product) , color.pivot.quantity + product.assigned_colors[color.pivot.id] , product.assignedColors[color.pivot.id] , product, color.pivot.id)" value="@{{ n+1 }}">@{{ n+1 }}</option>
+              <option ng-repeat="n in [] | range:getMaxProductSegment(getProductsWithoutSegments(product) , segment.pivot.quantity + product.assigned_segments[segment.pivot.id] , product.assignedSegments[segment.pivot.id] , product, segment.pivot.id)" value="@{{ n+1 }}">@{{ n+1 }}</option>
             </select>
           </td>
           <td></td>

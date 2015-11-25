@@ -33,13 +33,7 @@ class SaleRepo extends BaseRepo {
 		if(!$canReadProducts)
 			return [];
 
-
-		/*$sale = \Sale::with(['colors_products'])->where('id' , $saleId)->first();
-
-		dd($sale);*/
-
-		$sale = self::with(['products.colors' ,'colors_products']); 
-
+		$sale = \Sale::with(['products.segments' ,'segments_products']);
 		$sale = $sale->where('id' , $saleId);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
@@ -56,25 +50,25 @@ class SaleRepo extends BaseRepo {
 
 		$sale = $sale->toArray();
 
-		$colors = [];
+		$segments = [];
 
-		if(!empty($sale['colors_products']) && !empty($sale['products']))
+		if(!empty($sale['segments_products']) && !empty($sale['products']))
 		{
 			foreach($sale['products'] as $p => $product)
 			{
-				$colors = [];
+				$segments = [];
 				
-				foreach($sale['colors_products'] as $c => $color)
+				foreach($sale['segments_products'] as $c => $segment)
 				{
 					
-					if($color['product_id'] == $product['id'])
+					if($segment['product_id'] == $product['id'])
 					{
-						$colors[] = $color;
+						$segments[] = $segment;
 						
 					}
 					
 				}
-				$sale['products'][$p]['colors_sale'] = $colors;
+				$sale['products'][$p]['segments_sale'] = $segments;
 			}
 		}
 

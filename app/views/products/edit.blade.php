@@ -239,7 +239,7 @@
 }}--}}
 </div>
 <div class="form-group col-md-6 col-sm-12">
-  @include('products/fields/colors')
+  @include('products/fields/segments')
 </div>
 
 
@@ -613,7 +613,8 @@
 'library/js/ng/products.services.js',
 'library/js/ng/sales.services.js',
 'library/js/ng/suppliers.services.js',
-'library/js/ng/colors.services.js',
+'library/js/ng/segments.services.js',
+'library/js/ng/catalogs.services.js',
 'library/js/ng/directives.js',
 'library/js/jquery-ui-1.9.2.custom.min.js' ,
 'library/assets/bootstrap-fileupload/bootstrap-fileupload.js'

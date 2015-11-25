@@ -1,5 +1,9 @@
 
-	<label for="segments" class="col-xs-12">Agregar segmento</label>
+	<div class="col-sm-6">
+        <label for="segments" class="col-xs-9">Criterios de segmentación.</label>
+        <a class="col-sm-3 pul-right" data-toggle="modal" href="#addSegment">Nuevo</a>
+    </div>
+    <div class="col-sm-12"></div>
 	@if(isset($product) && !Input::old('SegmentProduct'))
 		<div class="col-xs-6" ng-init="initSegments({{ $product->id }})">
 	@else
@@ -21,7 +25,7 @@
 
 	<table class="table stripped" >
 		<tr>
-			<th>Criterio de segmentación</th>
+			<th>Criterio</th>
 			<th>Cantidad</th>
 			<th></th>
 		</tr>
@@ -47,3 +51,106 @@
 			</td>
 		</tr>
 	</table>
+
+<div ng-show="$root.auth_permissions.create.segment" class="modal fade" id="addSegment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Agregar elemento al catálogo de @{{ catalog.name }}</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div>
+
+                    <div class="col-md-12 col-sm-12">
+
+                        <table class="display table table-bordered table-striped col-sm-12">
+                            <tbody>
+                            <tr ng-repeat="(i , item) in CatalogItem">
+                                <td class="col-sm-5">@{{ item.catalog.name }}</td>
+                                <td class="col-sm-5">
+                                    @{{ item.item.name }}
+                                    <input type="hidden" name="CatalogItem[]" ng-model="item.item.id" ng-value="item.item.id" />
+                                </td>
+                                <td class="col-sm-2 text-center">
+                                    <a href="" ng-click="removeCatalogItem(i,item)">
+                                <span class="badge bg-important">
+                                    <i class="fa fa-times"></i>
+                                </span>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class=" form-group col-md-4 col-sm-12">
+                            {{ Field::select(
+                                   'catalog',
+                                   [],
+                                   '' ,
+                                   [
+                                       'ng-model' => 'catalog',
+                                       'ng-options' => 'c as c.name for c in catalogs',
+                                       'ng-change' => 'getCatalogItems()'
+
+                                   ]
+                               )
+                            }}
+                        </div>
+
+                        <div class=" form-group col-md-4 col-sm-12">
+                            {{ Field::select(
+                                   'catalog_item',
+                                   [],
+                                   '' ,
+                                   [
+                                       'ng-model' => 'item',
+                                       'ng-options' => 'i as i.name for i in items'
+
+                                   ]
+                               )
+                            }}
+                        </div>
+
+                        <div class="form-group col-sm-4 col-sm-12">
+
+                            <?php echo Field::number(
+                                   'segment_quantity',
+                                   '' ,
+                                   [
+                                       'ng-model' => 'quantity_segment',
+                                       'min' => '0',
+                                       'max' => '{{ calculateMax() }}',
+                                       'ng-init' => 'calculateMin()'
+
+                                   ]
+                               )
+                            ?>
+
+                        </div>
+
+                        <button type="button" class="btn btn-success pull-right" ng-click="addCatalogItem()" ng-disabled="!item || !catalog">Agregar</button>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+                <div class="col-sm-12">
+                    <br/>
+                    <button data-dismiss="modal" class="btn btn-default close_modal" type="button">Cancelar</button>
+
+                    <button type="button" ng-click="newSegment()" class="btn btn-success" data-ng-disabled="!quantity_segment || !CatalogItem.length">Guardar</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

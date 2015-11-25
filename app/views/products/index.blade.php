@@ -360,7 +360,8 @@
 'library/js/ng/products.services.js',
 'library/js/ng/sales.services.js',
 'library/js/ng/suppliers.services.js',
-'library/js/ng/colors.services.js',
+'library/js/ng/segments.services.js',
+'library/js/ng/catalogs.services.js',
 'library/js/ng/directives.js',
 'library/js/ng/ng-date.js'
 ]

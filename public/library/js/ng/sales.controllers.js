@@ -429,25 +429,25 @@
               product.quantity = 0;
             }
 
-            product.notColor = false;
+            product.notSegment = false;
 
-            angular.forEach(product.colors , function(color , i) {
+            angular.forEach(product.segments , function(segment , i) {
 
-              if(color.slug == 'not-assigned')
+              if(segment.slug == 'not-assigned')
               {
-                product.notColor = color;
+                product.notSegment = segment;
 
-                product.colors.splice(i , 1);
+                product.segments.splice(i , 1);
 
-                if(product.hasOwnProperty('colors_sale'))
+                if(product.hasOwnProperty('segments_sale'))
                 {
-                  if(product.colors_sale.length)
+                  if(product.segments_sale.length)
                   {
-                    angular.forEach(product.colors_sale , function(c , k){
+                    angular.forEach(product.segments_sale , function(c , k){
 
-                      if(color.id == c.color_id)
+                      if(segment.id == c.segment_id)
                       {
-                        product.notColor.assigned = c.pivot.quantity;
+                        product.notSegment.assigned = c.pivot.quantity;
                       }
 
                     })
@@ -476,8 +476,6 @@
 
 
             }
-
-            console.log(product);
 
             if(!inProductsSelected)
             {
@@ -682,7 +680,7 @@
         {
 
           SalesService.getProducts(sale_id).then(function (data) {
-
+            console.log(data);
             angular.forEach(data, function(product, key) {
 
               $scope.addProduct(product);
@@ -1001,37 +999,37 @@
 
       }
 
-      $scope.getProductsWithoutColors = function(product)
+      $scope.getProductsWithoutSegments = function(product)
       {
          var quantity =  product.quantity;
 
-         if(product.hasOwnProperty('assignedColors'))
+         if(product.hasOwnProperty('assignedSegments'))
          {
 
            var tempQ = quantity;
 
-           angular.forEach(product.assignedColors , function(color ,c) {
+           angular.forEach(product.assignedSegments , function(segment ,c) {
 
              tempQ = quantity
 
-             tempQ -= color
+             tempQ -= segment
 
              if(tempQ < 0)
              {
                var dismuss = tempQ * (-1);
 
-               if(color < dismuss)
+               if(segment < dismuss)
                {
-                 dismuss = color;
+                 dismuss = segment;
                }
 
-               color -= dismuss;
+               segment -= dismuss;
 
-               product.assignedColors[c] = color;
+               product.assignedSegments[c] = segment;
 
                tempQ = quantity;
 
-               tempQ -= color;
+               tempQ -= segment;
              }
 
              quantity = tempQ;
@@ -1043,7 +1041,7 @@
          return quantity;
       }
 
-      $scope.getMaxProductColor = function(product_quantity , color_quantity , current , product , color_id)
+      $scope.getMaxProductSegment = function(product_quantity , segment_quantity , current , product , segment_id)
       {
 
         var product = product || false;
@@ -1051,33 +1049,33 @@
         if(product)
         {
 
-          if(product.hasOwnProperty('colors_sale'))
+          if(product.hasOwnProperty('segments_sale'))
           {
-            if(product.colors_sale.length)
+            if(product.segments_sale.length)
             {
-              angular.forEach(product.colors_sale , function(color , k){
+              angular.forEach(product.segments_sale , function(segment , k){
 
-                if(color.id == color_id)
+                if(segment.id == segment_id)
                 {
-                  if(!product.hasOwnProperty('assigned_colors'))
+                  if(!product.hasOwnProperty('assigned_segments'))
                   {
-                    product.assigned_colors = [];
+                    product.assigned_segments = [];
                   }
 
-                  product.assigned_colors[color.id] = color.pivot.quantity;
+                  product.assigned_segments[segment.id] = segment.pivot.quantity;
 
-                  current = product.assigned_colors[color.id];
+                  current = product.assigned_segments[segment.id];
 
-                  if(!product.hasOwnProperty('assignedColors'))
+                  if(!product.hasOwnProperty('assignedSegments'))
                   {
-                    product.assignedColors = [];
+                    product.assignedSegments = [];
                   }
 
-                  product.assignedColors[color.id] = color.pivot.quantity;
+                  product.assignedSegments[segment.id] = segment.pivot.quantity;
 
-                  current = product.assignedColors[color.id];
+                  current = product.assignedSegments[segment.id];
 
-                  product.colors_sale.splice(k , 1);
+                  product.segments_sale.splice(k , 1);
                 }
 
               })
@@ -1090,11 +1088,11 @@
 
         var current = current || false;
 
-        var color_id = color_id || false;
+        var segment_id = segment_id || false;
 
-        var max = color_quantity;
+        var max = segment_quantity;
 
-        if(product_quantity < color_quantity)
+        if(product_quantity < segment_quantity)
         {
           max = product_quantity;
         }
@@ -1104,19 +1102,19 @@
           max = current
         }
 
-        if( current && ( (parseInt(product_quantity) + parseInt(current) ) <= color_quantity ) )
+        if( current && ( (parseInt(product_quantity) + parseInt(current) ) <= segment_quantity ) )
         {
           max = parseInt(product_quantity) + parseInt(current)
         }
 
         if(product)
         {
-          if(product.hasOwnProperty('assignedColors'))
+          if(product.hasOwnProperty('assignedSegments'))
           {
 
-            if(max < product.assignedColors[color_id])
+            if(max < product.assignedSegments[segment_id])
             {
-              max = product.assignedColors[color_id]
+              max = product.assignedSegments[segment_id]
             }
 
           }
@@ -1129,15 +1127,15 @@
 
       }
 
-      $scope.showColors = function(product)
+      $scope.showSegments = function(product)
       {
-        if(product.hasOwnProperty('showColors'))
+        if(product.hasOwnProperty('showSegments'))
         {
-          product.showColors = !product.showColors;
+          product.showSegments = !product.showSegments;
         }
         else
         {
-          product.showColors = true;
+          product.showSegments = true;
         }
       }
 
@@ -1265,7 +1263,7 @@
 
       }])
 
-    .controller('AddProductController', ['$rootScope' , '$scope' , 'SuppliersService' , 'ColorService'  , function ($rootScope , $scope , SuppliersService  , ColorService) {
+    .controller('AddProductController', ['$rootScope' , '$scope' , 'SuppliersService' , 'SegmentService'  , function ($rootScope , $scope , SuppliersService  , SegmentService) {
 
       $scope.status = 'No disponible';
       $scope.find = '';
@@ -1515,12 +1513,12 @@
 
                       data.product.quantity_init = $scope.quantityInit(data.product);
 
-                      angular.forEach(data.product.colors , function(color , i){
+                      angular.forEach(data.product.segments , function(segment , i){
 
-                        if(color.slug == 'not-assigned')
+                        if(segment.slug == 'not-assigned')
                         {
 
-                          data.product.colors.splice(i , 1);
+                          data.product.segments.splice(i , 1);
 
                         }
 
@@ -1536,7 +1534,7 @@
 
                       $scope.cost = '';
 
-                      $scope.colors = [];
+                      $scope.segments = [];
 
                       $scope.percent_gain = '';
 
@@ -1633,21 +1631,21 @@
 
         $scope.min = 0;
 
-        $scope.quantity_color = 0;
+        $scope.quantity_segment = 0;
 
-        $scope.allColors = [];
+        $scope.allSegments = [];
 
-        $scope.notColor = false;
+        $scope.notSegment = false;
 
-        ColorService.
+        SegmentService.
 
           API('getNotAssignedId')
 
-          .then(function(color) {
+          .then(function(segment) {
 
-            $scope.notColor = color;
+            $scope.notSegment = segment;
 
-            $scope.notColor.quantity = $scope.stock;
+            $scope.notSegment.quantity = $scope.stock;
 
           })
 
@@ -1657,8 +1655,8 @@
 
           var max = $scope.stock;
 
-          angular.forEach($scope.colors , function (color , i) {
-            max -= color.quantity;
+          angular.forEach($scope.segments , function (segment , i) {
+            max -= segment.quantity;
             /*if(max < 0)
               max = 0;*/
           })
@@ -1667,34 +1665,34 @@
 
         }
 
-        $scope.initColors = function(product_id)
+        $scope.initSegments = function(product_id)
         {
 
           var product_id = product_id || false;
 
-          ColorService.API('all')
-            .then(function(colors){
+          SegmentService.API('all')
+            .then(function(segments){
 
-              $scope.allColors = colors;
+              $scope.allSegments = segments;
 
               if(product_id){
-                ProductsService.API('getColorProduct' , { id : product_id})
-                  .then(function (colorsP) {
+                ProductsService.API('getSegmentProduct' , { id : product_id})
+                  .then(function (segmentsP) {
 
-                    angular.forEach(colorsP , function(c , i) {
+                    angular.forEach(segmentsP , function(c , i) {
 
-                      if($scope.allColors){
+                      if($scope.allSegments){
 
-                        $scope.addColorI(c);
+                        $scope.addSegmentI(c);
                       }
                       else
                       {
-                        ColorService.API('all')
-                          .then(function(colors){
+                        SegmentService.API('all')
+                          .then(function(segments){
 
-                            $scope.allColors = colors;
+                            $scope.allSegments = segments;
 
-                            $scope.addColorI(c);
+                            $scope.addSegmentI(c);
 
                           })
                       }
@@ -1708,33 +1706,33 @@
             })
         }
 
-        $scope.addColorI = function(colorI)
+        $scope.addSegmentI = function(segmentI)
         {
-          var color = false;
+          var segment = false;
 
-          angular.forEach($scope.allColors , function(c , i){
+          angular.forEach($scope.allSegments , function(c , i){
 
-            if(c.id == colorI.id)
+            if(c.id == segmentI.id)
             {
-              color = c;
+              segment = c;
 
-              color.color_id = i;
+              segment.segment_id = i;
             }
 
           });
 
-          if(color)
+          if(segment)
           {
 
-            color.quantity = colorI.pivot.quantity;
+            segment.quantity = segmentI.pivot.quantity;
 
-            $scope.colors.push(color);
+            $scope.segments.push(segment);
 
-            $scope.allColors.splice( color.color_id , 1);
+            $scope.allSegments.splice( segment.segment_id , 1);
 
-            $scope.selectColors = false;
+            $scope.selectSegments = false;
 
-            $scope.quantity_color = 0;
+            $scope.quantity_segment = 0;
 
           }
         }
@@ -1752,43 +1750,43 @@
 
         }
 
-        $scope.colors = [];
+        $scope.segments = [];
 
-        $scope.addColor = function()
+        $scope.addSegment = function()
         {
-          var color = false;
+          var segment = false;
 
-          angular.forEach($scope.allColors , function(c , i){
+          angular.forEach($scope.allSegments , function(c , i){
 
-            if(c.id == $scope.selectColors)
+            if(c.id == $scope.selectSegments)
             {
-              color = c;
+              segment = c;
 
-              color.color_id = i;
+              segment.segment_id = i;
             }
 
           })
 
-          if(color)
+          if(segment)
           {
 
-            color.quantity = $scope.quantity_color;
+            segment.quantity = $scope.quantity_segment;
 
-            $scope.colors.push(color);
+            $scope.segments.push(segment);
 
-            $scope.allColors.splice( color.color_id , 1);
+            $scope.allSegments.splice( segment.segment_id , 1);
 
-            $scope.selectColors = false;
+            $scope.selectSegments = false;
 
-            $scope.quantity_color = 0;
+            $scope.quantity_segment = 0;
 
           }
         }
 
-        $scope.validAddColor = function()
+        $scope.validAddSegment = function()
         {
 
-          return !($scope.stock && $scope.selectColors && $scope.quantity_color) ? true : false ;
+          return !($scope.stock && $scope.selectSegments && $scope.quantity_segment) ? true : false ;
         }
 
         $scope.stock = 0;
@@ -1798,8 +1796,8 @@
 
           var max = $scope.stock;
 
-          angular.forEach($scope.colors , function (color , i) {
-            max -= color.quantity;
+          angular.forEach($scope.segments , function (segment , i) {
+            max -= segment.quantity;
             if(max < 0)
               max = 0;
           })
@@ -1808,48 +1806,48 @@
 
         }
 
-        $scope.removeColor = function(color)
+        $scope.removeSegment = function(segment)
         {
-          var color_key = false;
+          var segment_key = false;
 
-          angular.forEach($scope.colors , function(c , i ){
-            if(c.id == color.id)
-              color_key = i
+          angular.forEach($scope.segments , function(c , i ){
+            if(c.id == segment.id)
+              segment_key = i
           })
 
 
-          if(color_key >= 0)
+          if(segment_key >= 0)
           {
 
-            $scope.allColors.push(color);
+            $scope.allSegments.push(segment);
 
-            $scope.colors.splice(color_key , 1);
+            $scope.segments.splice(segment_key , 1);
 
           }
 
 
         }
 
-        $scope.updateColor = function(color)
+        $scope.updateSegment = function(segment)
         {
 
-          var color_key = false;
+          var segment_key = false;
 
-          angular.forEach($scope.colors , function(c , i ){
-            if(c.id == color.id)
-              color_key = i
+          angular.forEach($scope.segments , function(c , i ){
+            if(c.id == segment.id)
+              segment_key = i
           })
 
 
-          if(color_key >= 0)
+          if(segment_key >= 0)
           {
-            $scope.allColors.push(color);
+            $scope.allSegments.push(segment);
 
-            $scope.selectColors = color.id;
+            $scope.selectSegments = segment.id;
 
-            $scope.quantity_color = color.quantity;
+            $scope.quantity_segment = segment.quantity;
 
-            $scope.colors.splice(color_key , 1);
+            $scope.segments.splice(segment_key , 1);
           }
 
         }

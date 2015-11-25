@@ -70,17 +70,17 @@ class SaleManager extends BaseManager {
 
             $sale->save();
 
-            foreach($saleData['ColorProductSale'] as $k => $c)
+            foreach($saleData['SegmentProductSale'] as $k => $c)
             {
 
-              $ColorProduct = \ColorProduct::find($k);
+              $SegmentProduct = \SegmentProduct::find($k);
 
-              if($ColorProduct)
+              if($SegmentProduct)
               {
 
-                  $ColorProduct->quantity -= $c['quantity'];
+                  $SegmentProduct->quantity -= $c['quantity'];
 
-                  $ColorProduct->save();
+                  $SegmentProduct->save();
 
               }
 
@@ -113,7 +113,7 @@ class SaleManager extends BaseManager {
 
             }
 
-            $sale->colors_products()->sync($saleData['ColorProductSale']);
+            $sale->segments_products()->sync($saleData['SegmentProductSale']);
 
             $sale->packs()->sync($saleData['PackSale']);
 
@@ -252,7 +252,7 @@ class SaleManager extends BaseManager {
         $this->sale = \Sale::with('products')
                      ->with('packs')
                      ->with('client')
-                     ->with(['employee' , 'employee.user' , 'sale_payments', 'colors_products'])
+                     ->with(['employee' , 'employee.user' , 'sale_payments', 'segments_products'])
                      ->find($saleData['id']);
 
         $saleTypeOld = $this->sale->sale_type;
@@ -321,27 +321,31 @@ class SaleManager extends BaseManager {
             $sale->update($saleData);
 
 
-            foreach($saleData['ColorProductSale'] as $k => $c)
+            foreach($saleData['SegmentProductSale'] as $k => $c)
             {
 
-              $ColorProduct = \ColorProduct::find($k);
+              $SegmentProduct = \SegmentProduct::find($k);
 
-              $ColorProduct->quantity -= $c['quantity'];
+              if($SegmentProduct)
+              {
+                  $SegmentProduct->quantity -= $c['quantity'];
 
-              $ColorProduct->save();
+                  $SegmentProduct->save();
+              }
+
             }
 
-           foreach($saleOld->colors_products->toArray() as $k => $c)
+           foreach($saleOld->segments_products->toArray() as $k => $c)
            {
 
-             $ColorProduct = \ColorProduct::find($c['id']);
+             $SegmentProduct = \SegmentProduct::find($c['id']);
 
-             $ColorProduct->quantity += $c['pivot']['quantity'];
+             $SegmentProduct->quantity += $c['pivot']['quantity'];
 
-             $ColorProduct->save();
+             $SegmentProduct->save();
            }
 
-           $sale->colors_products()->sync($saleData['ColorProductSale']);
+           $sale->segments_products()->sync($saleData['SegmentProductSale']);
 
 
 
@@ -835,11 +839,21 @@ class SaleManager extends BaseManager {
 
         $saleData['total'] = number_format(($subtotal + $commission_pay), 2, '.', '');
 
-        if(!isset($saleData['ColorProductSale']))
+        if(!isset($saleData['SegmentProductSale']))
         {
-            $saleData['ColorProductSale'] = [];
+            $saleData['SegmentProductSale'] = [];
         }
+        foreach($saleData['SegmentProductSale'] as $s => $segment)
+        {
+            $quantity = intval($segment['quantity']);
 
+            if($quantity <= 0)
+            {
+                unset($saleData['SegmentProductSale'][$s]);
+            }
+
+
+        }
         return $saleData;
     }
 

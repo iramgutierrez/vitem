@@ -219,7 +219,7 @@ class ReportsController extends \BaseController {
 
 		$filename = (Input::has('filename')) ? Input::get('filename') : 'reporte';
 
-		return View::make('reports/generate_custom_xls',compact('headersXLS' , 'dataXLS'));
+		//return View::make('reports/generate_custom_xls',compact('headersXLS' , 'dataXLS'));
 
         Excel::create($filename."_".date('Y-m-d_H-i-s'), function($excel) use ($headersXLS , $dataXLS , $filename){
 

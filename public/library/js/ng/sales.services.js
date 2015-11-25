@@ -320,9 +320,7 @@
         else
         {
           products = productsAll.filter(function ( product )
-          { console.log(percent_cleared_payment_type);
-            console.log(product.percent_cleared_payment);
-            console.log(percent_cleared_payment);
+          {
 
             switch(percent_cleared_payment_type)
             {

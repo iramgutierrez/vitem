@@ -13,7 +13,7 @@ class ProductWebServices extends BaseWebServices {
 	static function all()
 	{
 
-		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Colors' ])->limit(10)->orderBy('id','desc')->get());
+		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Segments' ])->limit(10)->orderBy('id','desc')->get());
 
 	}
 	static function findById()
@@ -24,7 +24,7 @@ class ProductWebServices extends BaseWebServices {
 			return false;
 
 
-		$product = ProductRepo::with(['stores' , 'colors'])->where('id' , $id)->first();
+		$product = ProductRepo::with(['stores' , 'segments'])->where('id' , $id)->first();
 
 		return \Response::json($product);
 
@@ -147,13 +147,13 @@ class ProductWebServices extends BaseWebServices {
 
 	}
 
-	static function getColorProduct()
+	static function getSegmentProduct()
 	{
 		$id = (\Input::has('id')) ? \Input::get('id') : false;
 
-		$product = \Product::with(['colors'])->where('id' , $id)->first();
+		$product = \Product::with(['segments'])->where('id' , $id)->first();
 
-		return $product->colors;
+		return $product->segments;
 	}
 
 }

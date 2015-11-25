@@ -58,9 +58,9 @@ class ProductManager extends BaseManager {
 
             //$this->product->stores()->sync($data['ProductStore']);
 
-            $this->product->colors()->sync($data['ColorProduct']);
+            $this->product->segments()->sync($data['SegmentProduct']);
 
-            $product_return = \Product::with([ 'user' , 'supplier' , 'colors'])->where('id' , $this->product->id)->first();
+            $product_return = \Product::with([ 'user' , 'supplier' , 'segments'])->where('id' , $this->product->id)->first();
 
             $response = [
                 'success' => true,
@@ -125,7 +125,7 @@ class ProductManager extends BaseManager {
 
             $this->product->save();
 
-            $this->product->colors()->sync($data['ColorProduct']);
+            $this->product->segments()->sync($data['SegmentProduct']);
 
             //$this->product->stores()->sync($data['ProductStore']);
 
@@ -258,7 +258,7 @@ class ProductManager extends BaseManager {
 
             $this->product->save();
 
-            $this->product->colors()->sync($data['ColorProduct']);
+            $this->product->segments()->sync($data['SegmentProduct']);
 
             //$this->product->stores()->sync($data['ProductStore']);
 
@@ -349,7 +349,7 @@ class ProductManager extends BaseManager {
 
             $this->product->save();
 
-            $this->product->colors()->sync($data['ColorProduct']);
+            $this->product->segments()->sync($data['SegmentProduct']);
 
             //$this->product->stores()->sync($data['ProductStore']);
 
@@ -505,9 +505,9 @@ class ProductManager extends BaseManager {
             }
         }
 
-        if(!isset($data['ColorProduct']))
+        if(!isset($data['SegmentProduct']))
         {
-            $data['ColorProduct'] = [];
+            $data['SegmentProduct'] = [];
         }
 
         return $data;

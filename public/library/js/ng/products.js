@@ -7,6 +7,7 @@
     'sales.services',
     'suppliers.services',
     'segments.services',
+      'catalogs.services',
     'directives'
   ]).run([ '$q' , '$http' ,  '$rootScope' , function( $q , $http , $rootScope){
 

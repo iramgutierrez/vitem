@@ -13,7 +13,7 @@ class ProductRepo extends BaseRepo {
 	public function search($find )
 	{
 
-		self::$products = \Product::with('colors');
+		self::$products = \Product::with('segments');
 
 		self::generateLikeCondition( $find , ['id' , 'name' , 'key' , 'model']);
 
@@ -46,7 +46,7 @@ class ProductRepo extends BaseRepo {
 
 	static function getByKey( $key )
 	{
-		$products = \Product::with('colors')->where('key' , $key);
+		$products = \Product::with('segments')->where('key' , $key);
 
 		/*$products = $products->whereIn('id', function ($query) use ($store_id) {
 

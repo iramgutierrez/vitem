@@ -58,12 +58,70 @@
 
               $scope.item = '';
 
+              var nameBeforeAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameBeforeAdd != '')
+                  {
+                      nameBeforeAdd += ', ';
+                  }
+                  nameBeforeAdd += item.item.name;
+              });
+
               $scope.CatalogItem.push(item);
+
+              var nameAfterAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameAfterAdd != '')
+                  {
+                      nameAfterAdd += ', ';
+                  }
+                  nameAfterAdd += item.item.name;
+              });
+
+              if(nameBeforeAdd == $scope.name || $scope.name == '')
+              {
+                  $scope.name = nameAfterAdd;
+              }
+
           }
 
           $scope.removeCatalogItem = function(k , item)
           {
+
+
+
+              var nameBeforeAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameBeforeAdd != '')
+                  {
+                      nameBeforeAdd += ', ';
+                  }
+                  nameBeforeAdd += item.item.name;
+              });
+
               $scope.CatalogItem.splice(k,1);
+
+              var nameAfterAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameAfterAdd != '')
+                  {
+                      nameAfterAdd += ', ';
+                  }
+                  nameAfterAdd += item.item.name;
+              });
+
+              if(nameBeforeAdd == $scope.name || $scope.name == '')
+              {
+                  $scope.name = nameAfterAdd;
+              }
 
               $scope.catalogs.push(item.catalog);
           }
@@ -76,6 +134,8 @@
 
               console.log($scope.catalogs);
           }
+
+          $scope.message = false;
 
         $scope.addSegment = function(event , valid)
         {
@@ -111,7 +171,17 @@
                     { 
 
                       if(!$scope.id)
-                        $scope.segments.push(data.segment);
+                      {
+                          if(data.new)
+                          {
+                              $scope.segments.push(data.segment);
+
+                              $scope.message = false;
+                          }
+
+                          else
+                            $scope.message = 'Ya existe un criterio con los mismos valores, el id es: '+ data.segment.id;
+                      }
                       else
                         $scope.segments[$scope.key] = data.segment;
 

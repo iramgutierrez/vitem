@@ -150,6 +150,12 @@
                         <p class="col-sm-2"><span class="badge bg-success">@{{segments.length}}</span> criterios de segmentación</p>
                     </div>
                     <div class="clearfix"></div>
+                    <div class="alert alert-block alert-warning" data-ng-show="message">
+                        <button data-dismiss="alert" class="close close-sm" type="button">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        @{{ message }}
+                    </div>
                     <hr>
                     <table  class="display table table-bordered table-striped col-sm-12" id="dynamic-table" >
                         <thead>

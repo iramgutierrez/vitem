@@ -6,7 +6,7 @@ class Product extends \Eloquent {
 
 	use SoftDeletingTrait;
 
-	protected $fillable = ['key' , 'name' , 'stock' , 'model' , 'description' , 'supplier_id' , 'image' , 'price' , 'cost' , 'production_days' , 'user_id' , 'status' ];
+	protected $fillable = ['key' , 'name' , 'stock' , 'model' , 'description' , 'supplier_id' , 'image' , 'price' , 'cost' , 'production_days' , 'user_id' , 'status' ,'percent_gain' ];
 
 	 protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'image_url' , 'stock_in_stores'];
 

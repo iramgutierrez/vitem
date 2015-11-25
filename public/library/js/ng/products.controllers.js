@@ -243,7 +243,7 @@
 
     }])
 
-    .controller('FormController', [ '$scope' , 'SuppliersService'  , 'SegmentService', 'ProductsService', function ($scope , SuppliersService , SegmentService , ProductsService ) {
+    .controller('FormController', [ '$scope' , 'SuppliersService'  , 'SegmentService', 'ProductsService', 'CatalogService', function ($scope , SuppliersService , SegmentService , ProductsService , CatalogService ) {
 
       $scope.status = 'No disponible';
       $scope.find = '';
@@ -722,6 +722,177 @@
 
           }
         }
+
+          /* NEW SEGMENT */
+
+          $scope.catalogs = [];
+
+          $scope.clearCatalogs = [];
+
+          $scope.items = [];
+
+          $scope.CatalogItem = [];
+
+          $scope.catalog = '';
+
+          $scope.item = '';
+
+          $scope.name = '';
+
+          CatalogService.API('all').then(function(catalogs){
+
+              $scope.catalogs = catalogs;
+
+              $scope.clearCatalogs = angular.copy($scope.catalogs);
+
+          });
+
+          $scope.getCatalogItems = function()
+          {
+
+              $scope.items = $scope.catalog.items;
+          }
+
+          $scope.addCatalogItem = function()
+          {
+              var item = {
+                  catalog : $scope.catalog,
+                  item : $scope.item
+              };
+
+              angular.forEach($scope.catalogs , function(catalog , c){
+
+                  if(catalog.id == item.catalog.id)
+                  {
+                      $scope.catalogs.splice(c, 1);
+                  }
+              });
+
+              $scope.items = [];
+
+              $scope.catalog = '';
+
+              $scope.item = '';
+
+              var nameBeforeAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameBeforeAdd != '')
+                  {
+                      nameBeforeAdd += ', ';
+                  }
+                  nameBeforeAdd += item.item.name;
+              });
+
+              $scope.CatalogItem.push(item);
+
+              var nameAfterAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameAfterAdd != '')
+                  {
+                      nameAfterAdd += ', ';
+                  }
+                  nameAfterAdd += item.item.name;
+              });
+
+              if(nameBeforeAdd == $scope.name || $scope.name == '')
+              {
+                  $scope.name = nameAfterAdd;
+              }
+
+          }
+
+          $scope.removeCatalogItem = function(k , item)
+          {
+
+              var nameBeforeAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameBeforeAdd != '')
+                  {
+                      nameBeforeAdd += ', ';
+                  }
+                  nameBeforeAdd += item.item.name;
+              });
+
+              $scope.CatalogItem.splice(k,1);
+
+              var nameAfterAdd = '';
+
+              angular.forEach($scope.CatalogItem, function(item){
+
+                  if(nameAfterAdd != '')
+                  {
+                      nameAfterAdd += ', ';
+                  }
+                  nameAfterAdd += item.item.name;
+              });
+
+              if(nameBeforeAdd == $scope.name || $scope.name == '')
+              {
+                  $scope.name = nameAfterAdd;
+              }
+
+              $scope.catalogs.push(item.catalog);
+          }
+
+          $scope.reset = function()
+          {
+              $scope.CatalogItem = [];
+
+              $scope.catalogs = angular.copy($scope.clearCatalogs);
+
+              console.log($scope.catalogs);
+          }
+
+          $scope.newSegment = function()
+          {
+
+              var segment = {
+
+                  'name' : $scope.name,
+
+                  'CatalogItem' : []
+
+              };
+
+              angular.forEach($scope.CatalogItem , function(item){
+
+                  segment.CatalogItem.push(item.item.id)
+
+              });
+
+              SegmentService.add(segment)
+                  .then(function(data){
+
+                      if(data.hasOwnProperty('success'))
+                      {
+
+                          $scope.reset();
+
+                          $scope.name = '';
+
+                          if(data.new)
+                          {
+                              $scope.allSegments.push(data.segment);
+                          }
+
+                          $scope.selectSegments = data.segment.id;
+
+                          $scope.addSegment();
+
+                          $(".close_modal").click();
+
+                      }
+
+                  })
+          }
+
+          /* NEW SEGMENT */
 
     }])
 

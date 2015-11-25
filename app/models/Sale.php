@@ -13,9 +13,9 @@ class Sale extends \Eloquent {
         return $this->belongsToMany('Product', 'product_sale')->withPivot('quantity');
     }
 
-		public function colors_products()
+		public function segments_products()
 		{
-			return $this->belongsToMany('ColorProduct', 'color_product_sale')->withPivot('quantity');
+			return $this->belongsToMany('SegmentProduct', 'segment_product_sale')->withPivot('quantity');
 		}
 
     public function packs()

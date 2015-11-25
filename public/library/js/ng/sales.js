@@ -14,7 +14,7 @@
     'destinations.filters',
     'products.filters',
     'suppliers.services',
-    'colors.services',
+    'segments.services',
     'directives',
   ]).run([ '$q' , '$http' ,  '$rootScope' , function( $q , $http , $rootScope){
 
