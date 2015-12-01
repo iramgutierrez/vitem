@@ -12,8 +12,16 @@ class ProductWebServices extends BaseWebServices {
 
 	static function all()
 	{
+        $with = ['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Segments'];
 
-		return \Response::json(ProductRepo::with(['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Segments' ])->limit(10)->orderBy('id','desc')->get());
+        $with['discounts'] = function($query)
+        {
+            $query
+                ->where('init_date', '<' , date('Y-m-d H:i:s'))
+                ->where('end_date', '>' , date('Y-m-d H:i:s'));
+        };
+
+		return \Response::json(\Product::with($with)->limit(10)->orderBy('id','desc')->get());
 
 	}
 	static function findById()

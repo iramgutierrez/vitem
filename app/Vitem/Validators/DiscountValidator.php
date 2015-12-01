@@ -3,6 +3,7 @@
 class DiscountValidator extends BaseValidator {
 
     protected $rules = array(
+        'name'     => 'required',
         'type'     => 'required',
         'init_date'     => 'required',
         'end_date'     => 'required',

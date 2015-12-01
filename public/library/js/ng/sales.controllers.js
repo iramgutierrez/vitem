@@ -407,13 +407,71 @@
 
         }
 
-        $scope.addProduct = function(product , quantity )
+          $scope.checkDiscount = function(product , key)
+          {
+
+              if(product && key !== false)
+              {
+                  var finalDiscount = {};
+
+                  var priceProduct = $scope.pricePerQuantity(product.price , product.quantity);
+
+                  var priceDiscount = priceProduct;
+
+                  angular.forEach(product.discounts , function(discount){
+
+                      priceDiscount = $scope.priceDiscountPerQuantity(discount , priceProduct , product.quantity);
+
+                      if(priceDiscount < priceProduct)
+                      {
+                          finalDiscount = discount;
+                      }
+                  });
+
+                  $rootScope.productsSelected[key].discount = finalDiscount;
+              }
+              else
+              {
+
+              }
+
+          }
+
+          $scope.priceDiscountPerQuantity = function(discount , price , quantity)
+          {
+              var discountPrice = price;
+
+             if(quantity >= discount.item_quantity)
+             {
+                 if(discount.discount_type == 'percent')
+                 {
+                    discountPrice = parseFloat(discountPrice) - parseFloat((discountPrice*discount.quantity)/100);
+
+                 }
+                 else if(discount.discount_type == 'quantity')
+                 {
+                     discountPrice = parseFloat(discountPrice) - parseFloat(discount.quantity);
+                 }
+
+             }
+
+              return discountPrice;
+
+          }
+
+        $scope.addProduct = function(product , quantity , pack_id)
         {
+            var pack_id = pack_id || false;
+
+            product.pack_id = pack_id;
 
             if(!quantity)
             {
               quantity = 0;
             }
+
+            product.isPack = product.isPack || false;
+
             product.quantity = quantity;
 
             //product.stock_store = $scope.getStockPerStore(product , $scope.store_id);
@@ -426,7 +484,7 @@
             {
               product.quantity_null = true;
 
-              product.quantity = 0;
+              //product.quantity = 0;
             }
 
             product.notSegment = false;
@@ -459,16 +517,20 @@
 
             product.quantity_init = $scope.quantityInit(product);
 
-            inProductsSelected = false;
+            var inProductsSelected = false;
+
+            var productSelectedKey = false;
 
             for (var p = 0, len = $rootScope.productsSelected.length; p < len; p++) {
 
-                if($rootScope.productsSelected[p].id == product.id)
+                if($rootScope.productsSelected[p].id == product.id && !$rootScope.productsSelected[p].id)
                 {
 
                     $rootScope.productsSelected[p].quantity =  parseInt($rootScope.productsSelected[p].quantity) + parseInt(product.quantity);
 
                     inProductsSelected = true;
+
+                    productSelectedKey = p;
 
                     break;
 
@@ -480,7 +542,10 @@
             if(!inProductsSelected)
             {
                 $rootScope.productsSelected.push(product);
+
+                productSelectedKey = $rootScope.productsSelected.length - 1;
             }
+            $scope.checkDiscount(product , productSelectedKey);
 
             $scope.find_product = '';
 
@@ -523,16 +588,24 @@
         $scope.addPack = function(pack)
         {
 
-          angular.forEach(pack.products, function(product, key) {
+            var price = 0;
+
+              angular.forEach(pack.products, function(product, key) {
+
+                  price = parseFloat(price) + $scope.pricePerQuantity(product.price , product.pivot.quantity);
+
+                  $scope.addProduct(product , product.pivot.quantity , pack.id);
 
 
-              $scope.addProduct(product , product.pivot.quantity);
+              });
 
+            pack.price = price;
 
-          });
+            pack.isPack = true;
 
-            /*
-            $scope.packsSelected.push(pack);*/
+            $scope.addProduct(pack);
+
+            //$scope.packsSelected.push(pack);
 
             $scope.find_pack = '';
 
@@ -620,10 +693,24 @@
         {
 
           var price = 0;
-
+            console.log($rootScope.productsSelected);
           angular.forEach($rootScope.productsSelected, function(value, key) {
 
-              price += $scope.pricePerQuantity(value.price , value.quantity);
+              if(!value.pack_id)
+              {
+                  if(value.discount)
+                  {
+
+                      price += $scope.priceDiscountPerQuantity(value.discount , $scope.pricePerQuantity(value.price , value.quantity) , value,quantity);
+
+                  }
+                  else
+                  {
+                      //price += $scope.pricePerQuantity(value.price , value.quantity);
+                  }
+
+              }
+
 
 
           });

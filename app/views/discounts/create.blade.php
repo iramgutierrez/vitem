@@ -40,19 +40,25 @@
 
             <div class="panel-body" >
 
-                <div class="form-group col-md-4 col-sm-12" >
+                <div class="form-group col-md-6 col-sm-12" >
+
+                    @include('discounts/fields/name')
+
+                </div>
+
+                <div class="form-group col-md-6 col-sm-12" >
 
                     @include('discounts/fields/type')
 
                 </div>
 
-                <div class="form-group col-md-4 col-sm-6" >
+                <div class="form-group col-md-6 col-sm-6" >
 
                     @include('discounts/fields/discount_type')
 
                 </div>
 
-                <div class="form-group col-lg-3 col-md-4 col-sm-6" >
+                <div class="form-group col-md-6 col-sm-6" >
 
                     @include('discounts/fields/quantity')
 

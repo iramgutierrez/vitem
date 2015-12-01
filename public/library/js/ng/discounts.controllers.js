@@ -327,7 +327,7 @@
                   DiscountsService.API('findById', {
                       id : id
                   }).then(function(discount){
-
+                      console.log(discount);
                       if(discount.type = 1 && angular.isDefined(discount.item))
                       {
                           $scope.uniqueItem.name = discount.item.name;

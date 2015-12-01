@@ -8,7 +8,7 @@ class Discount extends \Eloquent {
 
     protected $dates = ['deleted_at'];
 
-	protected $fillable = ['type' , 'init_date','end_date' ,'discount_type' , 'quantity' , 'item_type' , 'item_id' , 'item_quantity' , 'user_id'];
+	protected $fillable = ['name','type' , 'init_date','end_date' ,'discount_type' , 'quantity' , 'item_type' , 'item_id' , 'item_quantity' , 'user_id'];
 
     protected $appends = ['url_show' , 'url_edit' ,  'url_delete' , 'type_filter' ,'discount_type_filter' , 'quantity_filter' ,'item_type_filter' ];
 

@@ -63,7 +63,7 @@
       }
 
       function search(find, productsAll , productsExcluded , supplier_id , store_id )
-      { console.log(productsExcluded);
+      {
 
         find = normalize(find);
 
@@ -191,7 +191,7 @@
 
           for( p = 0; p <= productsAll.length -1; p++) {
 
-              if(productsExcluded[s].id === productsAll[p].id)
+              if(productsExcluded[s].id === productsAll[p].id && !productsExcluded[s].pack_id)
               {
 
                 productsAll.splice(p, 1);

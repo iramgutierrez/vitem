@@ -41,9 +41,13 @@
 
         <th>Precio Unitario</th>
 
-        <th class="col-sm-2">Cantidad</th>
+        <th>Descuento</th>
+
+        <th>Cantidad</th>
 
         <th>Precio</th>
+
+        <th>Precio con descuento</th>
 
         <th>Borrar</th>
 
@@ -55,41 +59,47 @@
 
       	<tr ng-class="{ quantity_null : product.quantity_null  }">
 
-  	    	<td>
+  	    	<td class="col-sm-1" >
 
   	        	@{{product.id }}
 
   	      	</td>
 
-  	      	<td> @{{product.name }}</td>
+  	      	<td class="col-sm-1"> @{{product.name }}</td>
 
-  	      	<td> Producto </td>
+  	      	<td class="col-sm-1"> Producto </td>
 
-  	      	<td> @{{product.key }}</td>
+  	      	<td class="col-sm-1"> @{{product.key }}</td>
 
-  		    <td> @{{product.model }}</td>
+  		    <td class="col-sm-1"> @{{product.model }}</td>
 
-  		    <td> @{{ product.stock }}</td>
+  		    <td class="col-sm-1"> @{{ product.stock }}</td>
 
-  		    <td> @{{product.price | currency }}</td>
+  		    <td class="col-sm-1"> @{{product.price | currency }}</td>
 
-  		    <td>
+            <td class="col-sm-1"> @{{ product.discount.id }} - @{{ product.discount.name }} </td>
+
+  		    <td class="col-sm-1">
 
           		<div id="spinner1 col-sm-2">
 
                     <div class="input-group input-small">
 
-                        <input type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="ProductSale[@{{ product.id }}][quantity]" >
+                        <input ng-if="!product.pack_id && !product.isPack" type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="ProductSale[@{{ product.id }}][quantity]" >
 
-                        <div class="spinner-buttons input-group-btn btn-group-vertical">
+                        <input ng-if="!product.pack_id && product.isPack" type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="PackSale[@{{ product.id }}][quantity]" >
 
-                          <button ng-disabled="product.quantity_null" ng-click= "product.quantity = addQuantity(product.quantity , product.stock)" type="button" class="btn spinner-up btn-xs btn-default">
+                        <input ng-disabled="product.pack_id" ng-if="product.pack_id" type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity"  >
+
+                        <div class="spinner-buttons input-group-btn btn-group-vertical" ng-show="!product.pack_id">
+
+                          <button ng-click= "product.quantity = addQuantity(product.quantity); checkDiscount(product , k)" type="button" class="btn spinner-up btn-xs btn-default">
 
                               <i class="fa fa-angle-up"></i>
 
                             </button>
 
-                            <button ng-disabled="product.quantity_null" ng-click= "product.quantity = removeQuantity(product.quantity)" type="button" class="btn spinner-down btn-xs btn-default">
+                            <button ng-click= "product.quantity = removeQuantity(product.quantity); checkDiscount(product , k)" type="button" class="btn spinner-down btn-xs btn-default">
 
                               <i class="fa fa-angle-down"></i>
 
@@ -107,9 +117,11 @@
 
         		</td>
 
-        		<td> @{{ pricePerQuantity(product.price , product.quantity) | currency  }}</td>
+        		<td class="col-sm-1"> @{{ pricePerQuantity(product.price , product.quantity) | currency  }}</td>
 
-        		<td>
+                <td class="col-sm-1"> @{{ priceDiscountPerQuantity(product.discount , pricePerQuantity(product.price , product.quantity) , product.quantity) | currency  }}</td>
+
+        		<td class="col-sm-1">
 
   		    	<button type="button" class="col-sm-12 btn btn-danger" ng-click="removeProduct(k)" >
 
