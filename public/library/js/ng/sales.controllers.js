@@ -541,10 +541,11 @@
 
             if(!inProductsSelected)
             {
-                $rootScope.productsSelected.push(product);
+                $rootScope.productsSelected.push(angular.copy(product));
 
                 productSelectedKey = $rootScope.productsSelected.length - 1;
             }
+
             $scope.checkDiscount(product , productSelectedKey);
 
             $scope.find_product = '';
@@ -557,11 +558,46 @@
         $scope.removeProduct = function (key)
         {
 
-          $rootScope.productsSelected.splice(key, 1);
+            if($rootScope.productsSelected[key].isPack)
+            {
+                var pack_id = $rootScope.productsSelected[key].id;
+                console.log(pack_id);
+                $rootScope.productsSelected.splice(key, 1);
 
-          $scope.find_product = '';
+                $rootScope.productsSelected = $rootScope.productsSelected.filter(function(product){
 
-          $scope.autocompleteProduct = false;
+                    return product.pack_id != pack_id;
+                });
+            }
+            else if($rootScope.productsSelected[key].pack_id)
+            {
+                var pack_id = $rootScope.productsSelected[key].pack_id;
+
+                $rootScope.productsSelected.splice(key, 1);
+
+                angular.forEach($rootScope.productsSelected , function (product , p){
+
+                    if(product.pack_id == pack_id)
+                    {
+                        $rootScope.productsSelected[p].pack_id = false;
+                    }
+                })
+
+                $rootScope.productsSelected = $rootScope.productsSelected.filter(function(product){
+
+                    return !product.isPack || product.id != pack_id;
+                });
+
+
+            }
+            else
+            {
+                $rootScope.productsSelected.splice(key, 1);
+            }
+
+            $scope.find_product = '';
+
+            $scope.autocompleteProduct = false;
 
         }
 
@@ -585,6 +621,10 @@
 
         }
 
+          $scope.showPacksSelected = {};
+
+
+
         $scope.addPack = function(pack)
         {
 
@@ -594,9 +634,6 @@
 
                   price = parseFloat(price) + $scope.pricePerQuantity(product.price , product.pivot.quantity);
 
-                  $scope.addProduct(product , product.pivot.quantity , pack.id);
-
-
               });
 
             pack.price = price;
@@ -604,6 +641,14 @@
             pack.isPack = true;
 
             $scope.addProduct(pack);
+
+            $scope.showPacksSelected[pack.id] = false;
+
+            angular.forEach(pack.products, function(product, key) {
+
+                $scope.addProduct(product , product.pivot.quantity , pack.id);
+
+            });
 
             //$scope.packsSelected.push(pack);
 
@@ -613,6 +658,15 @@
 
             return false;
         }
+
+          $scope.changeShowPackSelected = function(pack_id)
+
+          {
+              if(angular.isDefined($scope.showPacksSelected[pack_id]))
+              {
+                  $scope.showPacksSelected[pack_id] = !$scope.showPacksSelected[pack_id];
+              }
+          }
 
         $scope.removePack = function (key)
         {
@@ -693,7 +747,7 @@
         {
 
           var price = 0;
-            console.log($rootScope.productsSelected);
+
           angular.forEach($rootScope.productsSelected, function(value, key) {
 
               if(!value.pack_id)

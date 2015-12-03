@@ -13,7 +13,7 @@ class PackWebServices extends BaseWebServices {
 	static function all()
 	{
 
-		return \Response::json(\Pack::with('products.stores' , 'discounts')->get());
+		return \Response::json(\Pack::with('products.stores' , 'discounts' , 'products.discounts')->get());
 		
 	}
 	static function findById()

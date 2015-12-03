@@ -55,9 +55,9 @@
 
       </thead>
 
-      <tbody ng-repeat="(k , product) in $root.productsSelected">
+      <tbody ng-repeat="(k , product) in $root.productsSelected track by k">
 
-      	<tr ng-class="{ quantity_null : product.quantity_null  }">
+      	<tr ng-class="{ quantity_null : product.quantity_null  }" ng-hide="product.pack_id && !showPacksSelected[product.pack_id]">
 
   	    	<td class="col-sm-1" >
 
@@ -77,7 +77,9 @@
 
   		    <td class="col-sm-1"> @{{product.price | currency }}</td>
 
-            <td class="col-sm-1"> @{{ product.discount.id }} - @{{ product.discount.name }} </td>
+            <td class="col-sm-1">
+                <span ng-show="!product.pack_id" >@{{ product.discount.name }}</span>
+            </td>
 
   		    <td class="col-sm-1">
 
@@ -111,15 +113,23 @@
 
                   </div>
 
-                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="!product.showSegments" >Mostrar segmentos</button>
+                <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="!product.showSegments && !product.isPack" >Mostrar segmentos</button>
 
-                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="product.showSegments" >Ocultar segmentos</button>
+                <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="product.showSegments && !product.isPack" >Ocultar segmentos</button>
+
+                <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="changeShowPackSelected(product.id);" ng-show="product.isPack && !showPacksSelected[product.id]" >Mostrar detalle</button>
+
+                <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="changeShowPackSelected(product.id);" ng-show="product.isPack && showPacksSelected[product.id]" >Ocultar detalle</button>
 
         		</td>
 
-        		<td class="col-sm-1"> @{{ pricePerQuantity(product.price , product.quantity) | currency  }}</td>
+        		<td class="col-sm-1">
+                    <span ng-show="!product.pack_id" >@{{ pricePerQuantity(product.price , product.quantity) | currency  }}</span>
+                </td>
 
-                <td class="col-sm-1"> @{{ priceDiscountPerQuantity(product.discount , pricePerQuantity(product.price , product.quantity) , product.quantity) | currency  }}</td>
+                <td class="col-sm-1">
+                    <span ng-show="!product.pack_id" >@{{ priceDiscountPerQuantity(product.discount , pricePerQuantity(product.price , product.quantity) , product.quantity) | currency  }}</span>
+                </td>
 
         		<td class="col-sm-1">
 
