@@ -86,6 +86,22 @@ class SaleManager extends BaseManager {
 
             }
 
+            foreach($saleData['SegmentProductPackSale'] as $k => $c)
+            {
+
+                $SegmentProduct = \SegmentProduct::find($k);
+
+                if($SegmentProduct)
+                {
+
+                    $SegmentProduct->quantity -= $c['quantity'];
+
+                    $SegmentProduct->save();
+
+                }
+
+            }
+
             if($saleData['delivery_type'] == 1 && isset($saleData['delivery']) && is_array($saleData['delivery']) && $canCreateDelivery) {
 
 
@@ -114,6 +130,20 @@ class SaleManager extends BaseManager {
             }
 
             $sale->segments_products()->sync($saleData['SegmentProductSale']);
+
+            foreach($saleData['SegmentProductPackSale'] as $k => $c)
+            {
+
+                $PackSale = \PackSale::where('pack_id' , $c['pack_id'])->where('sale_id' , $sale->id)->first();
+
+                if($PackSale)
+                {
+                    $PackSale->segments_products()->detach($k);
+
+                    $PackSale->segments_products()->attach([$k=>['quantity' => $c['quantity']]]);
+                }
+
+            }
 
             $sale->packs()->sync($saleData['PackSale']);
 
@@ -850,6 +880,21 @@ class SaleManager extends BaseManager {
             if($quantity <= 0)
             {
                 unset($saleData['SegmentProductSale'][$s]);
+            }
+
+
+        }
+        if(!isset($saleData['SegmentProductPackSale']))
+        {
+            $saleData['SegmentProductPackSale'] = [];
+        }
+        foreach($saleData['SegmentProductPackSale'] as $s => $segment)
+        {
+            $quantity = intval($segment['quantity']);
+
+            if($quantity <= 0)
+            {
+                unset($saleData['SegmentProductPackSale'][$s]);
             }
 
 
