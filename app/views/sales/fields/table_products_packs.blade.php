@@ -87,9 +87,13 @@
 
                     <div class="input-group input-small">
 
+
+
                         <input ng-if="!product.pack_id && !product.isPack" type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="ProductSale[@{{ product.id }}][quantity]" >
+                        <input ng-if="!product.pack_id && !product.isPack" type="hidden" ng-model="product.discount.id"  ng-value="product.discount.id" name="ProductSale[@{{ product.id }}][discount_id]" >
 
                         <input ng-if="!product.pack_id && product.isPack" type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="PackSale[@{{ product.id }}][quantity]" >
+                        <input ng-if="!product.pack_id && product.isPack" type="hidden" ng-model="product.discount.id"  ng-value="product.discount.id" name="PackSale[@{{ product.id }}][discount_id]" >
 
                         <input ng-disabled="product.pack_id" ng-if="product.pack_id" type="text" class="spinner-input form-control" maxlength="3" ng-model="showPacksSelected[product.pack_id].products[product.id].quantityTotal">
 
@@ -178,15 +182,18 @@
           <td>@{{ segment.name }}</td>
           <td>@{{ segment.pivot.quantity }}</td>
           <td>
-                <select ng-if="!product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[c]" name="SegmentProductSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" >
+              <input type="number" ng-if="!product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[c]" name="SegmentProductSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" />
+                <!--<select ng-if="!product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[c]" name="SegmentProductSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" >
 
                   <option ng-repeat="n in [] | range:getMaxProductSegment(getProductsWithoutSegments(product) , segment.pivot.quantity , product.assignedSegments[c])" value="@{{ n+1 }}">@{{ n+1 }}</option>
-                </select>
+                </select>-->
                   <input type="hidden" ng-if="product.pack_id && !product.isPack" name="SegmentProductPackSale[@{{segment.pivot.id}}][pack_id]" value="@{{ product.pack_id }}">
-                  <select ng-if="product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[c]" name="SegmentProductPackSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" >
+              <input type="number" ng-if="product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[c]" name="SegmentProductPackSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" />
+
+              <!--<select ng-if="product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[c]" name="SegmentProductPackSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" >
 
                       <option ng-repeat="n in [] | range:getMaxProductSegment(getProductsWithoutSegments(product) , segment.pivot.quantity , product.assignedSegments[c])" value="@{{ n+1 }}">@{{ n+1 }}</option>
-                  </select>
+                  </select>-->
           </td>
           <td></td>
           <td></td>

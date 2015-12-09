@@ -62,7 +62,8 @@ class SaleManager extends BaseManager {
             }
 
         }
-
+        echo "<pre>";
+        dd($saleData);
         if( $saleValid && $deliveryValid && $destinationValid)
         {
 
@@ -839,7 +840,24 @@ class SaleManager extends BaseManager {
         {
             $pack = \Pack::find($k);
 
-            $price = (float) $pack->price * $p['quantity'];
+            $pricePack = 0;
+
+            foreach($pack->products as $product)
+            {
+                $pricePack += $product->price;
+            }
+
+            $price = $pricePack * $p['quantity'];
+
+            if(!empty($p['discount_id']))
+            {
+                $discount  = \Discount::find($p['discount_id']);
+
+                if($discount)
+                {
+                    $ṕrice = priceDiscountPerQuantity($discount , $price , $p['quantity']);
+                }
+            }
 
             $subtotal += $price;
         }
@@ -900,6 +918,11 @@ class SaleManager extends BaseManager {
 
         }
         return $saleData;
+    }
+
+    private function priceDiscountPerQuantity(\Discount discount, price , quantity)
+    {
+
     }
 
 }
