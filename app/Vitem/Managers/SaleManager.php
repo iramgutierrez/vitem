@@ -131,6 +131,10 @@ class SaleManager extends BaseManager {
 
             $sale->segments_products()->sync($saleData['SegmentProductSale']);
 
+            $sale->packs()->sync($saleData['PackSale']);
+
+            $sale->products()->sync($saleData['ProductSale']);
+
             foreach($saleData['SegmentProductPackSale'] as $k => $c)
             {
 
@@ -144,10 +148,6 @@ class SaleManager extends BaseManager {
                 }
 
             }
-
-            $sale->packs()->sync($saleData['PackSale']);
-
-            $sale->products()->sync($saleData['ProductSale']);
 
             if($saleData['sale_type'] == 'apartado')
             {
