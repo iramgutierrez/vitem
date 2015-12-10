@@ -494,6 +494,7 @@
 
               if(segment.slug == 'not-assigned')
               {
+
                 product.notSegment = segment;
 
                 product.segments.splice(i , 1);
@@ -515,6 +516,24 @@
               }
 
             })
+
+            product.assignedSegments = [];
+
+            if(angular.isDefined(product.segments_sale))
+            {
+                angular.forEach(product.segments_sale , function(segment , s){
+
+                    if(product.notSegment.pivot.id != segment.pivot.segment_product_id)
+                    {
+                        product.assignedSegments[segment.pivot.segment_product_id] = segment.pivot.quantity;
+                    }
+
+
+
+                })
+            }
+
+            console.log(product.assignedSegments);
 
             product.quantity_init = $scope.quantityInit(product);
 
@@ -663,9 +682,11 @@
 
             angular.forEach(pack.products, function(product, key) {
 
+                var quantity = product.pivot.quantity;
+
                 $scope.showPacksSelected[pack.id].products[product.id] = {
-                    quantity : 1,
-                    quantityTotal : 1
+                    quantity : angular.isDefined(pack.pivot) ? (pack.pivot.quantity* quantity) : quantity,
+                    quantityTotal : angular.isDefined(pack.pivot) ? (pack.pivot.quantity * quantity) : quantity
                 };
 
                 $scope.addProduct(product , product.pivot.quantity , pack.id);
@@ -857,7 +878,7 @@
 
             angular.forEach(data, function(product, key) {
 
-              $scope.addProduct(product);
+              $scope.addProduct(product , product.pivot.quantity);
 
             });
 
@@ -872,7 +893,13 @@
 
           SalesService.getPacks(sale_id).then(function (data) {
 
-            $scope.packsSelected = data;
+              angular.forEach(data, function(pack, key) {
+
+                  $scope.addPack(pack , pack.pivot.quantity);
+
+              });
+
+            //$scope.packsSelected = data;
 
           });
 
@@ -1185,7 +1212,6 @@
               var quantity =  product.quantity;
           }
 
-
          if(product.hasOwnProperty('assignedSegments'))
          {
 
@@ -1193,7 +1219,7 @@
 
            angular.forEach(product.assignedSegments , function(segment ,c) {
 
-             tempQ = quantity
+             tempQ = quantity;
 
              tempQ -= segment
 

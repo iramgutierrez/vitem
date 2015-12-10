@@ -134,8 +134,9 @@ class SalesController extends \BaseController {
 	public function show($id)
 	{
 		$sale =  SaleRepo::with([
-						'products',
-						'packs',
+						'products.discounts',
+						'packs.discounts',
+                        'packs.products.discounts',
 						'sale_payments',
 						'sale_payments.employee',
 						'sale_payments.employee.user',

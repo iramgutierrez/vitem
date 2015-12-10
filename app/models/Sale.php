@@ -10,7 +10,7 @@ class Sale extends \Eloquent {
 
 	public function products()
     {
-        return $this->belongsToMany('Product', 'product_sale')->withPivot('quantity');
+        return $this->belongsToMany('Product', 'product_sale')->withPivot('quantity' , 'discount_id' , 'real_price' , 'discount_price');
     }
 
 		public function segments_products()
@@ -20,7 +20,7 @@ class Sale extends \Eloquent {
 
     public function packs()
     {
-        return $this->belongsToMany('Pack', 'pack_sale')->withPivot('quantity');
+        return $this->belongsToMany('Pack', 'pack_sale')->withPivot('quantity' , 'discount_id' , 'real_price' , 'discount_price');
     }
 
     public function user()

@@ -62,8 +62,7 @@ class SaleManager extends BaseManager {
             }
 
         }
-        echo "<pre>";
-        dd($saleData);
+
         if( $saleValid && $deliveryValid && $destinationValid)
         {
 
@@ -842,33 +841,65 @@ class SaleManager extends BaseManager {
 
             $pricePack = 0;
 
+            $packSale = $p;
+
             foreach($pack->products as $product)
             {
                 $pricePack += $product->price;
             }
 
-            $price = $pricePack * $p['quantity'];
+            $price = $pricePack * $packSale['quantity'];
 
-            if(!empty($p['discount_id']))
+            $packSale['discount_id'] = !empty($packSale['discount_id']) ? $packSale['discount_id'] : '';
+
+            $packSale['real_price'] = $price;
+
+            if($packSale['discount_id'])
             {
-                $discount  = \Discount::find($p['discount_id']);
+                $discount  = \Discount::find($packSale['discount_id']);
 
                 if($discount)
                 {
-                    $ṕrice = priceDiscountPerQuantity($discount , $price , $p['quantity']);
+                    $price = $this->priceDiscountPerQuantity($discount , $price , $packSale['quantity']);
                 }
             }
 
+            $packSale['discount_price'] = $price;
+
             $subtotal += $price;
+
+            $saleData['PackSale'][$k] = $packSale;
         }
 
         foreach($saleData['ProductSale'] as $k => $p)
         {
             $product = \Product::find($k);
 
-            $price = (float) $product->price * $p['quantity'];
+            $productSale = $p;
+
+            $price = (float) $product->price * $productSale['quantity'];
+
+            $productSale['discount_id'] = !empty($productSale['discount_id']) ? $productSale['discount_id'] : '';
+
+            $productSale['real_price'] = $price;
+
+            if($productSale['discount_id'])
+            {
+
+                $discount  = \Discount::find($productSale['discount_id']);
+
+                if($discount)
+                {
+                    $price = $this->priceDiscountPerQuantity($discount , $price , $productSale['quantity']);
+                }
+
+            }
+
+            $productSale['discount_price'] = $price;
 
             $subtotal += $price;
+
+            $saleData['ProductSale'][$k] = $productSale;
         }
 
         $commission_pay = 0;
@@ -906,11 +937,11 @@ class SaleManager extends BaseManager {
         {
             $saleData['SegmentProductPackSale'] = [];
         }
+
+
         foreach($saleData['SegmentProductPackSale'] as $s => $segment)
         {
-            $quantity = intval($segment['quantity']);
-
-            if($quantity <= 0)
+            if(empty($segment['quantity']))
             {
                 unset($saleData['SegmentProductPackSale'][$s]);
             }
@@ -920,9 +951,26 @@ class SaleManager extends BaseManager {
         return $saleData;
     }
 
-    private function priceDiscountPerQuantity(\Discount discount, price , quantity)
+    private function priceDiscountPerQuantity(\Discount $discount, $price , $quantity)
     {
+        $discountPrice = $price;
 
+        if($quantity >= $discount['item_quantity'])
+        {
+            if($discount['discount_type'] == 'percent')
+            {
+
+                $discountPrice = $discountPrice - ($discountPrice*$discount['quantity']/100);
+
+            }
+            else if($discount['discount_type'] == 'quantity')
+            {
+                $discountPrice = $discountPrice - $discount['quantity'];
+            }
+
+        }
+
+        return $discountPrice;
     }
 
 }

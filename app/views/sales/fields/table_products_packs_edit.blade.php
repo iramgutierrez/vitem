@@ -32,73 +32,87 @@
 
         <tr>
 
-        <th>Id</th>
+            <th class="col-sm-1">Id</th>
 
-        <th>Nombre</th>
+            <th class="col-sm-1">Nombre</th>
 
-        <th>Tipo</th>
+            <th class="col-sm-1">Tipo</th>
 
-        <th>Código</th>
+            <th class="col-sm-1">Código</th>
 
-        <th>Modelo / Descripción</th>
+            <th class="col-sm-1">Modelo / Descripción</th>
 
-        <th>En existencia</th>
+            <th class="col-sm-1">En existencia</th>
 
-        <th>Precio Unitario</th>
+            <th class="col-sm-1">Precio Unitario</th>
 
-        <th>Cantidad original</th>
+            <th class="col-sm-1">Descuento</th>
 
-        <th class="col-sm-2">Cantidad</th>
+            <th class="col-sm-1">Cantidad original</th>
 
-        <th>Precio</th>
+            <th class="col-sm-1">Cantidad</th>
 
-        <th>Borrar</th>
+            <th class="col-sm-1">Precio</th>
+
+            <th class="col-sm-1">Precio con descuento</th>
+
+            <th class="col-sm-1">Borrar</th>
 
       </tr>
 
       </thead>
 
-      <tbody ng-repeat="(k , product) in $root.productsSelected">
+      <tbody ng-repeat="(k , product) in $root.productsSelected track by k">
 
-      	<tr  ng-class="{ quantity_null : product.quantity_null  }">
+      	<tr  ng-class="{ quantity_null : product.quantity_null  }" ng-hide="product.pack_id && !showPacksSelected[product.pack_id].visible">
 
-  	    	<td>
+  	    	<td class="col-sm-1">
 
   	        	@{{product.id }}
 
   	      	</td>
 
-  	      	<td> @{{product.name }}</td>
+  	      	<td class="col-sm-1"> @{{product.name }}</td>
 
-  	      	<td> Producto </td>
+  	      	<td class="col-sm-1"> Producto </td>
 
-  	      	<td> @{{product.key }}</td>
+  	      	<td class="col-sm-1"> @{{product.key }}</td>
 
-  		    <td> @{{product.model }}</td>
+  		    <td class="col-sm-1"> @{{product.model }}</td>
 
-  		    <td> @{{product.stock }}</td>
+  		    <td class="col-sm-1"> @{{product.stock }}</td>
 
-  		    <td> @{{product.price | currency }}</td>
+  		    <td class="col-sm-1"> @{{product.price | currency }}</td>
 
-  		    <td> @{{product.quantity_init }}</td>
+            <td class="col-sm-1">
+                <span ng-show="!product.pack_id" >@{{ product.discount.name }}</span>
+            </td>
 
-  		    <td>
+  		    <td class="col-sm-1"> @{{product.quantity_init }}</td>
+
+  		    <td class="col-sm-1">
 
           		<div id="spinner1 col-sm-2">
 
                     <div class="input-group input-small">
 
-                        <input type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" ng-init="product.quantity = quantityInit(product)" name="ProductSale[@{{ product.id }}][quantity]" >
+                        <input ng-if="!product.pack_id && !product.isPack" type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="ProductSale[@{{ product.id }}][quantity]" ng-init="product.quantity = quantityInit(product)">
+                        <input ng-if="!product.pack_id && !product.isPack" type="hidden" ng-model="product.discount.id"  ng-value="product.discount.id" name="ProductSale[@{{ product.id }}][discount_id]" >
 
-                        <div class="spinner-buttons input-group-btn btn-group-vertical">
+                        <input ng-if="!product.pack_id && product.isPack" type="text" class="spinner-input form-control" maxlength="3" ng-model="product.quantity" name="PackSale[@{{ product.id }}][quantity]" ng-init="product.quantity = quantityInit(product)">
+                        <input ng-if="!product.pack_id && product.isPack" type="hidden" ng-model="product.discount.id"  ng-value="product.discount.id" name="PackSale[@{{ product.id }}][discount_id]" >
 
-                          <button ng-disabled="product.quantity_null" ng-click= "product.quantity = addQuantity(product.quantity , product.stock, product.quantity_init )" type="button" class="btn spinner-up btn-xs btn-default">
+                        <input ng-disabled="product.pack_id" ng-if="product.pack_id" type="text" class="spinner-input form-control" maxlength="3" ng-model="showPacksSelected[product.pack_id].products[product.id].quantityTotal">
+
+                        <div class="spinner-buttons input-group-btn btn-group-vertical" ng-show="!product.pack_id">
+
+                          <button ng-click= "product.quantity = addQuantity(product.quantity);  addQuantityPack(product.quantity , product.id); checkDiscount(product , k)" type="button" class="btn spinner-up btn-xs btn-default">
 
                               <i class="fa fa-angle-up"></i>
 
                             </button>
 
-                            <button ng-click= "product.quantity = removeQuantity(product.quantity)" type="button" class="btn spinner-down btn-xs btn-default">
+                            <button ng-click= "product.quantity = removeQuantity(product.quantity); checkDiscount(product , k)" type="button" class="btn spinner-down btn-xs btn-default">
 
                               <i class="fa fa-angle-down"></i>
 
@@ -110,15 +124,25 @@
 
                   </div>
 
-                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="!product.showSegments" >Mostrar criterios de segmentación</button>
+                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="!product.showSegments && !product.isPack" >Mostrar criterios de segmentación</button>
 
-                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="product.showSegments" >Ocultar criterios de segmentación</button>
+                  <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="showSegments(product); " ng-show="product.showSegments && !product.isPack" >Ocultar criterios de segmentación</button>
+
+                    <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="changeShowPackSelected(product.id);" ng-show="product.isPack && !showPacksSelected[product.id].visible" >Mostrar detalle</button>
+
+                    <button type="button" class="btn btn-primary col-sm-12" style="margin-top: 10px" ng-click="changeShowPackSelected(product.id);" ng-show="product.isPack && showPacksSelected[product.id].visible" >Ocultar detalle</button>
 
         		</td>
 
-        		<td> @{{ pricePerQuantity(product.price , product.quantity) | currency  }}</td>
+                <td class="col-sm-1">
+                    <span ng-show="!product.pack_id" >@{{ pricePerQuantity(product.price , product.quantity) | currency  }}</span>
+                </td>
 
-        		<td>
+                <td class="col-sm-1">
+                    <span ng-show="!product.pack_id" >@{{ priceDiscountPerQuantity(product.discount , pricePerQuantity(product.price , product.quantity) , product.quantity) | currency  }}</span>
+                </td>
+
+        		<td class="col-sm-1">
 
   		    	<button type="button" class="col-sm-12 btn btn-danger" ng-click="removeProduct(k)" >
 
@@ -153,7 +177,9 @@
           </td>
           <td>
             @{{ product.notSegment.pivot.quantity }}
-            <input type="hidden" name="SegmentProductSale[@{{product.notSegment.pivot.id}}][quantity]" value="@{{ getProductsWithoutSegments(product) }}">
+            <input type="hidden" ng-if="!product.pack_id && !product.isPack" name="SegmentProductSale[@{{product.notSegment.pivot.id}}][quantity]" value="@{{ getProductsWithoutSegments(product) }}">
+              <input type="hidden" ng-if="product.pack_id && !product.isPack" name="SegmentProductPackSale[@{{product.notSegment.pivot.id}}][quantity]" value="@{{ getProductsWithoutSegments(product) }}">
+              <input type="hidden" ng-if="product.pack_id && !product.isPack" name="SegmentProductPackSale[@{{product.notSegment.pivot.id}}][pack_id]" value="@{{ product.pack_id }}">
           </td>
           <td>@{{ product.notSegment.assigned }}</td>
           <td>@{{ getProductsWithoutSegments(product) }}</td>
@@ -167,10 +193,16 @@
           <td>@{{ segment.pivot.quantity  }}</td>
           <td>@{{ product.assigned_segments[segment.pivot.id]}}</td>
           <td>
-            <select class="form-control" ng-model="product.assignedSegments[segment.pivot.id]" name="SegmentProductSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" >
+              <input type="number" ng-if="!product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[segment.pivot.id]" name="SegmentProductSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" />
+
+            <!--<select class="form-control" ng-model="product.assignedSegments[segment.pivot.id]" name="SegmentProductSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" >
               <option value="0">0</option>
               <option ng-repeat="n in [] | range:getMaxProductSegment(getProductsWithoutSegments(product) , segment.pivot.quantity + product.assigned_segments[segment.pivot.id] , product.assignedSegments[segment.pivot.id] , product, segment.pivot.id)" value="@{{ n+1 }}">@{{ n+1 }}</option>
-            </select>
+            </select>-->
+
+              <input type="hidden" ng-if="product.pack_id && !product.isPack" name="SegmentProductPackSale[@{{segment.pivot.id}}][pack_id]" value="@{{ product.pack_id }}">
+              <input type="number" ng-if="product.pack_id && !product.isPack" class="form-control" ng-model="product.assignedSegments[segment.pivot.id]" name="SegmentProductPackSale[@{{segment.pivot.id}}][quantity]" ng-change="getProductsWithoutSegments(product)" />
+
           </td>
           <td></td>
           <td></td>
