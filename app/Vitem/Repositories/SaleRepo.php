@@ -104,8 +104,49 @@ class SaleRepo extends BaseRepo {
 
         $sale = $sale->first();
 
+        $packs = $sale->packs->toArray();
+
+        foreach($packs as $p => $pack)
+        {
+            $pack_sale_id = $pack['pivot']['id'];
+
+            foreach($pack['products'] as $pp => $product)
+            {
+                $packs[$p]['products'][$pp]['segments_sale'] = [];
+
+                foreach($product['segments'] as $s => $segment)
+                {
+                    $segment_product_id = $segment['pivot']['id'];
+
+                    $segment_product_pack_id = \SegmentProductPackSale::
+                                                                with('segment_product')
+                                                                ->where('pack_sale_id' , $pack_sale_id)
+                                                                ->where('segment_product_id' , $segment_product_id)
+                                                                ->first();
+
+                    if($segment_product_pack_id)
+                    {
+                        $segment_product_pack_id = $segment_product_pack_id->toArray();
+
+                        $final_segment_product_pack_id = $segment_product_pack_id;
+
+                        $pivot_segment_product_pack_id = $final_segment_product_pack_id['segment_product'];
+
+                        unset($final_segment_product_pack_id['segment_product']);
+
+                        $pivot_segment_product_pack_id['pivot'] = $final_segment_product_pack_id;
+
+                        $packs[$p]['products'][$pp]['segments_sale'][] = $pivot_segment_product_pack_id;
+                    }
+
+
+                }
+            }
+        }
+
+
         if(isset($sale->packs))        	
-			return $sale->packs;
+			return $packs;
 
 		return [];
 	}

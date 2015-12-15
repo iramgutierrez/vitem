@@ -144,7 +144,13 @@ class SaleManager extends BaseManager {
                 {
                     $PackSale->segments_products()->detach($k);
 
-                    $PackSale->segments_products()->attach([$k=>['quantity' => $c['quantity']]]);
+                    $PackSale->segments_products()->attach([
+                            $k=>[
+                                'quantity' => $c['quantity'],
+                                'sale_id' => $sale->id
+                            ]
+                        ]
+                    );
                 }
 
             }
@@ -280,7 +286,7 @@ class SaleManager extends BaseManager {
         $saleData = $this->data;
 
         $this->sale = \Sale::with('products')
-                     ->with('packs')
+                     ->with('packs.products.segments')
                      ->with('client')
                      ->with(['employee' , 'employee.user' , 'sale_payments', 'segments_products'])
                      ->find($saleData['id']);
@@ -345,6 +351,8 @@ class SaleManager extends BaseManager {
 
 
             $sale = $this->sale;
+            echo "<pre>";
+            //dd($saleData);
 
             $saleOld = $this->sale;
 
@@ -365,6 +373,22 @@ class SaleManager extends BaseManager {
 
             }
 
+            foreach($saleData['SegmentProductPackSale'] as $k => $c)
+            {
+
+                $SegmentProduct = \SegmentProduct::find($k);
+
+                if($SegmentProduct)
+                {
+
+                    $SegmentProduct->quantity -= $c['quantity'];
+
+                    $SegmentProduct->save();
+
+                }
+
+            }
+
            foreach($saleOld->segments_products->toArray() as $k => $c)
            {
 
@@ -375,7 +399,60 @@ class SaleManager extends BaseManager {
              $SegmentProduct->save();
            }
 
+            foreach($saleOld->packs as $p => $pack) {
+
+                $PackSale = \PackSale::where('pack_id' , $pack->id)->where('sale_id' , $saleOld->id)->first();
+
+                $pack_sale_id = $PackSale->id;
+
+                foreach ($pack->products as $pp => $product) {
+
+                    foreach ($product->segments as $s => $segment) {
+
+                        $segment_product_id = $segment->pivot->id;
+
+                        $segment_product_pack_sale = \SegmentProductPackSale::
+                        with('segment_product')
+                            ->where('pack_sale_id', $pack_sale_id)
+                            ->where('segment_product_id', $segment_product_id)
+                            ->first();
+
+                        if($segment_product_pack_sale)
+                        {
+
+                            $SegmentProduct = $segment_product_pack_sale->segment_product;
+
+                            $SegmentProduct->quantity += $segment_product_pack_sale->quantity;
+
+                            $SegmentProduct->save();
+                        }
+
+
+                    }
+                }
+
+                $PackSale->segments_products()->sync([]);
+            }
+
+
+
            $sale->segments_products()->sync($saleData['SegmentProductSale']);
+
+
+
+            foreach($saleData['SegmentProductPackSale'] as $k => $c)
+            {
+
+                $PackSale = \PackSale::where('pack_id' , $c['pack_id'])->where('sale_id' , $sale->id)->first();
+
+                if($PackSale)
+                {
+                    $PackSale->segments_products()->detach($k);
+
+                    $PackSale->segments_products()->attach([$k=>['quantity' => $c['quantity']]]);
+                }
+
+            }
 
 
 
@@ -871,15 +948,17 @@ class SaleManager extends BaseManager {
             $saleData['PackSale'][$k] = $packSale;
         }
 
+        $productsSale = [];
+
         foreach($saleData['ProductSale'] as $k => $p)
         {
-            $product = \Product::find($k);
+            $product = \Product::find($p['product_id']);
 
             $productSale = $p;
 
             $price = (float) $product->price * $productSale['quantity'];
 
-            $productSale['discount_id'] = !empty($productSale['discount_id']) ? $productSale['discount_id'] : '';
+            $productSale['discount_id'] = !empty($productSale['discount_id']) ? $productSale['discount_id'] : '0';
 
             $productSale['real_price'] = $price;
 
@@ -899,8 +978,21 @@ class SaleManager extends BaseManager {
 
             $subtotal += $price;
 
-            $saleData['ProductSale'][$k] = $productSale;
+            if(empty($productsSale[$productSale['product_id']]))
+            {
+                $productsSale[$productSale['product_id']] = $productSale;
+
+                unset($productsSale[$productSale['product_id']]['product_id']);
+            }
+            else
+            {
+                $productsSale[$productSale['product_id']]['quantity'] += $productSale['quantity'];
+            }
+
+
         }
+
+        $saleData['ProductSale'] = $productsSale;
 
         $commission_pay = 0;
 
@@ -922,22 +1014,37 @@ class SaleManager extends BaseManager {
         {
             $saleData['SegmentProductSale'] = [];
         }
+
+        $segmentsProductsSale = [];
         foreach($saleData['SegmentProductSale'] as $s => $segment)
         {
             $quantity = intval($segment['quantity']);
 
             if($quantity <= 0)
             {
-                unset($saleData['SegmentProductSale'][$s]);
+                $quantity = 0;
             }
 
+            if(empty($segmentsProductsSale[$segment['segment_product']]))
+            {
+                $segmentsProductsSale[$segment['segment_product']] = $segment;
+
+                unset($segmentsProductsSale[$segment['segment_product']]['segment_product']);
+            }
+            else
+            {
+                $segmentsProductsSale[$segment['segment_product']]['quantity'] += $quantity;
+            }
 
         }
+
+        $saleData['SegmentProductSale'] = $segmentsProductsSale;
+
+
         if(!isset($saleData['SegmentProductPackSale']))
         {
             $saleData['SegmentProductPackSale'] = [];
         }
-
 
         foreach($saleData['SegmentProductPackSale'] as $s => $segment)
         {

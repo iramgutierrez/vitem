@@ -13,14 +13,14 @@ class Sale extends \Eloquent {
         return $this->belongsToMany('Product', 'product_sale')->withPivot('quantity' , 'discount_id' , 'real_price' , 'discount_price');
     }
 
-		public function segments_products()
-		{
-			return $this->belongsToMany('SegmentProduct', 'segment_product_sale')->withPivot('quantity');
-		}
+    public function segments_products()
+    {
+        return $this->belongsToMany('SegmentProduct', 'segment_product_sale')->withPivot('quantity');
+    }
 
     public function packs()
     {
-        return $this->belongsToMany('Pack', 'pack_sale')->withPivot('quantity' , 'discount_id' , 'real_price' , 'discount_price');
+        return $this->belongsToMany('Pack', 'pack_sale')->withPivot('id','quantity' , 'discount_id' , 'real_price' , 'discount_price');
     }
 
     public function user()

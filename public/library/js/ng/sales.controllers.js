@@ -533,7 +533,6 @@
                 })
             }
 
-            console.log(product.assignedSegments);
 
             product.quantity_init = $scope.quantityInit(product);
 
@@ -610,6 +609,8 @@
                     if(product.pack_id == pack_id)
                     {
                         $rootScope.productsSelected[p].pack_id = false;
+
+                        $rootScope.productsSelected[p].wasInPack = true;
 
                         $rootScope.productsSelected[p].quantity = $rootScope.productsSelected[p].quantity * quantityPack;
                     }
@@ -919,16 +920,25 @@
 
           quantity = item.quantity;
 
-          if(item.hasOwnProperty('pivot'))
+          if(item.pack_id)
+          {
+              quantity = $scope.showPacksSelected[item.pack_id].products[item.id].quantityTotal
+          }
+            else
           {
 
-            if(item.pivot.hasOwnProperty('quantity'))
+              if(item.hasOwnProperty('pivot'))
+              {
 
-            {
+                  if(item.pivot.hasOwnProperty('quantity') && !item.hasOwnProperty('wasInPack'))
 
-              quantity = item.pivot.quantity;
+                  {
 
-            }
+                      quantity = item.pivot.quantity;
+
+                  }
+
+              }
 
           }
 
@@ -1218,30 +1228,33 @@
            var tempQ = quantity;
 
            angular.forEach(product.assignedSegments , function(segment ,c) {
+            if(angular.isDefined(segment))
+            {
+                tempQ = quantity;
 
-             tempQ = quantity;
+                tempQ -= segment
 
-             tempQ -= segment
+                if(tempQ < 0)
+                {
+                    var dismuss = tempQ * (-1);
 
-             if(tempQ < 0)
-             {
-               var dismuss = tempQ * (-1);
+                    if(segment < dismuss)
+                    {
+                        dismuss = segment;
+                    }
 
-               if(segment < dismuss)
-               {
-                 dismuss = segment;
-               }
+                    segment -= dismuss;
 
-               segment -= dismuss;
+                    product.assignedSegments[c] = segment;
 
-               product.assignedSegments[c] = segment;
+                    tempQ = quantity;
 
-               tempQ = quantity;
+                    tempQ -= segment;
+                }
 
-               tempQ -= segment;
-             }
+                quantity = tempQ;
 
-             quantity = tempQ;
+            }
 
            })
 
