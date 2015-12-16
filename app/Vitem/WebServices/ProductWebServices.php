@@ -12,14 +12,14 @@ class ProductWebServices extends BaseWebServices {
 
 	static function all()
 	{
-        $with = ['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Segments'];
+        $with = ['Sales.client' , 'Sales.Employee.User' , 'Supplier' , 'Segments' , 'discounts.stores' , 'discounts.pay_types'];
 
-        $with['discounts'] = function($query)
+        /*$with['discounts'] = function($query)
         {
             $query
                 ->where('init_date', '<' , date('Y-m-d H:i:s'))
                 ->where('end_date', '>' , date('Y-m-d H:i:s'));
-        };
+        };*/
 
 		return \Response::json(\Product::with($with)->limit(10)->orderBy('id','desc')->get());
 

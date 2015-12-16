@@ -187,6 +187,8 @@ Route::group(['before' => 'auth'], function () {
 
     Route::get('API/discounts/{method?}' , ['as' => 'discountsAPI', 'uses' => 'DiscountsController@API']);
 
+    Route::get('API/movements/{method?}' , ['as' => 'movementsAPI', 'uses' => 'MovementsController@API']);
+
 	Route::get('reports/sales' , ['as' => 'reports.sales', 'uses' => 'ReportsController@sales']);
 
 	Route::get('reports/movements' , ['as' => 'reports.movements', 'uses' => 'ReportsController@movements']);

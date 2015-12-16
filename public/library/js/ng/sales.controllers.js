@@ -407,6 +407,15 @@
 
         }
 
+          $scope.checkAllDiscounts = function()
+          {
+              angular.forEach($rootScope.productsSelected , function (product , key){
+
+                  $scope.checkDiscount(product , key);
+
+              })
+          }
+
           $scope.checkDiscount = function(product , key)
           {
 
@@ -414,26 +423,77 @@
               {
                   var finalDiscount = {};
 
-                  var priceProduct = $scope.pricePerQuantity(product.price , product.quantity);
+                  if(!angular.isDate($scope.saleDate))
+                  {
+                      $scope.saleDate = new Date($scope.saleDate);
+                  }
 
-                  var priceDiscount = priceProduct;
+                  if($scope.saleDate && angular.isDate($scope.saleDate) && $scope.pay_type_id && $scope.store_id) {
 
-                  angular.forEach(product.discounts , function(discount){
+                      var date = $filter('date')($scope.saleDate, 'yyyy-MM-dd 00:mm:ss');
 
-                      priceDiscount = $scope.priceDiscountPerQuantity(discount , priceProduct , product.quantity);
+                      var priceProduct = $scope.pricePerQuantity(product.price, product.quantity);
 
-                      if(priceDiscount < priceProduct)
-                      {
-                          finalDiscount = discount;
-                      }
-                  });
+                      var priceDiscount = priceProduct;
+
+                      angular.forEach(product.discounts, function (discount) {
+
+                          var inStore = $scope.checkDiscountInStore($scope.store_id , discount.stores);
+
+                          var inPayType = $scope.checkDiscountInPayType($scope.pay_type_id , discount.pay_types);
+                          console.log(discount)
+                          if(discount.init_date <= date && discount.end_date >= date && inStore && inPayType)
+                          {
+                              priceDiscount = $scope.priceDiscountPerQuantity(discount, priceProduct, product.quantity);
+
+                              if (priceDiscount < priceProduct) {
+                                  finalDiscount = discount;
+                              }
+                          }
+
+                      });
+                  }
 
                   $rootScope.productsSelected[key].discount = finalDiscount;
+
+                  console.log($rootScope.productsSelected[key])
               }
               else
               {
 
               }
+
+          }
+
+          $scope.checkDiscountInStore = function(store_id , stores)
+          {
+              var inStore = false;
+
+              angular.forEach(stores , function(store){
+
+                  if(store.id == store_id)
+                  {
+                      inStore = true;
+                  }
+              })
+
+              return inStore;
+
+          }
+
+          $scope.checkDiscountInPayType = function(pay_type_id , pay_types)
+          {
+              var inPayType = false;
+
+              angular.forEach(pay_types , function(pay_type){
+
+                  if(pay_type.id == pay_type_id)
+                  {
+                      inPayType = true;
+                  }
+              })
+
+              return inPayType;
 
           }
 

@@ -16,6 +16,7 @@
 			<th>Comisión a forma de pago</th>
 			<th>Total en caja</th>
 			<th>Productos</th>
+            <th>Paquetes</th>
 			{{--<th>Paquetes</th>--}}
 			<th>Comisiones</th>
 			<th>Entrega</th>
@@ -53,11 +54,11 @@
 				</table>
 				@endif
 			</td>
-			{{--<td>
+			<td>
 				@if(count($sale->packs))
 				<table>
 					<tr>
-						<th>Producto</th>
+						<th>Paquete</th>
 						<th>Cantidad</th>
 					</tr>
 					@foreach($sale->packs as $pack)
@@ -68,7 +69,7 @@
 					@endforeach
 				</table>
 				@endif
-			</td>--}}
+			</td>
 			<td>
 				@if(count($sale->commissions))
 				<table >

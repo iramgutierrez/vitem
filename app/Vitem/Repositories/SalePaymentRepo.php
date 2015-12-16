@@ -114,7 +114,7 @@ class SalePaymentRepo extends BaseRepo {
 			
 			}
 
-			$salePaymentsByRange[$sale_payment[$field]] += $sale_payment->quantity;
+			$salePaymentsByRange[$sale_payment[$field]] += $sale_payment->total;
 
 		}
 

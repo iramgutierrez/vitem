@@ -156,7 +156,7 @@
       	</tr>
 
         <tr ng-if="product.showSegments && product.segments.length">
-          <td colspan="5"></td>
+          <td colspan="7"></td>
           <td>Segment</td>
           <td>Disponibles</td>
           <td>En venta original</td>
@@ -166,14 +166,14 @@
         </tr>
 
         <tr ng-if="product.showSegments && !product.segments.length">
-          <td colspan="8" class="text-right">Este producto no tiene criterios de segmentación asignados</td>
+          <td colspan="10" class="text-right">Este producto no tiene criterios de segmentación asignados</td>
           <td></td>
           <td></td>
           <td></td>
         </tr>
 
         <tr ng-if="product.showSegments && product.segments.length">
-          <td colspan="6" class="text-right">
+          <td colspan="8" class="text-right">
             Ningun criterio de segmentación asignado
           </td>
           <td>
@@ -192,7 +192,7 @@
         </tr>
 
         <tr  ng-show="product.showSegments && product.segments.length" ng-repeat="(c , segment)  in product.segments">
-          <td colspan="5"></td>
+          <td colspan="7"></td>
           <td>@{{ segment.name }}</td>
           <td>@{{ segment.pivot.quantity  }}</td>
           <td>@{{ product.assigned_segments[segment.pivot.id]}}</td>
@@ -281,7 +281,7 @@
 
       	<tr>
 
-  	    	<td colspan="6"></td>
+  	    	<td colspan="9"></td>
 
   	      	<td colspan="2" class="text-right">
 
@@ -299,7 +299,7 @@
 
         <tr>
 
-          <td colspan="6"></td>
+          <td colspan="9"></td>
 
             <td colspan="2" class="text-right">
 
@@ -317,7 +317,7 @@
 
         <tr>
 
-          <td colspan="6"></td>
+          <td colspan="9"></td>
 
             <td colspan="2" class="text-right">
 
@@ -335,7 +335,7 @@
 
         <tr>
 
-          <td colspan="6"></td>
+          <td colspan="9"></td>
 
             <td colspan="2" class="text-right">
 

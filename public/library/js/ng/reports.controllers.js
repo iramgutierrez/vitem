@@ -338,8 +338,9 @@
           'update' : 'Editar',
           'delete' : 'Eliminar'
         };
+
         $scope.entity_types = {
-          'Sales' : 'Venta',
+          'Sale' : 'Venta',
           'SalePayment' : 'Abono',
           'Commission' : 'Comisión',
           'Order' : 'Pedido',
@@ -347,10 +348,75 @@
           'Expense' : 'Gasto',
           'Delivery' : 'Entrega'
         };
+
         $scope.flows = {
           'in' : 'Entrante',
           'out' : 'Saliente'
         }
+
+
+
+          /*Generar XLS */
+
+          $scope.filename = 'reporte_movimientos';
+
+          $scope.dataExport = false;
+
+          $scope.headersExport = JSON.stringify([
+              {
+                  field : 'id',
+                  label : 'Id'
+              },
+              {
+                  field : {
+                      user : 'name'
+                  },
+                  label : 'Usuario del sistema'
+              },
+              {
+                  field : {
+                      store : 'name'
+                  },
+                  label : 'Sucursal'
+              },
+              {
+                  field : 'type',
+                  label : 'Tipo'
+              },
+              {
+                  field : 'entity',
+                  label : 'Tipo de entidad'
+              },
+              {
+                  field : 'entity_id',
+                  label : 'Id de entidad'
+              },
+              {
+                  field : 'date',
+                  label : 'Fecha'
+              },
+              {
+                  field : 'amount_in',
+                  label : 'Cantidad entrante'
+              },
+              {
+                  field : 'amount_out',
+                  label : 'Cantidad saliente'
+              },
+              {
+                  field : 'total',
+                  label : 'Total'
+              },
+          ]);
+
+          $scope.generateJSONDataExport = function( data )
+          {
+
+              return JSON.stringify(data);
+
+          }
+
+          /*Generar XLS */
 
         $scope.init = function()
         {
@@ -385,9 +451,11 @@
 
         MovementsService.all().then(function (data) {
 
-          //$scope.movementsAll = data;
+          $scope.movementsAll = data;
 
           $scope.movements = data;
+
+            $scope.dataExport = $scope.generateJSONDataExport($scope.movements);
 
           $scope.search(true);
 
@@ -471,6 +539,9 @@
                                   $scope.entity_type,
                                   $scope.flow
                               );
+
+
+              $scope.dataExport = $scope.generateJSONDataExport($scope.movements);
 
 
           }

@@ -60,7 +60,7 @@ class ProductsController extends \BaseController {
 
 		];
 
-		$stores = \Store::all();
+		/*$stores = \Store::all();
 
 		foreach($stores as $k => $store)
 		{
@@ -74,7 +74,7 @@ class ProductsController extends \BaseController {
 				],
 				'label' => 'En sucursal '.$store->name
 			];
-		}
+		}*/
 
 		$headersExport = array_merge($headersExport , [
 							[

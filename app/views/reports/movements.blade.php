@@ -31,8 +31,6 @@
 					<h1 class="col-sm-3">Movimientos</h1>
 				</header>
 
-				{{ Form::open(['route' => 'reports.generate_xls']) }}
-
 				<div class="form-group-col-sm-12">
 					{{ Field::text(
 							'',
@@ -140,6 +138,49 @@
 				</div>
 				<div class="col-sm-4 form-group">
 				</div>
+                {{ Form::open(['route' => 'reports.generate_custom_xls' ,'class' => 'col-sm-12']) }}
+
+                {{
+
+                    Field::hidden(
+                        'headersExport',
+                        '',
+                        [
+                            'ng-model' => 'headersExport',
+                            'ng-value' => 'headersExport'
+                        ]
+                    )
+
+                }}
+
+                {{
+
+                    Field::hidden(
+                        'dataExport',
+                        null,
+                        [
+                            'ng-model' => 'dataExport',
+                            'ng-value' => 'dataExport',
+                            'ng-init' => 'generateJSONDataExport()',
+                            'ng-change' => 'dataExport = generateJSONDataExport()'
+                        ]
+                    )
+
+                }}
+
+                {{
+
+                    Field::hidden(
+                        'filename',
+                        null,
+                        [
+                            'ng-model' => 'filename',
+                            'ng-value' => 'filename'
+                        ]
+                    )
+
+                }}
+
 				<div class="form-group col-sm-12">
 
 					<div class="form-group col-sm-12">
@@ -151,11 +192,13 @@
 					</p>
 					<div class="form-group pull-right">
 						<button type="button" ng-click="clear()" class="btn btn-info">Limpiar filtros</button>
-						<button type="submit" class="btn btn-success">Generar XLS</button>
+                        <button type="submit" class="pull-right btn btn-success" ng-disabled="!dataExport">Generar XLS</button>
 					</div>
 				</div>
 
-				{{ Form::close() }}
+                {{ Form::close() }}
+
+                <!-- Generar XLS -->
 
 				<div class="clearfix"></div>
 

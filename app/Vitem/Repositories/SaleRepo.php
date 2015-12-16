@@ -33,7 +33,7 @@ class SaleRepo extends BaseRepo {
 		if(!$canReadProducts)
 			return [];
 
-		$sale = \Sale::with(['products.segments' ,'segments_products' , 'products.discounts' ]);
+		$sale = \Sale::with(['products.segments' ,'segments_products' , 'products.discounts.stores'  , 'products.discounts.pay_types']);
 		$sale = $sale->where('id' , $saleId);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
@@ -88,7 +88,7 @@ class SaleRepo extends BaseRepo {
 		if(!$canReadPacks)
 			return [];
 
-		$sale = self::with(['packs.products.discounts' , 'packs.products.segments' , 'packs.discounts' , 'packs.segments_products']);
+		$sale = self::with(['packs.products.discounts' , 'packs.products.segments' , 'packs.discounts.stores', 'packs.discounts.pay_types' , 'packs.segments_products']);
 		
 		$sale = $sale->where('id' , $saleId);
 
@@ -715,7 +715,7 @@ class SaleRepo extends BaseRepo {
 			
 			}
 
-			$salesByRange[$sale[$field]] += $sale->total;
+			$salesByRange[$sale[$field]] += $sale->subtotal;
 
 		}
 

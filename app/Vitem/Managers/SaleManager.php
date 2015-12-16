@@ -351,8 +351,6 @@ class SaleManager extends BaseManager {
 
 
             $sale = $this->sale;
-            echo "<pre>";
-            //dd($saleData);
 
             $saleOld = $this->sale;
 
@@ -782,10 +780,13 @@ class SaleManager extends BaseManager {
         $saleData = $this->data;
 
         $this->sale = \Sale::with('products')
-                           ->with('packs')
-                           ->with('client')
-                           ->with('employee')
-                           ->find($saleData['id']);
+                            ->with('packs.products.segments')
+                            ->with('segments_products')
+                            ->with('client')
+                            ->with('employee')
+                            ->find($saleData['id']);
+
+
         if($this->sale)
         {
 
@@ -827,6 +828,57 @@ class SaleManager extends BaseManager {
 
                     }
 
+                }
+
+                $segments_products = $this->sale->segments_products;
+
+                if($segments_products)
+                {
+                    foreach($segments_products->toArray() as $k => $c)
+                    {
+
+                        $SegmentProduct = \SegmentProduct::find($c['id']);
+
+                        $SegmentProduct->quantity += $c['pivot']['quantity'];
+
+                        $SegmentProduct->save();
+                    }
+                }
+
+
+                foreach($this->sale->packs as $p => $pack) {
+
+                    $PackSale = \PackSale::where('pack_id' , $pack->id)->where('sale_id' , $this->sale->id)->first();
+
+                    $pack_sale_id = $PackSale->id;
+
+                    foreach ($pack->products as $pp => $product) {
+
+                        foreach ($product->segments as $s => $segment) {
+
+                            $segment_product_id = $segment->pivot->id;
+
+                            $segment_product_pack_sale = \SegmentProductPackSale::
+                            with('segment_product')
+                                ->where('pack_sale_id', $pack_sale_id)
+                                ->where('segment_product_id', $segment_product_id)
+                                ->first();
+
+                            if($segment_product_pack_sale)
+                            {
+
+                                $SegmentProduct = $segment_product_pack_sale->segment_product;
+
+                                $SegmentProduct->quantity += $segment_product_pack_sale->quantity;
+
+                                $SegmentProduct->save();
+                            }
+
+
+                        }
+                    }
+
+                    $PackSale->segments_products()->sync([]);
                 }
             }
 
@@ -922,7 +974,7 @@ class SaleManager extends BaseManager {
 
             foreach($pack->products as $product)
             {
-                $pricePack += $product->price;
+                $pricePack += ($product->price * $product->pivot->quantity);
             }
 
             $price = $pricePack * $packSale['quantity'];
@@ -1016,6 +1068,7 @@ class SaleManager extends BaseManager {
         }
 
         $segmentsProductsSale = [];
+
         foreach($saleData['SegmentProductSale'] as $s => $segment)
         {
             $quantity = intval($segment['quantity']);
@@ -1028,6 +1081,8 @@ class SaleManager extends BaseManager {
             if(empty($segmentsProductsSale[$segment['segment_product']]))
             {
                 $segmentsProductsSale[$segment['segment_product']] = $segment;
+
+                $segmentsProductsSale[$segment['segment_product']]['quantity'] = $quantity;
 
                 unset($segmentsProductsSale[$segment['segment_product']]['segment_product']);
             }
@@ -1055,6 +1110,7 @@ class SaleManager extends BaseManager {
 
 
         }
+
         return $saleData;
     }
 

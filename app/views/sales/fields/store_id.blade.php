@@ -17,7 +17,7 @@
 
 		            'ng-model' => 'store_id',
 
-		            'ng-change' => 'changeStore()',
+		            'ng-change' => 'changeStore(); checkAllDiscounts()',
 
 					'ng-init' => 'store_id = checkValuePreOrOld("'.((!empty($sale->store_id)) ? $sale->store_id : '').'" , "'.((Input::old('store_id')) ? Input::old('store_id') : '').'")',
 
