@@ -289,4 +289,14 @@ class POSWebServices extends BaseWebServices {
 		}
 
 	}
+
+
+    public function getAccessToken()
+    {
+
+
+        return \Response::json(\Authorizer::issueAccessToken());
+
+    }
+
 }

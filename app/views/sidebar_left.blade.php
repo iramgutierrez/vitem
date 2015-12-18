@@ -195,6 +195,7 @@
                       </a>
                       <ul class="sub">
                           <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('reports.sales') }}">Reporte de ventas</a></li>
+                          <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('reports.movements') }}">Reporte de movimientos</a></li>
                           <li data-entities="user" data-actions="read" data-permissions ><a  href="{{ route('reports.compare_sellers') }}">Comparador de vendedores</a></li>
                           <li data-entities="user" data-actions="read" data-permissions ><a  href="{{ route('reports.compare_drivers') }}">Comparador de choferes</a></li>
                       </ul>
@@ -213,7 +214,8 @@
                           <li data-entities="pay_type" data-actions="read" data-permissions ><a  href="{{ route('pay_types.index') }}">Terminales de pago</a></li>
                           <li data-entities="expense_type" data-actions="read" data-permissions ><a  href="{{ route('expense_types.index') }}">Tipos de gastos</a></li>
                           <li data-entities="client_type" data-actions="read" data-permissions ><a  href="{{ route('client_types.index') }}">Tipos de clientes</a></li>
-                          <li data-entities="color" data-actions="read" data-permissions ><a  href="{{ route('colors.index') }}">Colores</a></li>
+                          <li data-entities="color" data-actions="read" data-permissions ><a  href="{{ route('catalogs.index') }}">Catálogos</a></li>
+                          <li data-entities="color" data-actions="read" data-permissions ><a  href="{{ route('segments.index') }}">Segmentos</a></li>
                       </ul>
                   </li>
 

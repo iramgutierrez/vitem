@@ -17,11 +17,13 @@ Route::get('POS/{method?}' , [/*'before' => 'oauth' , */ 'as' => 'POS', 'uses' =
 
 Route::post('POS/{method?}' , ['as' => 'POSPost', 'uses' => 'POSController@APIPost']);
 
-Route::post('oauth/access_token' , function() {
+/*Route::post('oauth/access_token' , function() {
+
+    header('Access-Control-Allow-Origin: http://localhost:8080');
 
     return Response::json(Authorizer::issueAccessToken());
 
-});
+});*/
 
 Route::group(['before' => 'guest'], function () {
 

@@ -83,6 +83,14 @@ class POSPostWebServices extends BaseWebServices {
         return \Response::json($response , 200);
 	}
 
+    public function getAccessToken()
+    {
+
+
+        return \Response::json(\Authorizer::issueAccessToken());
+
+    }
+
 	private function isEqual($str1, $str2)
 	{
 	    $n1 = strlen($str1);
