@@ -89,7 +89,7 @@ class PackRepo extends BaseRepo {
 	public function search($find , $store_id)
 	{
 
-		self::$packs = \Pack::with('products');
+		self::$packs = \Pack::with('products.segments','products.discounts.stores' , 'products.discounts.pay_types' , 'discounts.stores' , 'discounts.pay_types');
 
 		self::generateLikeCondition( $find , ['id' , 'name' , 'key' ]);
 

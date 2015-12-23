@@ -13,7 +13,7 @@ class ProductRepo extends BaseRepo {
 	public function search($find )
 	{
 
-		self::$products = \Product::with('segments');
+		self::$products = \Product::with('segments' , 'discounts.pay_types' , 'discounts.stores');
 
 		self::generateLikeCondition( $find , ['id' , 'name' , 'key' , 'model']);
 

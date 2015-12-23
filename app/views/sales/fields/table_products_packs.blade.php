@@ -128,21 +128,21 @@
 
         		</td>
 
-        		<td class="col-sm-1">
-                    <span ng-show="!product.pack_id" >@{{ pricePerQuantity(product.price , product.quantity) | currency  }}</span>
-                </td>
+            <td class="col-sm-1">
+                <span ng-show="!product.pack_id" >@{{ pricePerQuantity(product.price , product.quantity) | currency  }}</span>
+            </td>
 
-                <td class="col-sm-1">
-                    <span ng-show="!product.pack_id" >@{{ priceDiscountPerQuantity(product.discount , pricePerQuantity(product.price , product.quantity) , product.quantity) | currency  }}</span>
-                </td>
+            <td class="col-sm-1">
+                <span ng-show="!product.pack_id" >@{{ priceDiscountPerQuantity(product.discount , pricePerQuantity(product.price , product.quantity) , product.quantity) | currency  }}</span>
+            </td>
 
-        		<td class="col-sm-1">
+            <td class="col-sm-1">
 
-  		    	<button type="button" class="col-sm-12 btn btn-danger" ng-click="removeProduct(k)" >
+            <button type="button" class="col-sm-12 btn btn-danger" ng-click="removeProduct(k)" >
 
-  		          <i class="fa fa-times"></i>
+                <i class="fa fa-times"></i>
 
-  		        </button>
+                </button>
 
   		    </td>
 
