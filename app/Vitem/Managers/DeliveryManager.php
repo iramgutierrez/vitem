@@ -23,7 +23,10 @@ class DeliveryManager extends BaseManager {
     {
         $data = $this->data;
 
-        $canCreateDestination = PermissionRepo::checkAuth('Destination' , 'Create');
+        if(empty($data['access_token']))
+        {
+            $canCreateDestination = PermissionRepo::checkAuth('Destination' , 'Create');
+        }
 
         if(isset($data['new_destination']) && $canCreateDestination)
         {
@@ -111,7 +114,7 @@ class DeliveryManager extends BaseManager {
             $store_id = $delivery->sale->store_id;
 
             \Movement::create([
-                'user_id' => \Auth::user()->id,
+                'user_id' => $delivery->user_id,
                 'store_id' => $delivery->sale->store_id,
                 'type' => 'create',
                 'entity' => 'Delivery',
@@ -354,7 +357,7 @@ class DeliveryManager extends BaseManager {
     public function prepareData($deliveryData)
     {
 
-        $deliveryData['user_id'] = \Auth::user()->id;
+        //$deliveryData['user_id'] = \Auth::user()->id;
 
         $subtotal = 0;
 

@@ -15,7 +15,7 @@
 
 Route::get('POS/{method?}' , [/*'before' => 'oauth' , */ 'as' => 'POS', 'uses' => 'POSController@API']);
 
-Route::post('POS/{method?}' , ['as' => 'POSPost', 'uses' => 'POSController@APIPost']);
+Route::post('POS/{method?}' , ['before' => 'oauth' , 'as' => 'POSPost', 'uses' => 'POSController@APIPost']);
 
 Route::post('getAccessToken' , function() {
 

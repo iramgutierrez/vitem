@@ -33,8 +33,7 @@ class POSController extends \BaseController {
 	{
 		if($method)
 		{
-
-			header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Origin: *');
 
 			return $this->POSPostAPI->$method();
 		}

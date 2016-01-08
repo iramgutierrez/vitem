@@ -52,7 +52,7 @@ class Delivery extends \Eloquent {
         static::created(function($delivery)
         {
             Record::create([
-                'user_id' => Auth::user()->id,
+                'user_id' => $delivery->user_id,
                 'type' => 1,
                 'entity' => 'Delivery',
                 'entity_id' => $delivery->id,

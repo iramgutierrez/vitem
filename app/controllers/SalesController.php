@@ -102,7 +102,10 @@ class SalesController extends \BaseController {
 	 */
 	public function store()
 	{ 
-		$data = Input::all(); 
+		$data = Input::all();
+        echo "<pre>";
+        print_r($data);
+        exit();
 
 		$createSale = new SaleManager( $data );		
 

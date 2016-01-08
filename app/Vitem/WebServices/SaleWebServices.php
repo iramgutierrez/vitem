@@ -44,7 +44,6 @@ class SaleWebServices extends BaseWebServices {
             $sales = $sales->whereIn( 'employee_id' , $whereUserId);
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
-
         if(count($whereStoreId))
             $sales = $sales->whereIn( 'store_id' , $whereStoreId);
 

@@ -31,16 +31,28 @@ class SaleManager extends BaseManager {
 
         $destinationValid = true;
 
-        $canCreateDelivery = PermissionRepo::checkAuth('Delivery' , 'Create');
+        $canCreateDelivery = true;
+
+        if(empty($saleData['access_token']))
+        {
+
+            $canCreateDelivery = PermissionRepo::checkAuth('Delivery' , 'Create');
+
+        }
 
         if($saleData['delivery_type'] == 1 && isset($saleData['delivery']) && is_array($saleData['delivery']) && $canCreateDelivery)
         {
 
             $deliveryData = $saleData['delivery'];
 
-            $deliveryData['user_id'] = \Auth::user()->id;
+            $deliveryData['user_id'] = $saleData['user_id'];
 
             $deliveryData['pay_type_id'] = $saleData['pay_type_id'];
+
+            if(!empty($saleData['access_token']))
+            {
+                $deliveryData['access_token'] = $saleData['access_token'];
+            }
 
             $createDelivery = new DeliveryManager( $deliveryData );
 
@@ -115,7 +127,7 @@ class SaleManager extends BaseManager {
             {
 
                 \Movement::create([
-                    'user_id' => \Auth::user()->id,
+                    'user_id' => $sale->user_id,
                     'store_id' => $sale->store_id,
                     'type' => 'create',
                     'entity' => 'Sale',
@@ -927,25 +939,34 @@ class SaleManager extends BaseManager {
 
     public function prepareData($saleData)
     {
-        if(\Auth::user()->role->level_id == 1)
+        if(\Auth::check())
         {
-            $saleData['employee_id'] = \Auth::user()->id;
-        }
-
-
-        $saleData['user_id'] = \Auth::user()->id;
-
-        if(\Auth::user()->role->level_id >= 3)
-        {
-            if(\Session::has('current_store.id'))
+            if(\Auth::check() && \Auth::user()->role->level_id == 1)
             {
-                $data['store_id'] = \Session::get('current_store.id');
+                $saleData['employee_id'] = \Auth::user()->id;
             }
+
+            $saleData['user_id'] = \Auth::user()->id;
+
 
         }
         else
         {
-            $data['store_id'] = \Auth::user()->store_id;
+            $saleData['employee_id'] = (isset($saleData['employee_id'])) ? $saleData['employee_id'] : '';
+
+            $saleData['user_id'] = $saleData['employee_id'];
+        }
+
+        if(\Auth::check())
+        {
+            if (\Auth::user()->role->level_id >= 3) {
+                if (\Session::has('current_store.id')) {
+                    $data['store_id'] = \Session::get('current_store.id');
+                }
+
+            } else {
+                $data['store_id'] = \Auth::user()->store_id;
+            }
         }
 
         $storeKey = false;
@@ -958,6 +979,11 @@ class SaleManager extends BaseManager {
             {
                 $storeKey = $store->key;
             }
+        }
+
+        if(empty($saleData['sheet']))
+        {
+            $saleData['sheet'] = $this->getNextSheet();
         }
 
         $saleData['sheet'] = $storeKey.'-'.$saleData['sheet'];
@@ -979,7 +1005,7 @@ class SaleManager extends BaseManager {
 
             $price = $pricePack * $packSale['quantity'];
 
-            $packSale['discount_id'] = !empty($packSale['discount_id']) ? $packSale['discount_id'] : '';
+            $packSale['discount_id'] = !empty($packSale['discount_id']) ? $packSale['discount_id'] : '0';
 
             $packSale['real_price'] = $price;
 
@@ -1134,6 +1160,17 @@ class SaleManager extends BaseManager {
         }
 
         return $discountPrice;
+    }
+
+    private function getNextSheet()
+    {
+
+        $lastSale = \Sale::limit(1)->orderBy('id' , 'desc')->first()->toArray();
+
+        $next = $lastSale['id'] + 1;
+
+        return $next;
+
     }
 
 }

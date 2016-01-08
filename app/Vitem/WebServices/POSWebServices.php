@@ -4,6 +4,7 @@ use Vitem\Repositories\ProductRepo;
 use Vitem\Repositories\PackRepo;
 use Vitem\Repositories\ClientRepo;
 use Vitem\Repositories\DestinationRepo;
+use Vitem\Repositories\UserRepo;
 
 
 class POSWebServices extends BaseWebServices {
@@ -16,7 +17,9 @@ class POSWebServices extends BaseWebServices {
 
 	protected $destination;
 
-	public function __construct(ProductRepo $ProductRepo , PackRepo $PackRepo , ClientRepo $ClientRepo, DestinationRepo $DestinationRepo)
+    protected $user;
+
+	public function __construct(ProductRepo $ProductRepo , PackRepo $PackRepo , ClientRepo $ClientRepo, DestinationRepo $DestinationRepo, UserRepo $UserRepo)
 	{
 		$this->product = $ProductRepo;
 
@@ -25,6 +28,8 @@ class POSWebServices extends BaseWebServices {
 		$this->client = $ClientRepo;
 
 		$this->destination = $DestinationRepo;
+
+        $this->user = $UserRepo;
 	}
 
 	public function getAllPayTypes()
@@ -148,6 +153,55 @@ class POSWebServices extends BaseWebServices {
 		return \Response::json($destinations);
 
 	}
+
+    public function searchDriver()
+    {
+
+        if(!\Input::has('find'))
+        {
+            $response = [
+
+                'success' => false,
+                'message' => 'No se envio ningún parámetro de búsqueda.'
+
+            ];
+
+            return \Response::json($response);
+
+        }
+
+        $find = \Input::get('find');
+
+        $store_id = (!empty($_GET['store_id'])) ? $_GET['store_id'] : false;
+
+        $sellers = \User::with(['Employee' , 'store']);
+
+        $fields = ['name' , 'id'];
+
+        $sellers = $sellers->where(
+            function($query) use ($find , $fields) {
+
+                foreach($fields as $field){
+
+                    $query->orWhere($field, 'LIKE' , '%' . $find . '%' );
+
+                }
+
+            }
+
+        );
+
+        $sellers = $sellers->where('role_id' ,function($query)
+        {
+            $query->select(\DB::raw('id'))
+                ->from('roles')
+                ->whereRaw('roles.slug = "chofer"');
+
+        })->get();
+
+        return \Response::json($sellers);
+
+    }
 
 	public function getProduct()
 	{

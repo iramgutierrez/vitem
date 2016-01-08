@@ -2,6 +2,7 @@
 
 use Vitem\Managers\ClientManager;
 use Vitem\Managers\DestinationManager;
+use Vitem\Managers\SaleManager;
 
 
 
@@ -83,13 +84,26 @@ class POSPostWebServices extends BaseWebServices {
         return \Response::json($response , 200);
 	}
 
-    /*public function getAccessToken()
+    public function storeSale()
     {
+        $data = \Input::all();
 
+        $createSale = new SaleManager( $data );
 
-        return \Response::json(\Authorizer::issueAccessToken());
+        $response = $createSale->save();
 
-    }*/
+        if($response['success'])
+        {
+
+            return \Response::json(['success' => true],200);
+        }
+        else
+        {
+
+            return \Response::json(['errors' => $response['errors']],401);
+
+        }
+    }
 
 	private function isEqual($str1, $str2)
 	{

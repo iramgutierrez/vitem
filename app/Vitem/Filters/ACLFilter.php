@@ -221,7 +221,6 @@ class ACLFilter
 				{
 
 					$whereStoreId = \Store::lists('id');
-
 				}
 
 				break;

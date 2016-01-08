@@ -133,7 +133,7 @@ class Sale extends \Eloquent {
         static::created(function($sale)
         {
             Record::create([
-                'user_id' => Auth::user()->id,
+                'user_id' => $sale->user_id,
                 'type' => 1,
                 'entity' => 'Sale',
                 'entity_id' => $sale->id,

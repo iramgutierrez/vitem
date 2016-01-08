@@ -109,7 +109,7 @@ class Product extends \Eloquent {
         	$product->Supplier; 
         	$product->User;
             Record::create([
-				'user_id' => Auth::user()->id,
+				'user_id' => (Auth::check()) ? Auth::user()->id : 0,
 				'type' => 3,
 				'entity' => 'Product',
 				'entity_id' => $product->id,

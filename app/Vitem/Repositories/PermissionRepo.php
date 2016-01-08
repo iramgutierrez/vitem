@@ -36,7 +36,7 @@ class PermissionRepo extends BaseRepo {
 	}
 
 	static function checkAuth( $entity , $action ){
-
+        //dd($action);
 		$entity_id = \Entity::whereName( $entity )->pluck('id');
 
 		$action_id = \Action::whereName( $action )->pluck('id');
