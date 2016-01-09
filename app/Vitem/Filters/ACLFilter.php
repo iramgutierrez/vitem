@@ -61,8 +61,8 @@ class ACLFilter
 
 						$record = $entity::where('id', $segment_2)->first();
 
-						if(!empty($record->employee_id))
-							$entity_user_id = $record->employee_id;
+						if(!empty($record->user_id))
+							$entity_user_id = $record->user_id;
 
 					}
 
@@ -171,7 +171,6 @@ class ACLFilter
 				break;
 
 		}
-
 		return $whereUserId;
 
 	}

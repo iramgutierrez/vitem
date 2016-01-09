@@ -82,7 +82,7 @@ class Client extends \Eloquent {
         {
         	$client->ClientType;
             Record::create([
-				'user_id' => Auth::user()->id,
+				'user_id' => (Auth::check()) ? Auth::user()->id : 0,
 				'type' => 1,
 				'entity' => 'Client',
 				'entity_id' => $client->id,

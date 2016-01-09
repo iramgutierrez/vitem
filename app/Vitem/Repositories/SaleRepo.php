@@ -39,7 +39,13 @@ class SaleRepo extends BaseRepo {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
     if(count($whereUserId))
-        $sale = $sale->whereIn( 'employee_id' , $whereUserId);
+        $sale = $sale->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+            $query->select(\DB::raw('id'))
+                ->from('employees')
+                ->whereIn('employees.users_id', $whereUserId);
+
+        });
 
     $whereStoreId = \ACLFilter::generateStoreCondition();
 
@@ -95,7 +101,13 @@ class SaleRepo extends BaseRepo {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $sale = $sale->whereIn( 'employee_id' , $whereUserId);
+            $sale = $sale->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
         $whereStoreId = \ACLFilter::generateStoreCondition();
 

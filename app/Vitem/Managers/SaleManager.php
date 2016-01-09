@@ -178,8 +178,17 @@ class SaleManager extends BaseManager {
 
                     'employee_id' => $sale->employee_id,
 
-                    'pay_type_id' => $sale->pay_type_id
+                    'pay_type_id' => $sale->pay_type_id,
+
+                    'date' => date('Y-m-d')
                 ];
+
+                if(isset($saleData['access_token']))
+                {
+                    $salePaymentData['access_token'] = $saleData['access_token'];
+
+                    $salePaymentData['user_id'] = $sale->user_id;
+                }
 
                 $addSalePayment = new SalePaymentManager( $salePaymentData );
 
@@ -954,7 +963,7 @@ class SaleManager extends BaseManager {
         {
             $saleData['employee_id'] = (isset($saleData['employee_id'])) ? $saleData['employee_id'] : '';
 
-            $saleData['user_id'] = $saleData['employee_id'];
+            $saleData['user_id'] = (isset($saleData['user_id'])) ? $saleData['user_id'] : '';
         }
 
         if(\Auth::check())

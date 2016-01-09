@@ -33,6 +33,12 @@ class UserManager extends BaseManager {
             
             $user->save();
 
+            $employeeData['salary'] = (is_numeric($employeeData['salary'])) ? $employeeData['salary']: 0;
+
+            $employeeData['entry_date'] = (!empty($employeeData['entry_date'])) ? $employeeData['entry_date']: '0000-00-00';
+
+            //dd($employeeData);
+
             $employee = new \Employee ( $employeeData );
 
             $employee->users_id = $user->id;
@@ -128,7 +134,7 @@ class UserManager extends BaseManager {
 
             $user->image_profile = $userData['image_profile'];
 
-            $user->status = $userData['status'];
+            //$user->status = $userData['status'];
 
             $user->employee->salary = $employeeData['salary'];
 

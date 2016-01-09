@@ -30,7 +30,6 @@ class SalePaymentManager extends BaseManager {
         $salePaymentData = $this->prepareData($salePaymentData);
 
         $salePaymentValid  =  $SalePaymentValidator->isValid($salePaymentData);
-
         if( $salePaymentValid )
         {
 
@@ -39,7 +38,7 @@ class SalePaymentManager extends BaseManager {
             $salePayment->save();
 
             \Movement::create([
-                'user_id' => \Auth::user()->id,
+                'user_id' => (\Auth::check()) ? \Auth::user()->id : $salePayment->user_id,
                 'store_id' => $salePayment->sale->store_id,
                 'type' => 'create',
                 'entity' => 'SalePayment',
@@ -212,10 +211,13 @@ class SalePaymentManager extends BaseManager {
 
     public function prepareData($salePaymentData)
     {
+        if(empty($salePaymentData['access_token']) && empty($salePaymentData['user_id']))
+        {
+            $salePaymentData['user_id'] = \Auth::user()->id;
 
-        $salePaymentData['user_id'] = \Auth::user()->id;
+        }
 
-        $total = $salePaymentData['total'];
+        $total = $salePaymentData['subtotal'];
 
         $commission_pay = 0;
 
@@ -229,9 +231,9 @@ class SalePaymentManager extends BaseManager {
 
         $salePaymentData['commission_pay'] = number_format($commission_pay, 2, '.', '');
 
-        $salePaymentData['total'] = number_format($total, 2, '.', '');
+        $salePaymentData['subtotal'] = number_format($total, 2, '.', '');
 
-        $salePaymentData['subtotal'] = number_format(($total + $commission_pay), 2, '.', '');
+        $salePaymentData['total'] = number_format(($total + $commission_pay), 2, '.', '');
 
         return $salePaymentData;
     }

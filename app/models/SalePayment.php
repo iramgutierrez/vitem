@@ -80,7 +80,7 @@ class SalePayment extends \Eloquent {
         static::created(function($sale_payment)
         {
             Record::create([
-                'user_id' => Auth::user()->id,
+                'user_id' => (Auth::check()) ? Auth::user()->id : $sale_payment->user_id,
                 'type' => 1,
                 'entity' => 'SalePayment',
                 'entity_id' => $sale_payment->id,

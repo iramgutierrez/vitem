@@ -39,9 +39,14 @@ class SaleWebServices extends BaseWebServices {
 			]);
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
-
         if(count($whereUserId))
-            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+            $sales = $sales->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
         if(count($whereStoreId))
@@ -76,7 +81,13 @@ class SaleWebServices extends BaseWebServices {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+            $sales = $sales->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
 
@@ -141,7 +152,13 @@ class SaleWebServices extends BaseWebServices {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+            $sales = $sales->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
 
@@ -269,7 +286,13 @@ class SaleWebServices extends BaseWebServices {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+            $sales = $sales->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
 
@@ -305,7 +328,13 @@ class SaleWebServices extends BaseWebServices {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+            $sales = $sales->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
 
@@ -507,7 +536,13 @@ class SaleWebServices extends BaseWebServices {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+            $sales = $sales->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
 
@@ -532,7 +567,13 @@ class SaleWebServices extends BaseWebServices {
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $sales = $sales->whereIn( 'employee_id' , $whereUserId);
+            $sales = $sales->whereIn( 'employee_id' , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
 		$whereStoreId = \ACLFilter::generateStoreCondition();
 

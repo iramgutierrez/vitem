@@ -48,7 +48,7 @@ class POSPostWebServices extends BaseWebServices {
 
         	$response['success'] = true;
 
-			$user = \User::whereUsername($credentials['username'])->first();
+			$user = \User::with('employee')->whereUsername($credentials['username'])->first();
 
 			$response['user'] = $user;
 
