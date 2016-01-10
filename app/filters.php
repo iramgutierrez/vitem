@@ -56,8 +56,6 @@ Route::filter('auth.basic', function()
 
 Route::filter('cors', function()
 {
-	header('Access-Control-Allow-Origin: http://localhost:9000');
-
 	return true;
 });
 

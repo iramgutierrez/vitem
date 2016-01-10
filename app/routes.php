@@ -19,8 +19,6 @@ Route::post('POS/{method?}' , ['before' => 'oauth' , 'as' => 'POSPost', 'uses' =
 
 Route::post('getAccessToken' , function() {
 
-    header('Access-Control-Allow-Origin: http://localhost:8080');
-
     return Response::json(Authorizer::issueAccessToken());
 
 });
