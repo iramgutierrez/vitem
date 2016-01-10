@@ -46,15 +46,27 @@ class POSPostWebServices extends BaseWebServices {
 
         if(\Auth::validate($credentials)){
 
-        	$response['success'] = true;
+			$user = \User::with('employee' , 'role')->whereUsername($credentials['username'])->first();
 
-			$user = \User::with('employee')->whereUsername($credentials['username'])->first();
+            if(!empty($user->role) && $user->role->slug == 'vendedor')
+            {
+                $response['success'] = true;
 
-			$response['user'] = $user;
+                $response['user'] = $user;
+
+            }
+            else
+            {
+                $response['success'] = false;
+
+                $response['error'] = 'Solo pueden acceder usuarios vendedores.';
+            }
 
         }else
         {
         	$response['success'] = false;
+
+            $response['error'] = 'Login incorrecto';
         }
 
         return \Response::json($response , 200);

@@ -25,7 +25,7 @@
               <div class="row" ng-app="users" ng-controller="ShowController" ng-init="init({{ $user->employee->id; }}); getBySeller(); $root.generateUserPermissions({{ $user->role_id; }}); $root.generateAuthPermissions({{ \Auth::user()->role_id; }});">
                   <aside class="profile-nav col-lg-3">
                       <section class="panel">
-                          <div class="user-heading round">
+                          <div class="user-heading round">{{ $user->image_profile  }}
                               <a href="#">
                                   <img src="{{ asset('images_profile/'.$user->image_profile) }}" alt="">
                               </a>

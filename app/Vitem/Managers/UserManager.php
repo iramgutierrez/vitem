@@ -197,17 +197,17 @@ class UserManager extends BaseManager {
 
     public function prepareData($data)
     {
-        
+
         if(isset($data['image_profile']))
         {
             if(!is_object($data['image_profile']))
-            { dd($this->user->image_profile);    
+            {
                 
             }else
             {
                 $filename = $data['username']. '_' . time(). '.' .$data['image_profile']->getClientOriginalExtension();
 
-                if($data['image_profile']->move('images_profile', $filename))
+                if($data['image_profile']->move('public/images_profile', $filename))
                 {
                     $data['image_profile'] = $filename;
                 }
