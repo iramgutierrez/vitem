@@ -26,10 +26,10 @@ class SalePaymentRepo extends BaseRepo {
 
 	static function getByRange($init , $end , $groupBy)
 	{
-		$initDate = date('Y-m-d' , $init);
+		$initDate = date('Y-m-d' , $init).' 00:00:00';
 
-		$endDate = date('Y-m-d' , $end);
-
+		$endDate = date('Y-m-d' , $end).' 23:59:59';
+        
 		$daysRange = [];
 
 		$day = $init;
@@ -81,8 +81,16 @@ class SalePaymentRepo extends BaseRepo {
 
 		$whereUserId = \ACLFilter::generateAuthCondition();
 
-		if(count($whereUserId))
-			self::$sale_payments->whereIn( 'employee_id' , $whereUserId);
+		if(count($whereUserId)) {
+            self::$sale_payments->whereIn('employee_id', function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
+
+        }
 
         $whereStoreId = \ACLFilter::generateStoreCondition();
 
