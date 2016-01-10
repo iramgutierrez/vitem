@@ -29,7 +29,7 @@ class SalePaymentRepo extends BaseRepo {
 		$initDate = date('Y-m-d' , $init).' 00:00:00';
 
 		$endDate = date('Y-m-d' , $end).' 23:59:59';
-        
+
 		$daysRange = [];
 
 		$day = $init;
@@ -122,7 +122,7 @@ class SalePaymentRepo extends BaseRepo {
 			
 			}
 
-			$salePaymentsByRange[$sale_payment[$field]] += $sale_payment->total;
+			$salePaymentsByRange[$sale_payment[$field]] += $sale_payment->subtotal;
 
 		}
 
