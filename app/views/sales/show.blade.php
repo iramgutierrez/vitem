@@ -179,7 +179,7 @@
 		                      			</tr>
 		                      			@foreach($sale->sale_payments as $sale_payment )
 		                      			<tr>
-		                      				<td>{{ '<?php echo $sale_payment->total; ?>' | currency }}</td>
+		                      				<td>{{ '<?php echo $sale_payment->subtotal; ?>' | currency }}</td>
 		                      				<td>{{ $sale_payment->employee->user->name }}</td>
 		                      				<td>{{ $sale_payment->date }}</td>
 		                      				<td>
