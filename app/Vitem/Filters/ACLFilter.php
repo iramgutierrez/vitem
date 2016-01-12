@@ -44,7 +44,6 @@ class ACLFilter
 			}
 
 			$segment_2 = \Request::segment(2);
-
 			if($segment_2 && is_numeric($segment_2)) {
 
 				if(in_array($entity , ['User' , 'Commission', 'SalePayment' , 'Delivery' , 'Expense' , 'Sale'])){

@@ -140,7 +140,13 @@ abstract class BaseRepo {
         $whereUserId = \ACLFilter::generateAuthCondition();
 
         if(count($whereUserId))
-            $record = $record->whereIn( 'employee_id' , $whereUserId);
+            $record = $record->whereIn( 'employee_id'  , function ($query) use ($whereUserId) {
+
+                $query->select(\DB::raw('id'))
+                    ->from('employees')
+                    ->whereIn('employees.users_id', $whereUserId);
+
+            });
 
         $record = $record->find($id);
 

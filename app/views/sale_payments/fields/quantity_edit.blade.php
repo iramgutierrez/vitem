@@ -4,7 +4,7 @@
 
 		(
 
-			'total',
+			'subtotal',
 
 			null ,
 

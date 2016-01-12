@@ -211,6 +211,7 @@ class SalePaymentManager extends BaseManager {
 
     public function prepareData($salePaymentData)
     {
+
         if(empty($salePaymentData['access_token']) && empty($salePaymentData['user_id']))
         {
             $salePaymentData['user_id'] = \Auth::user()->id;

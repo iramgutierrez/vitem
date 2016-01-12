@@ -172,7 +172,7 @@
             'library/js/ng/products.filters.js',
             'library/js/ng/products.services.js',
             'library/js/ng/suppliers.services.js',
-            'library/js/ng/colors.services.js',
+            'library/js/ng/segments.services.js',
             'library/assets/dropzone/dropzone.js',
             'library/js/jquery.validate.min.js'
 

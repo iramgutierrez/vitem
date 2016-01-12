@@ -4,7 +4,7 @@
 
 		(
 
-			'total',
+			'subtotal',
 
 			null ,
 
@@ -16,7 +16,7 @@
 
                 'ng-change' => 'calculateTotal()',
 
-                'ng-init' => "subtotal = checkValuePreOrOld(".((!empty($sale_payment->total)) ? $sale_payment->total : '')." , '".((Input::old('total')) ? Input::old('total') : '') ."')"
+                'ng-init' => "subtotal = checkValuePreOrOld(".((!empty($sale_payment->subtotal)) ? $sale_payment->subtotal : '')." , '".((Input::old('subtotal')) ? Input::old('subtotal') : '') ."')"
 
 			]
 

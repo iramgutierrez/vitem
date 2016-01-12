@@ -67,8 +67,19 @@
                           <span>Paquetes</span>
                       </a>
                       <ul class="sub">
-                          <li data-entities="sale" data-actions="read" data-permissions ><a  href="{{ route('packs.index') }}">Ver todos</a></li>
+                          <li data-entities="pack" data-actions="read" data-permissions ><a  href="{{ route('packs.index') }}">Ver todos</a></li>
                           <li data-entities="pack" data-actions="create" data-permissions ><a  href="{{ route('packs.create') }}">Agregar paquete</a></li>
+                      </ul>
+                  </li>
+
+                  <li class="sub-menu" data-entities="discount" data-actions="read,create" data-permissions >
+                      <a href="javascript:;" >
+                          <i class="fa fa-shopping-cart"></i>
+                          <span>Descuentos</span>
+                      </a>
+                      <ul class="sub">
+                          <li data-entities="discount" data-actions="read" data-permissions ><a  href="{{ route('discounts.index') }}">Ver todos</a></li>
+                          <li data-entities="discount" data-actions="create" data-permissions ><a  href="{{ route('discounts.create') }}">Agregar descuento</a></li>
                       </ul>
                   </li>
 
